@@ -14,6 +14,8 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -54,9 +56,8 @@ public class PerfilUsuario extends AppCompatActivity {
     private EditText et_EmailPerfil;
     private ImageView fotoPerfil;
     private Uri uriFoto;
-    private byte[] byteArrayFoto;
     private String fotoen64 = "";
-    private String fotoBaseDeDatos;
+    private String fotoGiro = "";
 
 
     //Se recoge la foto hecha con la cámara y se pone en el ImageView correspondiente
@@ -64,8 +65,9 @@ public class PerfilUsuario extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == CODIGO_FOTO_ARCHIVO && resultCode == RESULT_OK) {
             //Tenemos la uri de la foto en el atributo uriFoto
+            Log.d("fotoPerfil", "URI: " + uriFoto);
+
             //Convertimos la uri en Bitmap
-            //Código extraído de https://stackoverflow.com/questions/3879992/how-to-get-bitmap-from-an-uri
             Bitmap bitmapFoto = null;
             try {
                 bitmapFoto = MediaStore.Images.Media.getBitmap(this.getContentResolver(), uriFoto);
@@ -79,15 +81,11 @@ public class PerfilUsuario extends AppCompatActivity {
             //Ponemos la foto en el ImageView
             fotoPerfil.setImageBitmap(bitmapredimensionado);
 
-            //Convertimos el Bitmap en un String en Base64
+            //Convertimos el Bitmap en un String en Base64 (que será lo que se suba a la base de datos cuando el usuario guarde los cambios)
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             bitmapredimensionado.compress(Bitmap.CompressFormat.PNG, 100, stream);
             byte[] fototransformada = stream.toByteArray();
             fotoen64 = Base64.encodeToString(fototransformada, Base64.DEFAULT);
-
-            //Guardamos el array de bytes de la foto en un atributo
-            //De esta manera podremos almacenarlo en el Bundle para no perderla con el giro
-            byteArrayFoto = fototransformada;
 
             //Ahora se podría lanzar un Broadcast para actualizar el repositorio multimedia donde se ha almacenado la foto sin tener que reiniciar el dispositivo
             //Pero, como es un directorio privado de la aplicación y no va a ser accedido por otras aplicaciones, no tiene sentido hacerlo
@@ -106,9 +104,7 @@ public class PerfilUsuario extends AppCompatActivity {
 
             Log.d("fotoPerfil", "URI elegida: " + uri);
 
-            //Para poner la imagen en el ImageView, primero voy a ajustar su tamaño
-            //Hay que convertir el uri en Bitmap
-            //Código obtenido de https://stackoverflow.com/questions/3879992/how-to-get-bitmap-from-an-uri
+            //Convertimos la uri en Bitmap
             Bitmap bitmapFoto = null;
             try {
                 bitmapFoto = MediaStore.Images.Media.getBitmap(this.getContentResolver(), uri);
@@ -122,15 +118,11 @@ public class PerfilUsuario extends AppCompatActivity {
             //Ponemos la foto en el ImageView
             fotoPerfil.setImageBitmap(bitmapredimensionado);
 
-            //Convertimos el bitmap en un String en Base64
+            //Convertimos el bitmap en un String en Base64 (que será lo que se suba a la base de datos cuando el usuario guarde los cambios)
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             bitmapredimensionado.compress(Bitmap.CompressFormat.PNG, 100, stream);
             byte[] fototransformada = stream.toByteArray();
             fotoen64 = Base64.encodeToString(fototransformada, Base64.DEFAULT);
-
-            //Guardamos el array de bytes de la foto en un atributo
-            //De esta manera podremos almacenarlo en el Bundle para no perderla con el giro
-            byteArrayFoto = fototransformada;
 
         } else {
             Log.d("fotoPerfil", "No se ha elegido imagen");
@@ -156,7 +148,6 @@ public class PerfilUsuario extends AppCompatActivity {
         fotoPerfil = (ImageView) findViewById(R.id.fotoPerfil);
 
         //Para mostrar sus datos al usuario usamos un servicio web al que accedemos con la librería Volley
-        //https://developer.android.com/training/volley?hl=es-419
 
         //Crear la cola de solicitudes
         RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
@@ -179,34 +170,37 @@ public class PerfilUsuario extends AppCompatActivity {
 
                     et_EmailPerfil.setText((String) json.get("email"));
 
-                    fotoBaseDeDatos = (String) json.get("foto");
+                    String tieneFoto = (String) json.get("tieneFoto");
+
+                    if (tieneFoto.equals("1")){
+                        fotoen64 = (String) json.get("foto");
+                    }
 
                     String fotoAPoner;
 
                     //Es posible que el usuario haya sacado una nueva foto con la cámara o haya elegido una foto de la galería,
-                    // y que esa imagen no se haya subido aún a la base de datos porque el usuario no ha pulsado en "Guardar cambios"
+                    // y que esa imagen no se haya subido aún a la base de datos porque el usuario no ha pulsado en "Guardar cambios".
                     //Si el usuario girara el móvil antes de subir los cambios a la base de datos, le aparecería la imagen que
-                    // tenía en la base de datos y se perdería la nueva. Por eso controlamos que las fotos sean distintas
-                    if (fotoen64 != "") {
-                        fotoAPoner = fotoen64;
+                    // tenía en la base de datos y se perdería la nueva. Por eso controlamos que las fotos sean distintas.
+                    if (fotoGiro!="" && fotoen64 != fotoGiro) {
+                        fotoen64 = fotoGiro;
                     }
-                    else {
-                        fotoAPoner = fotoBaseDeDatos;
-                    }
+                    fotoAPoner = fotoen64;
 
-                    if (fotoAPoner.equals("")){
+                    if (tieneFoto.equals("0") || fotoAPoner.equals("")){
                         //El usuario no tiene foto de perfil, ponemos la imagen predefinida
                         fotoPerfil.setImageResource(R.drawable.imagenusuario);
                     }
                     else{
                         //Decodificamos la foto
                         byte[] imagenByteArray = Base64.decode(fotoAPoner, Base64.DEFAULT);
-                        //Código extraído de https://stackoverflow.com/questions/7620401/how-to-convert-image-file-data-in-a-byte-array-to-a-bitmap
                         Bitmap imagenBitmap = BitmapFactory.decodeByteArray(imagenByteArray, 0, imagenByteArray.length);
 
-                        //La foto se ha obtenido de la base de datos, por lo que ya está ajustada al ImageView
+                        //Ajustamos la foto al ImageView
+                        Bitmap bitmapredimensionado = ajustarAImageView(imagenBitmap);
+
                         //Mostramos la foto en el ImageView
-                        fotoPerfil.setImageBitmap(imagenBitmap);
+                        fotoPerfil.setImageBitmap(bitmapredimensionado);
 
                         //Guardamos el String en Base64 de la imagen para subirlo al servidor cuando el usuario guarde los cambios
                         ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -214,13 +208,7 @@ public class PerfilUsuario extends AppCompatActivity {
                         byte[] fototransformada = stream.toByteArray();
                         fotoen64 = Base64.encodeToString(fototransformada, Base64.DEFAULT);
 
-                        //Guardamos el array de bytes de la foto en un atributo
-                        //De esta manera podremos almacenarlo en el Bundle para no perderla con el giro
-                        byteArrayFoto = fototransformada;
-
                     }
-
-
 
                 } catch (ParseException e) {
                     throw new RuntimeException(e);
@@ -237,7 +225,7 @@ public class PerfilUsuario extends AppCompatActivity {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> params = new HashMap<>();
-                // Agregar los parámetros necesarios
+                //Agregar los parámetros necesarios
                 params.put("accion", "select");
                 params.put("usuario", usuario);
 
@@ -297,9 +285,6 @@ public class PerfilUsuario extends AppCompatActivity {
         //Encolar la solicitud
         queue.add(stringRequest);
 
-
-        fotoen64 = "";
-
     }
 
 
@@ -357,7 +342,6 @@ public class PerfilUsuario extends AppCompatActivity {
                     // PERMISO DENEGADO
                     Toast.makeText(getApplicationContext(), "No se puede ejecutar la funcionalidad", Toast.LENGTH_LONG).show();
                 }
-                return;
             }
             case CODIGO_DE_PERMISO_LECTURA_GALERIA: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -377,7 +361,8 @@ public class PerfilUsuario extends AppCompatActivity {
     public void onClick_FotoCamara(View v){
         //Necesitamos permisos de cámara y de escritura en galería
         if ( (ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)
-                && (ContextCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) ) { //Si ambos permisos están concedidos
+                && (ContextCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) ) {
+            //Si ambos permisos están concedidos
             lanzarIntentFoto();
         }
         else{ //Si algún permiso, o los dos, no están concedidos
@@ -432,24 +417,51 @@ public class PerfilUsuario extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
-        savedInstanceState.putByteArray("foto", byteArrayFoto);
+
+        //Es posible que el usuario haya hecho una foto o haya elegido una foto de la galería y que gire el móvil antes de guardar los cambios.
+        //Como después del giro se ejecuta el onCreate, se perdería la nueva foto y se mostraría la que se recoge de la base de datos.
+        //Por ello, lo que debemos guardar en el Bundle es el contenido que hay actualmente en el ImageView, que no tiene por qué
+        // coincidir con el que se ha recogido de la base de datos
+
+        Drawable drawable = fotoPerfil.getDrawable();
+        Bitmap bitmap;
+
+        if (drawable instanceof BitmapDrawable){
+
+            //Obtenemos el bitmap de la foto
+            bitmap = ((BitmapDrawable) drawable).getBitmap();
+
+            //Guardamos el String en Base64 de la foto en el atributo "fotoGiro"
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+            byte[] fototransformada = stream.toByteArray();
+            fotoGiro = Base64.encodeToString(fototransformada, Base64.DEFAULT);
+
+            savedInstanceState.putByteArray("foto", fototransformada);
+        }
+
     }
 
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        byteArrayFoto = savedInstanceState.getByteArray("foto");
+
+        byte[] byteArrayFotoGiro = savedInstanceState.getByteArray("foto");
 
         //Si hay un valor es porque el usuario ha establecido una foto de perfil
-        if (byteArrayFoto!=null){
+        if (byteArrayFotoGiro!=null){
 
             //Decodificamos la imagen
-            //Código extraído de https://stackoverflow.com/questions/7620401/how-to-convert-image-file-data-in-a-byte-array-to-a-bitmap
-            Bitmap imagenBitmap = BitmapFactory.decodeByteArray(byteArrayFoto, 0, byteArrayFoto.length);
+            Bitmap imagenBitmap = BitmapFactory.decodeByteArray(byteArrayFotoGiro, 0, byteArrayFotoGiro.length);
 
             //Mostramos la imagen en el ImageView
             fotoPerfil.setImageBitmap(imagenBitmap);
+
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            imagenBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+            byte[] fototransformada = stream.toByteArray();
+            fotoGiro = Base64.encodeToString(fototransformada, Base64.DEFAULT);
 
         }
     }
