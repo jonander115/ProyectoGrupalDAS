@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -41,11 +42,12 @@ public class Rutinas extends AppCompatActivity {
         StringRequest sr = new StringRequest(Request.Method.POST, "http://ec2-54-93-62-124.eu-central-1.compute.amazonaws.com/jwojciechowska001/WEB/entrega3/obtenerrutinas.php", new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                String respuesta=response.toString();
+
+                Log.d("respuesta",response);
 
                 //si la respuesta esta vacia imprime mensaje
-                if(respuesta.isEmpty()){
-                    Toast.makeText(context, "No hay rutinas para mostrar", Toast.LENGTH_SHORT).show();
+                if(response.equals("null")){
+                    Toast.makeText(getApplicationContext(), "No hay rutinas para mostrar", Toast.LENGTH_SHORT).show();
                 }
                 else{
                     ArrayList<String> rutinas = new ArrayList<String>();
@@ -53,7 +55,7 @@ public class Rutinas extends AppCompatActivity {
 
                     //se obtiene el json en formato string que se vuelve a pasar a array de json
                     try {
-                        JSONArray jsona = new JSONArray(respuesta);
+                        JSONArray jsona = new JSONArray(response);
                         //para cada elemento del array que es un json
 
                         for (int i = 0; i < jsona.length(); i++)
@@ -65,7 +67,7 @@ public class Rutinas extends AppCompatActivity {
                         }
 
                     }catch (Exception e){
-                        Toast.makeText(context, "Se ha producido un error", Toast.LENGTH_SHORT).show();
+
                     }
 
                     ArrayAdapter a = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, rutinas);
