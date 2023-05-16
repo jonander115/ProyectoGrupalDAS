@@ -25,6 +25,10 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".Controlador_Barra_Navegacion"
+            android:exported="false" />
+
+        <activity
             android:name=".Rutina"
             android:exported="false" />
         <activity
