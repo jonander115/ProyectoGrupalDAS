@@ -28,9 +28,15 @@
             android:textStyle="bold" />
 
         <ListView
-            android:id="@+id/ru_lv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:id="@+id/rut_lv"
+            android:layout_width="match_parent"
+            android:layout_height="572dp" />
+
+        <Button
+            android:id="@+id/ru_aniadir"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Añadir rutina" />
 
     </LinearLayout>
 
