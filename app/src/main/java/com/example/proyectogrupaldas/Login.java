@@ -91,7 +91,7 @@ public class Login extends AppCompatActivity {
                             }
                             else{
                                 //si no esta vacia significa que existe el usuario con ese usuario y contrasenia y se abre la siguiente actividad
-                                Intent intent = new Intent(Login.this, MainActivity.class);
+                                Intent intent = new Intent(Login.this, Rutinas.class);
                                 intent.putExtra("id", usuario.getText().toString().trim());
                                 Login.this.startActivity(intent);
                                 //se manda una notificación aleatoria de las posibles cmo un tutorial para el usuario
@@ -132,6 +132,7 @@ public class Login extends AppCompatActivity {
             public void onClick(View v) {
                 //se abre la actividad de registro
                 Intent intent=new Intent(Login.this, Registro.class);
+                intent.putExtra("usuario", usuario.getText().toString().trim());
                 activity.startActivityForResult(intent, 1);
             }
         });
