@@ -19,5 +19,17 @@
             android:textAlignment="center"
             android:textSize="30dp"
             android:textStyle="bold" />
+
+        <ListView
+            android:id="@+id/d_categorias"
+            android:layout_width="match_parent"
+            android:layout_height="572dp" />
+
+        <Button
+            android:id="@+id/rut_aniadir"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Añadir ejercicio" />
+
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
