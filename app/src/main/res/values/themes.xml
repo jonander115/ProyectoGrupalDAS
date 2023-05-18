@@ -13,4 +13,21 @@
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
     </style>
+
+    <style name="DatePickerDialogMaterialStyle" parent="android:Theme.Material.Light.Dialog">
+        <!--Header Background Color and selected Day Background Color-->
+        <item name="colorAccent">@color/white</item>
+        <item name="android:colorAccent">@color/purple_500</item>
+        <!--Days unselected Text Color and Month Text Color-->
+        <item name="android:textColorPrimary">@color/purple_700</item>
+        <!--Picker Background Color-->
+        <item name="android:windowBackground">@android:color/white</item>
+        <!--Buttons Style (Text Color & backgroundTint)-->
+        <item name="android:buttonBarButtonStyle">@style/MyButtonBarButtonStyle</item>
+    </style>
+
+    <style name="MyButtonBarButtonStyle">
+        <item name="android:textColor">@android:color/holo_purple</item>
+        <item name="backgroundTint">@android:color/transparent</item>
+    </style>
 </resources>
