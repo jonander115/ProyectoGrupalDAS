@@ -1,6 +1,5 @@
 package com.example.proyectogrupaldas;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -27,7 +26,6 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -60,7 +58,7 @@ public class DialogoVerEjercicios extends DialogFragment {
         View aspectoDialog = inflater.inflate(R.layout.dialogo_elegircategoria_aniadir, null);
         builder.setView(aspectoDialog);
 
-        lv = aspectoDialog.findViewById(R.id.d_categorias);
+        lv = aspectoDialog.findViewById(R.id.rut_ejercicios);
 
         obtenerCategorias();
 

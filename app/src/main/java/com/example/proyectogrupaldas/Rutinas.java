@@ -128,7 +128,7 @@ public class Rutinas extends AppCompatActivity {
                     }
 
                     ArrayAdapter a = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, rutinas);
-                    ListView lv = (ListView) findViewById(R.id.d_categorias);
+                    ListView lv = (ListView) findViewById(R.id.rut_ejercicios);
                     lv.setAdapter(a);
 
                     rq.cancelAll("rutinas");

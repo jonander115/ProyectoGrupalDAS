@@ -1,11 +1,12 @@
 package com.example.proyectogrupaldas;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -48,7 +49,8 @@ public class Rutina extends AppCompatActivity {
         usuario=getIntent().getStringExtra("usuario");
         idrutina=getIntent().getStringExtra("id");
 
-        Button aniadir=findViewById(R.id.rut_aniadir);
+        Button aniadir=findViewById(R.id.rut_guardar);
+        Button ordenar=findViewById(R.id.rut_ordenar);
 
         aniadir.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -61,6 +63,20 @@ public class Rutina extends AppCompatActivity {
                         dialogo.show(getSupportFragmentManager(), "dialogo_elegircategoria_aniadir");
             }
         });
+
+        ordenar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Cuando se pulsa una playlist se acceda a su contenido, que se muestra en otra actividad
+                Intent i = new Intent (Rutina.this, Ordenar.class);
+                //Enviamos el nombre de usuario y el nombre de la playlist a esta nueva actividad
+                i.putExtra("idrutina", idrutina);
+                i.putExtra("usuario", usuario);
+                i.putExtra("nombre", getIntent().getStringExtra("nombre"));
+                startActivityForResult(i, 1);
+            }
+        });
+
         actualizarLista();
     }
 
@@ -95,7 +111,7 @@ public class Rutina extends AppCompatActivity {
                     }
 
                     a = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, nombres);
-                    ListView lv = (ListView) findViewById(R.id.d_categorias);
+                    ListView lv = (ListView) findViewById(R.id.rut_ejercicios);
                     lv.setAdapter(a);
                     a.notifyDataSetChanged();
 
@@ -191,6 +207,13 @@ public class Rutina extends AppCompatActivity {
         rq = Volley.newRequestQueue(context);
         sr.setTag("eliminarejercicio");
         rq.add(sr);
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data){
+        super.onActivityResult(requestCode,resultCode,data);
+        if(requestCode==1){
+            actualizarLista();
+        }
     }
 
 }

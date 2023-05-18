@@ -21,12 +21,18 @@
             android:textStyle="bold" />
 
         <ListView
-            android:id="@+id/d_categorias"
+            android:id="@+id/rut_ejercicios"
             android:layout_width="match_parent"
             android:layout_height="572dp" />
 
         <Button
-            android:id="@+id/rut_aniadir"
+            android:id="@+id/rut_ordenar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Ordenar ejercicios" />
+
+        <Button
+            android:id="@+id/rut_guardar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Añadir ejercicio" />
