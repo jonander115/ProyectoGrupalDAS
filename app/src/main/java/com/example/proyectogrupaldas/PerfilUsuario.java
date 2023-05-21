@@ -34,7 +34,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
-import org.json.JSONException;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -170,11 +169,7 @@ public class PerfilUsuario extends AppCompatActivity {
 
                     et_EmailPerfil.setText((String) json.get("email"));
 
-                    String tieneFoto = (String) json.get("tieneFoto");
-
-                    if (tieneFoto.equals("1")){
-                        fotoen64 = (String) json.get("foto");
-                    }
+                    fotoen64 = (String) json.get("foto");
 
                     String fotoAPoner;
 
@@ -187,28 +182,22 @@ public class PerfilUsuario extends AppCompatActivity {
                     }
                     fotoAPoner = fotoen64;
 
-                    if (tieneFoto.equals("0") || fotoAPoner.equals("")){
-                        //El usuario no tiene foto de perfil, ponemos la imagen predefinida
-                        fotoPerfil.setImageResource(R.drawable.imagenusuario);
-                    }
-                    else{
-                        //Decodificamos la foto
-                        byte[] imagenByteArray = Base64.decode(fotoAPoner, Base64.DEFAULT);
-                        Bitmap imagenBitmap = BitmapFactory.decodeByteArray(imagenByteArray, 0, imagenByteArray.length);
+                    //Decodificamos la foto
+                    byte[] imagenByteArray = Base64.decode(fotoAPoner, Base64.DEFAULT);
+                    Bitmap imagenBitmap = BitmapFactory.decodeByteArray(imagenByteArray, 0, imagenByteArray.length);
 
-                        //Ajustamos la foto al ImageView
-                        Bitmap bitmapredimensionado = ajustarAImageView(imagenBitmap);
+                    //Ajustamos la foto al ImageView
+                    Bitmap bitmapredimensionado = ajustarAImageView(imagenBitmap);
 
-                        //Mostramos la foto en el ImageView
-                        fotoPerfil.setImageBitmap(bitmapredimensionado);
+                    //Mostramos la foto en el ImageView
+                    fotoPerfil.setImageBitmap(bitmapredimensionado);
 
-                        //Guardamos el String en Base64 de la imagen para subirlo al servidor cuando el usuario guarde los cambios
-                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                        imagenBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-                        byte[] fototransformada = stream.toByteArray();
-                        fotoen64 = Base64.encodeToString(fototransformada, Base64.DEFAULT);
+                    //Guardamos el String en Base64 de la imagen para subirlo al servidor cuando el usuario guarde los cambios
+                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                    imagenBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                    byte[] fototransformada = stream.toByteArray();
+                    fotoen64 = Base64.encodeToString(fototransformada, Base64.DEFAULT);
 
-                    }
 
                 } catch (ParseException e) {
                     throw new RuntimeException(e);

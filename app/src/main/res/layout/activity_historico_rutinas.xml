@@ -4,12 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Rutinas">
+    tools:context=".HistoricoRutinas">
 
     <LinearLayout
         android:id="@+id/linearLayoutTitulo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:descendantFocusability="blocksDescendants"
         android:orientation="vertical"
         android:paddingLeft="15dp"
@@ -18,6 +19,7 @@
         android:paddingRight="15dp"
         android:paddingBottom="15dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -25,22 +27,21 @@
             android:id="@+id/tv_HistoricoRutinas"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Rutinas"
+            android:text="Histórico de rutinas"
             android:textAlignment="center"
             android:textSize="30dp"
             android:textStyle="bold" />
 
-        <ListView
-            android:id="@+id/rut_ejercicios"
-            android:layout_width="match_parent"
-            android:layout_height="572dp" />
-
-        <Button
-            android:id="@+id/ru_aniadir"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Añadir rutina" />
-
     </LinearLayout>
 
+    <ExpandableListView
+        android:id="@+id/listViewHistoricoRutinas"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayoutTitulo"
+        app:layout_constraintVertical_bias="0.034" />
 </androidx.constraintlayout.widget.ConstraintLayout>
