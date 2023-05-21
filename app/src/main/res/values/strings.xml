@@ -1,3 +1,10 @@
 <resources>
-    <string name="app_name">ProyectoGrupalDAS</string>
+
+    <string name="app_name">Gym Assistant</string>
+    <string name="report_planned_date">Fecha Inicio</string>
+    <string name="report_planned_date2">Fecha Fin</string>
+    <string name="fechaFin">Fecha fin</string>
+    <string name="fechaInicio">Fecha inicio</string>
+    <string name="botonEstad">Mostrar estadisticas</string>
+
 </resources>
