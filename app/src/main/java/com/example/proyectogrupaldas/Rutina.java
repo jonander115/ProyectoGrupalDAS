@@ -43,6 +43,7 @@ public class Rutina extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rutina);
 
+        //obtener elementos de la vista
         TextView nombre=findViewById(R.id.rut_nombre);
 
         nombre.setText(getIntent().getStringExtra("nombre"));
@@ -52,18 +53,21 @@ public class Rutina extends AppCompatActivity {
         Button aniadir=findViewById(R.id.rut_guardar);
         Button ordenar=findViewById(R.id.rut_ordenar);
 
+        //boton para aniadir un ejercicio a la rutina
         aniadir.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                        DialogoVerCategorias dialogo = new DialogoVerCategorias();
-                        Bundle args = new Bundle();
-                        args.putString("usuario", usuario);
-                        args.putString("idrutina", idrutina);
-                        dialogo.setArguments(args);
-                        dialogo.show(getSupportFragmentManager(), "dialogo_elegircategoria_aniadir");
+                //se genera un dialogo al que se le pasan los datos necesarios para aniadir luego un ejercicio
+                DialogoVerCategorias dialogo = new DialogoVerCategorias();
+                Bundle args = new Bundle();
+                args.putString("usuario", usuario);
+                args.putString("idrutina", idrutina);
+                dialogo.setArguments(args);
+                dialogo.show(getSupportFragmentManager(), "dialogo_elegircategoria_aniadir");
             }
         });
 
+        //se puede ordenar los ejercicios de la rutina pulsandolo
         ordenar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -77,9 +81,11 @@ public class Rutina extends AppCompatActivity {
             }
         });
 
+        //actualizamos los ejercicios de la rutina
         actualizarLista();
     }
 
+    //se hace una llamada a la base de datos para obtener los ejercicios de la rutina
     public void actualizarLista(){
         StringRequest sr = new StringRequest(Request.Method.POST, "http://ec2-54-93-62-124.eu-central-1.compute.amazonaws.com/jwojciechowska001/WEB/entrega3/obtenerejerciciosrutina.php", new Response.Listener<String>() {
             @Override
@@ -90,6 +96,7 @@ public class Rutina extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "No hay ejercicios para mostrar", Toast.LENGTH_SHORT).show();
                 }
                 else{
+                    //se crean arraylist para guardar luego los nombres y el orden de los ejercicios
                     ArrayList<String> nombres = new ArrayList<String>();
                     ArrayList<String> orden = new ArrayList<String>();
 
@@ -107,16 +114,19 @@ public class Rutina extends AppCompatActivity {
                         }
 
                     }catch (Exception e){
-
+                        //no se hace nada si ocurre una excepcion
                     }
 
+                    //se genera un adapter para que cada elemento (ejercicio) obtenido sea un elemento del arraylist
                     a = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, nombres);
                     ListView lv = (ListView) findViewById(R.id.rut_ejercicios);
                     lv.setAdapter(a);
+                    //se llama para actualizar los datos una vez se modifica los elementos en el adapter
                     a.notifyDataSetChanged();
 
                     rq.cancelAll("ejs");
 
+                    //si se mantiene pulsado largo se puede eliminar el ejercicio pulsado
                     lv.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
                         @Override
                         public boolean onItemLongClick(AdapterView<?> parent, View view, int p, long id) {
@@ -152,6 +162,7 @@ public class Rutina extends AppCompatActivity {
     }
 
     private void dialogoEliminar(String nombre, String orden){
+        //crear el dialogo
         AlertDialog.Builder ad=new AlertDialog.Builder(this);
         ad.setTitle("Eliminar ejercicio");
         ad.setMessage("¿Estás seguro de que quieres eliminar este ejercicio?");
@@ -181,6 +192,7 @@ public class Rutina extends AppCompatActivity {
                 if(response.equals("1")){
                     Toast.makeText(getApplicationContext(), "Se ha eliminado el ejercicio", Toast.LENGTH_SHORT).show();
                 }
+                //mostrar lista con los nuevos elementos
                 actualizarLista();
                 rq.cancelAll("eliminarejercicio");
             }
@@ -209,6 +221,7 @@ public class Rutina extends AppCompatActivity {
         rq.add(sr);
     }
 
+    //para actualizar los ejercios volviendo de una rutina concreta
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data){
         super.onActivityResult(requestCode,resultCode,data);
         if(requestCode==1){

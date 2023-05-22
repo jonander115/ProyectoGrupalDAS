@@ -56,12 +56,12 @@ public class DialogoVerCategorias extends DialogFragment {
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View aspectoDialog = inflater.inflate(R.layout.dialogo_elegircategoria_aniadir, null);
         builder.setView(aspectoDialog);
-
         lv = aspectoDialog.findViewById(R.id.rut_ejercicios);
 
+        //se obtienen las categorias mediante una llamada a la bd
         obtenerCategorias();
 
-        //Opción de crear playlist, que añade la playlist y cierra el diálogo
+        //con este boton se crea una categoria nueva, y es necesario con ello aniadir un ejercicio tambien
         builder.setPositiveButton("Crear categoría", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
@@ -87,6 +87,7 @@ public class DialogoVerCategorias extends DialogFragment {
         return builder.create();
     }
 
+    //se hace una llamada a la base de datos para coger las categorias de los ejercicios por defecto, y de los ejercicios creados por el usuario
     public void obtenerCategorias(){
         StringRequest sr = new StringRequest(Request.Method.POST, "http://ec2-54-93-62-124.eu-central-1.compute.amazonaws.com/jwojciechowska001/WEB/entrega3/obtenercategorias.php", new Response.Listener<String>() {
             @Override
@@ -99,6 +100,7 @@ public class DialogoVerCategorias extends DialogFragment {
                     Log.d("respuesta","no hay rutinas para ver");
                 }
                 else{
+                    //si no esta vacia se cogen las categorias
                     ArrayList<String> categorias = new ArrayList<String>();
 
                     //se obtiene el json en formato string que se vuelve a pasar a array de json
@@ -114,20 +116,24 @@ public class DialogoVerCategorias extends DialogFragment {
                         }
 
                     }catch (Exception e){
-
+                        //no se hace nada en caso de excepcion
                     }
 
+                    //mediante un adapter de listview se muestra cada categoria como un elemento del listview
                     ArrayAdapter a = new ArrayAdapter<String>(((Rutina) getActivity()).getApplicationContext(), android.R.layout.simple_list_item_1, categorias);
                     lv.setAdapter(a);
+                    //si se actualizan los datos notificarlo para que se muestren
                     a.notifyDataSetChanged();
 
                     rq.cancelAll("categorias");
 
+                    //si se pulsa una categoria del listview se obtendran los ejercicios de esa categoria
                     lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int p, long id) {
                             DialogoVerEjercicios dialogo = new DialogoVerEjercicios();
                             Bundle args = new Bundle();
+                            // se pasan todos los datos necesarios
                             args.putString("usuario", usuario);
                             args.putString("idrutina", idrutina);
                             args.putString("categoria", categorias.get(p));

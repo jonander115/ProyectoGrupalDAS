@@ -41,22 +41,27 @@ public class Rutinas extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rutinas);
 
+        //obtener elementos del intent y de la vista
         usuario= getIntent().getStringExtra("id");
         Button aniadir= findViewById(R.id.ru_aniadir);
+
+        //se puede aniadir una rutina
         aniadir.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //se crea un dialogo para gestionar la creacion de una rutina
                 DialogoNuevaRutina dialogo = new DialogoNuevaRutina();
                 Bundle args = new Bundle();
+                //se pasan los argumentos necesarios
                 args.putString("usuario", usuario);
                 dialogo.setArguments(args);
                 dialogo.show(getSupportFragmentManager(), "dialogo_nueva_rutina");
             }
         });
-
         actualizarLista();
     }
 
+    //se hace la llamada correspondiente para aniadir una rutina nueva a la base de datos
     public void crearRutina(String nombre){
         StringRequest sr = new StringRequest(Request.Method.POST, "http://ec2-54-93-62-124.eu-central-1.compute.amazonaws.com/jwojciechowska001/WEB/entrega3/aniadirrutina.php", new Response.Listener<String>() {
             @Override
@@ -66,6 +71,7 @@ public class Rutinas extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "Esa rutina ya existe", Toast.LENGTH_SHORT).show();
                 }
                 else if(response.equals("1")){
+                    //si no esta vacia
                     Toast.makeText(getApplicationContext(), "Se ha añadido la rutina", Toast.LENGTH_SHORT).show();
                     actualizarLista();
                 }
@@ -95,6 +101,7 @@ public class Rutinas extends AppCompatActivity {
         rq.add(sr);
     }
 
+    //se actualizan los elementos de la vista para mostrar la nueva rutina
     private void actualizarLista(){
         StringRequest sr = new StringRequest(Request.Method.POST, "http://ec2-54-93-62-124.eu-central-1.compute.amazonaws.com/jwojciechowska001/WEB/entrega3/obtenerrutinas.php", new Response.Listener<String>() {
             @Override
@@ -107,6 +114,7 @@ public class Rutinas extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "No hay rutinas para mostrar", Toast.LENGTH_SHORT).show();
                 }
                 else{
+                    //se crean arraylist para guardar luego el id de las rutinas y el nombre
                     ArrayList<String> rutinas = new ArrayList<String>();
                     ArrayList<String> ids = new ArrayList<String>();
 
@@ -124,21 +132,24 @@ public class Rutinas extends AppCompatActivity {
                         }
 
                     }catch (Exception e){
-
+                        //no se gestiona
                     }
 
+                    //se crea un adapter para el listview para que cada rutina sea un elemento del adapter
                     ArrayAdapter a = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, rutinas);
                     ListView lv = (ListView) findViewById(R.id.rut_ejercicios);
                     lv.setAdapter(a);
+                    //se actualizan los datos si se modifican
+                    a.notifyDataSetChanged();
 
                     rq.cancelAll("rutinas");
 
                     lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int p, long id) {
-                            //Cuando se pulsa una playlist se acceda a su contenido, que se muestra en otra actividad
+                            //si se pulsa un elemento nso lleva a ver los ejercicios de la rutina
                             Intent i = new Intent (Rutinas.this, Rutina.class);
-                            //Enviamos el nombre de usuario y el nombre de la playlist a esta nueva actividad
+                            //se envian los datos necesarios para luego mostrarse
                             i.putExtra("id", ids.get(p));
                             i.putExtra("nombre", rutinas.get(p));
                             i.putExtra("usuario", usuario);
@@ -146,9 +157,11 @@ public class Rutinas extends AppCompatActivity {
                         }
                     });
 
+                    //si se pulsa largo una rutina se puede eliminar
                     lv.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
                         @Override
                         public boolean onItemLongClick(AdapterView<?> parent, View view, int p, long id) {
+                            //aparece el dialogo que pregunta si se quiere eliminar
                             dialogoEliminar(ids.get(p));
 
                             return false;
@@ -213,8 +226,9 @@ public class Rutinas extends AppCompatActivity {
         rq.add(sr);
     }
 
+    //se gestiona la llamada a la bd para eliminar esa rutina
     private void dialogoEliminar(String id){
-
+        //se setea el dialogo
         AlertDialog.Builder ad=new AlertDialog.Builder(this);
         ad.setTitle("Eliminar rutina");
         ad.setMessage("¿Estás seguro de que quieres eliminar esta rutina?");

@@ -53,7 +53,6 @@ import java.util.Map;
 public class Registro extends AppCompatActivity {
 
     private Context context = this;
-    private Activity activity = this;
 
     private RequestQueue rq;
     private EditText usuario, email, contrasenia;
@@ -141,7 +140,7 @@ public class Registro extends AppCompatActivity {
                         if (rm.matches()) {
                             //se mira si el usuario con ese nombre ya existe
 
-                            //si el usuario existe se mira que haya una imagen elegida o sacada
+                            //si el usuario no existe se mira que haya una imagen elegida o sacada
                             if (imagen != null) {
                                 //para la imagen de uri a bitmap
                                 try {
@@ -151,6 +150,7 @@ public class Registro extends AppCompatActivity {
                                 }
                             }
                             else{
+                                //si no hay imagen elegida se pone una por defecto de la app
                                 bimagen = BitmapFactory.decodeResource(context.getResources(), R.drawable.imagenusuario);
                             }
 
@@ -207,7 +207,6 @@ public class Registro extends AppCompatActivity {
                                         return parametros;
                                     }
                                 };
-
                                 //se envia la solicitud con los parametros
                                 rq = Volley.newRequestQueue(context);
                                 sr.setTag("registro");
@@ -291,10 +290,6 @@ public class Registro extends AppCompatActivity {
                 //guardar la foto en un file y enviarla a la galeria
                 FileOutputStream fos = new FileOutputStream(imagenfinal);
                 bimagen.compress(Bitmap.CompressFormat.PNG, 100, fos);
-
-                //ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                //byte[] b = baos.toByteArray();
-                //b64 = Base64.encodeToString(b, Base64.DEFAULT);
                 fos.flush();
                 fos.close();
                 //crear intent para que guarde la informacion de la imagen

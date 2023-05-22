@@ -54,12 +54,12 @@ public class DialogoNuevaRutina extends DialogFragment {
         View aspectoDialog = inflater.inflate(R.layout.dialogo_nueva_rutina, null);
         builder.setView(aspectoDialog);
 
-        //Opción de crear playlist, que añade la playlist y cierra el diálogo
+        //se crea una rutina mediante este boton
         builder.setPositiveButton("Crear rutina", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
 
-                //Recogemos el texto del EditText donde el usuario ha escrito el nombre de la playlist
+                //Recogemos el texto del EditText donde el usuario ha escrito el nombre de la rutina
                 EditText nombreet = (EditText) aspectoDialog.findViewById(R.id.dnr_nombre);
 
                 //Comprobamos que el nombre de la playlist no está en blanco

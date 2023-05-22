@@ -6,41 +6,49 @@
     android:layout_height="match_parent"
     tools:context=".Rutinas">
 
-    <LinearLayout
-        android:id="@+id/linearLayoutTitulo"
+    <ScrollView
+        android:id="@+id/scrollView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:descendantFocusability="blocksDescendants"
-        android:orientation="vertical"
-        android:paddingLeft="15dp"
-        android:paddingTop="15dp"
-        android:paddingEnd="15dp"
-        android:paddingRight="15dp"
-        android:paddingBottom="15dp"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/tv_HistoricoRutinas"
+        <LinearLayout
+            android:id="@+id/linearLayoutTitulo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Rutinas"
-            android:textAlignment="center"
-            android:textSize="30dp"
-            android:textStyle="bold" />
+            android:descendantFocusability="blocksDescendants"
+            android:orientation="vertical"
+            android:paddingLeft="15dp"
+            android:paddingTop="15dp"
+            android:paddingEnd="15dp"
+            android:paddingRight="15dp"
+            android:paddingBottom="15dp">
 
-        <ListView
-            android:id="@+id/rut_ejercicios"
-            android:layout_width="match_parent"
-            android:layout_height="572dp" />
+            <TextView
+                android:id="@+id/tv_HistoricoRutinas"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Rutinas"
+                android:textAlignment="center"
+                android:textSize="30dp"
+                android:textStyle="bold" />
 
-        <Button
-            android:id="@+id/ru_aniadir"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Añadir rutina" />
+            <ListView
+                android:id="@+id/rut_ejercicios"
+                android:layout_width="match_parent"
+                android:layout_height="600dp"
+                android:nestedScrollingEnabled="true"/>
 
-    </LinearLayout>
+            <Button
+                android:id="@+id/ru_aniadir"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Añadir rutina" />
+
+        </LinearLayout>
+    </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

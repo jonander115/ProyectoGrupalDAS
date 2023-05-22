@@ -3,30 +3,21 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".Ordenar">
+    android:layout_height="match_parent">
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/ord_nombre"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Rutina"
-            android:textAlignment="center"
-            android:textSize="30dp"
-            android:textStyle="bold" />
-
         <ListView
-            android:id="@+id/ord_ejercicios"
-            android:layout_width="match_parent"
-            android:layout_height="459dp" />
+            android:id="@+id/rut_ejercicios"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
     </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
