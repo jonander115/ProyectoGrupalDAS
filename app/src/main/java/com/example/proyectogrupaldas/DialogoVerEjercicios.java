@@ -36,7 +36,6 @@ public class DialogoVerEjercicios extends DialogFragment {
     private String usuario, idrutina, categoria;
     ListView lv;
 
-
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
@@ -57,12 +56,12 @@ public class DialogoVerEjercicios extends DialogFragment {
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View aspectoDialog = inflater.inflate(R.layout.dialogo_elegircategoria_aniadir, null);
         builder.setView(aspectoDialog);
-
         lv = aspectoDialog.findViewById(R.id.rut_ejercicios);
 
-        obtenerCategorias();
+        //obtener ejercicios de la bd
+        obtenerEjercicios();
 
-        //Opción de crear playlist, que añade la playlist y cierra el diálogo
+        //se crea un ejercicio nuevo con la categoria en la que ya se esta
         builder.setPositiveButton("Crear ejercicio", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
@@ -88,7 +87,8 @@ public class DialogoVerEjercicios extends DialogFragment {
         return builder.create();
     }
 
-    private void obtenerCategorias(){
+    //se hace la llamada a la base de datos para obtener los ejercicios de la categoria anteriormente seleccionada
+    private void obtenerEjercicios(){
         StringRequest sr = new StringRequest(Request.Method.POST, "http://ec2-54-93-62-124.eu-central-1.compute.amazonaws.com/jwojciechowska001/WEB/entrega3/obtenerejercicioscategoria.php", new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -115,9 +115,10 @@ public class DialogoVerEjercicios extends DialogFragment {
                         }
 
                     }catch (Exception e){
-
+                        //no se hace nada en caso de excepcion
                     }
 
+                    //se crea un adapter para el listview y poder añadir los ejercicios como elementos
                     ArrayAdapter a = new ArrayAdapter<String>(((Rutina) getActivity()).getApplicationContext(), android.R.layout.simple_list_item_1, ejercicios);
                     lv.setAdapter(a);
 
@@ -126,6 +127,7 @@ public class DialogoVerEjercicios extends DialogFragment {
                     lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int p, long id) {
+                            //si se pulsa sobre un ejercicio este se aniade a la rutina
                             aniadirEjercicio(ejercicios.get(p));
                             ((Rutina) getActivity()).actualizarLista();
                             dismiss();
@@ -158,12 +160,14 @@ public class DialogoVerEjercicios extends DialogFragment {
         rq.add(sr);
     }
 
+    //se aniade el ejercicio a la rutina
     private void aniadirEjercicio(String nombre){
         StringRequest sr = new StringRequest(Request.Method.POST, "http://ec2-54-93-62-124.eu-central-1.compute.amazonaws.com/jwojciechowska001/WEB/entrega3/aniadirejercicioarutina.php", new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
 
                 Log.d("respuesta",response);
+                //al ser un insert no se hace nada con la respuesta
             }
         }, new Response.ErrorListener() {
 

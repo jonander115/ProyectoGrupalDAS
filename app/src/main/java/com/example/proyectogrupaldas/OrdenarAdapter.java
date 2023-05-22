@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,6 +21,9 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,7 +40,7 @@ public class OrdenarAdapter extends ArrayAdapter {
 
     public OrdenarAdapter(Activity context,Context con, String r, String u, ArrayList<String> nom, ArrayList<String> ord){
         super(context, R.layout.lv_reorganizar, nom);
-
+        //se crea el adapter con todos los datos necesarios
         this.c=context;
         this.contextc=con;
         this.rutina=r;
@@ -50,25 +54,30 @@ public class OrdenarAdapter extends ArrayAdapter {
     public View getView(int p, View view, ViewGroup parent) {
         view = inflater.inflate(R.layout.lv_reorganizar, null);
 
+        //obtener elementos de la vista para cada elemento del listview
         TextView ejercicio=view.findViewById(R.id.ejercicio);
         Button arriba=view.findViewById(R.id.arriba);
         Button abajo=view.findViewById(R.id.abajo);
 
+        //si el elemento esta en la primera posicion no se dejara bajar mas el ejercicio de orden
         if (p==0){
+            //no se vera ese boton
             arriba.setVisibility(View.INVISIBLE);
         }
 
+        //si el elemento esta en la ultima posicion no se dejara subir mas el ejercicio de orden
         if (p==nombres.size()-1){
+            //no se vera ese boton
             abajo.setVisibility(View.INVISIBLE);
         }
-        Log.d("respuesta", Integer.toString(nombres.size()));
 
+        //mostrar nombre de cada ejercicio
         ejercicio.setText(nombres.get(p));
 
         arriba.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("respuesta", "arriba");
+                //se intercambiara el orden del ejercicio pulsado y el anterior a este
                 intercambiarOrden(p,p-1);
             }
         });
@@ -76,7 +85,7 @@ public class OrdenarAdapter extends ArrayAdapter {
         abajo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("respuesta", "abajo");
+                //se intercambiara el orden del ejercicio pulsado y el siguiente a este
                 intercambiarOrden(p,p+1);
             }
         });
@@ -84,12 +93,16 @@ public class OrdenarAdapter extends ArrayAdapter {
         return view;
     }
 
+    //se realiza el intercambio de orden de ejercicio en la base de datos
     private void intercambiarOrden(int actual, int nuevo){
         StringRequest sr = new StringRequest(Request.Method.POST, "http://ec2-54-93-62-124.eu-central-1.compute.amazonaws.com/jwojciechowska001/WEB/entrega3/ordenar.php", new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 String respuesta=response.toString();
-
+                //para actualizar los ejercicios se llaman de nuevo de la base de datos, con el respectivo adapter, etc
+                if (contextc.getClass().equals(Ordenar.class)) {
+                    ((Ordenar) contextc).obtenerEjercicios();
+                }
             }
         }, new Response.ErrorListener() {
 

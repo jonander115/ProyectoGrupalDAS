@@ -42,28 +42,23 @@ public class Ordenar extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ordenar);
 
+        //obtener elementos de la vista
         lv=findViewById(R.id.ord_ejercicios);
-        guardar=findViewById(R.id.ord_guardar);
         nombre=findViewById(R.id.ord_nombre);
-
         idrutina=getIntent().getStringExtra("idrutina");
         usuario=getIntent().getStringExtra("usuario");
         nombre.setText(getIntent().getStringExtra("nombre"));
 
+        //se obtienen los ejercicios de la rutina que se quieren ordenar de la bd
         obtenerEjercicios();
-
-        guardar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
     }
 
-    private void obtenerEjercicios(){
+    //se cogen de la base de datos los ejercicios de la rutina anteriormente seleccionada
+    public void obtenerEjercicios(){
         StringRequest sr = new StringRequest(Request.Method.POST, "http://ec2-54-93-62-124.eu-central-1.compute.amazonaws.com/jwojciechowska001/WEB/entrega3/obtenerejerciciosrutina.php", new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
+                //se crear arraylist para guardar los nombres y el orden de los ejercicios
                 ArrayList<String> nombres = new ArrayList<String>();
                 ArrayList<String> orden = new ArrayList<String>();
 
@@ -87,11 +82,13 @@ public class Ordenar extends AppCompatActivity {
                         }
 
                     }catch (Exception e){
-
+                        //en caso de excepcion no se hace nada
                     }
+                    //se crea un adapter personalizado para el listview para que cada ejercicio sea un elemento del listview
                     a = new OrdenarAdapter(activity,context, idrutina, usuario, nombres, orden);
                     ListView lv =findViewById(R.id.ord_ejercicios);
                     lv.setAdapter(a);
+                    //si se modifican datos actualizar el listview
                     a.notifyDataSetChanged();
 
                     rq.cancelAll("ejs");
