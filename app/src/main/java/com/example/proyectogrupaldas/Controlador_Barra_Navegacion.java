@@ -55,10 +55,12 @@ public class Controlador_Barra_Navegacion extends AppCompatActivity {
                 return true;
             }
         });
-        BottomNavigationView navigationView = findViewById(R.id.nav_view);
-
-
        }
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString("fragment_act", lastFragment);
+    }
     private void replaceFragment(Fragment fragment){
         FragmentManager fragmentManager= getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();

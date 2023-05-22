@@ -9,4 +9,7 @@
     <color name="white">#FFFFFFFF</color>
 
 
+    <color name="myStatusBarColor">#FF000560</color>
+
+
 </resources>
