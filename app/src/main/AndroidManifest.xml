@@ -28,6 +28,12 @@
             android:name=".Ordenar"
             android:exported="false" />
         <activity
+            android:name=".RutinaDeHistorico"
+            android:exported="false" />
+        <activity
+            android:name=".HistoricoRutinas"
+            android:exported="false" />
+        <activity
             android:name=".Rutina"
             android:exported="false" />
         <activity
