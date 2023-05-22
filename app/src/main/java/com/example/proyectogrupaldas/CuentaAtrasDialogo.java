@@ -17,6 +17,7 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -41,7 +42,15 @@ public class CuentaAtrasDialogo extends DialogFragment {
 
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.activity_cuenta_atras_dialogo, null);
+
+
+        // Configurar el tamaño del dialog
+       // int width = getResources().getDisplayMetrics().widthPixels * 1 / 5; // El 2/3 del ancho de la pantalla
+        //dialogView.setMaximumWidth(ViewGroup.LayoutParams.WRAP_CONTENT);
+       // dialogView.setMinimumHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
+
         builder.setView(dialogView);
+
         seg=dialogView.findViewById(R.id.tic_Seg);
         min = dialogView.findViewById(R.id.tic_min);
         start = (Button) dialogView.findViewById(R.id.ticstartButton);

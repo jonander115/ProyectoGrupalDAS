@@ -2,74 +2,69 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
-    <EditText
-        android:id="@+id/tic_Seg"
-        android:layout_width="59dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="1dp"
-        android:layout_marginTop="184dp"
-        android:layout_toEndOf="@+id/textView"
-        android:ems="10"
-        android:hint="Seg"
-        android:inputType="number"
-        android:text="30"
-        app:layout_constraintStart_toEndOf="@+id/textView"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="22dp"
-        android:layout_height="43dp"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="12dp"
-        android:layout_marginTop="184dp"
-        android:layout_toEndOf="@+id/tic_min"
-        android:text=":"
-        android:textSize="24sp"
-        app:layout_constraintStart_toEndOf="@+id/tic_min"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <EditText
-        android:id="@+id/tic_min"
-        android:layout_width="54dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="108dp"
-        android:layout_marginTop="184dp"
-        android:hint="Min"
-        android:inputType="number"
-        android:text="0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/ticstartButton"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/tic_min"
-        android:layout_marginStart="64dp"
-        android:layout_marginTop="60dp"
-        android:layout_toEndOf="@+id/ticStopButton"
-        android:text="Start"
-        app:layout_constraintStart_toEndOf="@+id/ticStopButton"
-        app:layout_constraintTop_toBottomOf="@+id/tic_Seg" />
-
-    <Button
-        android:id="@+id/ticStopButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="72dp"
-        android:layout_marginTop="60dp"
-        android:text="Stop"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tic_min" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/tic_Seg"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:hint="Seg"
+                android:inputType="number"
+                android:text="30"
+                android:textAlignment="textEnd" />
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="30dp"
+                android:layout_height="43dp"
+                android:text=":"
+                android:textAlignment="center"
+                android:textSize="24sp" />
+
+            <EditText
+                android:id="@+id/tic_min"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:hint="Min"
+                android:inputType="number"
+                android:text="0"
+                android:textAlignment="textStart" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/ticStopButton"
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:text="Stop" />
+
+            <Button
+                android:id="@+id/ticstartButton"
+                android:layout_width="70dp"
+                android:layout_height="wrap_content"
+                android:text="Start" />
+        </LinearLayout>
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

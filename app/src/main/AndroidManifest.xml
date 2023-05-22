@@ -38,7 +38,8 @@
             android:exported="false" />
         <activity
             android:name=".Controlador_Barra_Navegacion"
-            android:exported="false" />
+            android:exported="false"
+            android:configChanges="orientation|screenSize"/>
         <activity
             android:name=".Rutina"
             android:exported="false" />

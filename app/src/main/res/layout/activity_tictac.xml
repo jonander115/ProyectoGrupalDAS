@@ -47,8 +47,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/tic_min"
-        android:layout_marginStart="37dp"
-        android:layout_marginTop="63dp"
+        android:layout_marginStart="25dp"
+        android:layout_marginTop="60dp"
         android:layout_toEndOf="@+id/ticStopButton"
         android:text="Start" />
 
