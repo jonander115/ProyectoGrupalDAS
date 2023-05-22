@@ -91,7 +91,7 @@ public class Login extends AppCompatActivity {
                             }
                             else{
                                 //si no esta vacia significa que existe el usuario con ese usuario y contrasenia y se abre la siguiente actividad
-                                Intent intent = new Intent(Login.this, HistoricoRutinas.class);
+                                Intent intent = new Intent(Login.this, PerfilUsuario.class);
                                 intent.putExtra("usuario", usuario.getText().toString());
                                 startActivity(intent);
                                 //Intent intent = new Intent(Login.this, Rutinas.class);

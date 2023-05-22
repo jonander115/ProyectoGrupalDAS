@@ -6,16 +6,24 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
-    <TextView
-        android:id="@+id/tv_MesAño"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Mes de año"
-        android:textColor="#424242"
-        android:textSize="22sp"
-        android:textStyle="bold" />
+        android:orientation="horizontal">
 
+        <TextView
+            android:layout_width="25dp"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/tv_MesAño"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Mes de año"
+            android:textColor="#424242"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+    </LinearLayout>
 
     <ListView
         android:id="@+id/listViewRutinasMes"

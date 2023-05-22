@@ -50,6 +50,13 @@ public class RutinaDeHistorico extends AppCompatActivity {
             idRutina = extras.getString("idRutina");
         }
 
+        //Recogemos los elementos de la vista
+        tv_NombreDeRutina = findViewById(R.id.tv_NombreDeRutina);
+        tv_FechaInicio = findViewById(R.id.tv_FechaInicio);
+        tv_HoraInicio = findViewById(R.id.tv_HoraInicio);
+        tv_FechaFin = findViewById(R.id.tv_FechaFin);
+        tv_HoraFin = findViewById(R.id.tv_HoraFin);
+
         mostrarDatosDeRutina();
         mostrarDatosDeEjercicios();
     }
@@ -81,23 +88,15 @@ public class RutinaDeHistorico extends AppCompatActivity {
                     String fechaHoraFinal = (String) json.get("FechaHoraFinal");
 
                     //Mostramos la información
-                    tv_NombreDeRutina = findViewById(R.id.tv_NombreDeRutina);
                     tv_NombreDeRutina.setText(nombre);
 
                     String[] fInicio = fechaHoraInicio.split(" ");
-                    tv_FechaInicio = findViewById(R.id.tv_FechaInicio);
                     tv_FechaInicio.setText(fInicio[0]);
-
-                    tv_HoraInicio = findViewById(R.id.tv_HoraInicio);
                     tv_HoraInicio.setText(fInicio[1]);
 
                     String[] fFinal = fechaHoraFinal.split(" ");
-                    tv_FechaFin = findViewById(R.id.tv_FechaFin);
                     tv_FechaFin.setText(fFinal[0]);
-
-                    tv_HoraFin = findViewById(R.id.tv_HoraFin);
                     tv_HoraFin.setText(fFinal[1]);
-
 
                 } catch (ParseException e) {
                     throw new RuntimeException(e);
@@ -287,12 +286,10 @@ public class RutinaDeHistorico extends AppCompatActivity {
     @Override
     protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        if (savedInstanceState!=null){
-            tv_NombreDeRutina.setText(savedInstanceState.getString("tv_NombreDeRutina"));
-            tv_FechaInicio.setText(savedInstanceState.getString("tv_FechaInicio"));
-            tv_HoraInicio.setText(savedInstanceState.getString("tv_HoraInicio"));
-            tv_FechaFin.setText(savedInstanceState.getString("tv_FechaFin"));
-            tv_HoraFin.setText(savedInstanceState.getString("tv_HoraFin"));
-        }
+        tv_NombreDeRutina.setText(savedInstanceState.getString("tv_NombreDeRutina"));
+        tv_FechaInicio.setText(savedInstanceState.getString("tv_FechaInicio"));
+        tv_HoraInicio.setText(savedInstanceState.getString("tv_HoraInicio"));
+        tv_FechaFin.setText(savedInstanceState.getString("tv_FechaFin"));
+        tv_HoraFin.setText(savedInstanceState.getString("tv_HoraFin"));
     }
 }
