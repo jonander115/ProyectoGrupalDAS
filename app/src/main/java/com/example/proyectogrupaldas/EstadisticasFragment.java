@@ -40,17 +40,7 @@ public class EstadisticasFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-       /* if (savedInstanceState == null) {
-            cuentaAtrasDialogo = new CuentaAtrasDialogo();
-            cuentaAtrasDialogo.show(getSupportFragmentManager(), "cuentaAtras");
-        } else {
-            cuentaAtrasDialogo = (CuentaAtrasDialogo) getSupportFragmentManager().findFragmentByTag("cuentaAtras");
 
-            if (cuentaAtrasDialogo != null && cuentaAtrasDialogo.isDialogVisible) {
-                cuentaAtrasDialogo.show(getSupportFragmentManager(), "cuentaAtras");
-            }
-        }*/
         View view = inflater.inflate(R.layout.fragment_estadisticas, container, false);
 
         botoncito= view.findViewById(R.id.esta_dialo);
