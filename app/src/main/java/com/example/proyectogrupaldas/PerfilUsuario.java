@@ -8,6 +8,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.Observer;
+import androidx.work.Data;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkInfo;
+import androidx.work.WorkManager;
 
 import android.Manifest;
 import android.content.Intent;
@@ -34,6 +40,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -57,6 +65,7 @@ public class PerfilUsuario extends AppCompatActivity {
     private Uri uriFoto;
     private String fotoen64 = "";
     private String fotoGiro = "";
+    private String[] listaNombresEjercicios;
 
 
     //Se recoge la foto hecha con la cámara y se pone en el ImageView correspondiente
@@ -141,6 +150,8 @@ public class PerfilUsuario extends AppCompatActivity {
         if (extras != null) {
             usuario = extras.getString("usuario");
         }
+
+        listaNombresEjercicios = listarEjercicios();
 
         //Recogemos los elementos de la vista
         et_EmailPerfil = (EditText) findViewById(R.id.et_EmailPerfil);
@@ -228,51 +239,66 @@ public class PerfilUsuario extends AppCompatActivity {
     }
 
 
+
     //Método para actualizar los datos del usuario en la base de datos
     public void onClick_GuardarCambios(View v){
 
-        //Usamos la librería Volley
+        //Miramos si el email es válido mediante regex
+        java.util.regex.Pattern rp = java.util.regex.Pattern.compile("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$");
+        java.util.regex.Matcher rm = rp.matcher(et_EmailPerfil.getText().toString().trim());
 
-        //Crear la cola de solicitudes
-        RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
+        //Si el email es válido (ej: gym@gmail.com)
+        if (rm.matches()) {
+            //Se actualizan los datos en la BBDD
 
-        //Url del servicio web en el servidor
-        String url = "http://ec2-54-93-62-124.eu-central-1.compute.amazonaws.com/jwojciechowska001/WEB/entrega3/perfilUsuario.php";
+            //Usamos la librería Volley
 
-        //Solicitud
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                //Procesar la respuesta del servidor
+            //Crear la cola de solicitudes
+            RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
 
-                //La respuesta es un String
-                if (response.equals("usuarioModificado")){
-                    Toast.makeText(getApplicationContext(), "Cambios guardados", Toast.LENGTH_LONG).show();
+            //Url del servicio web en el servidor
+            String url = "http://ec2-54-93-62-124.eu-central-1.compute.amazonaws.com/jwojciechowska001/WEB/entrega3/perfilUsuario.php";
+
+            //Solicitud
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    //Procesar la respuesta del servidor
+
+                    //La respuesta es un String
+                    if (response.equals("usuarioModificado")){
+                        Toast.makeText(getApplicationContext(), "Cambios guardados", Toast.LENGTH_LONG).show();
+                    }
+
                 }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    //Manejar error de la solicitud
+                    Toast.makeText(getApplicationContext(), "Error al guardar los cambios", Toast.LENGTH_LONG).show();
+                }
+            }) {
+                @Override
+                protected Map<String, String> getParams() throws AuthFailureError {
+                    Map<String, String> params = new HashMap<>();
+                    // Agregar los parámetros necesarios
+                    params.put("accion", "update");
+                    params.put("usuario", usuario);
+                    params.put("email", et_EmailPerfil.getText().toString());
+                    params.put("foto", fotoen64);
 
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                //Manejar error de la solicitud
-                Toast.makeText(getApplicationContext(), "Error al guardar los cambios", Toast.LENGTH_LONG).show();
-            }
-        }) {
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String, String> params = new HashMap<>();
-                // Agregar los parámetros necesarios
-                params.put("accion", "update");
-                params.put("usuario", usuario);
-                params.put("email", et_EmailPerfil.getText().toString());
-                params.put("foto", fotoen64);
+                    return params;
+                }
+            };
 
-                return params;
-            }
-        };
+            //Encolar la solicitud
+            queue.add(stringRequest);
 
-        //Encolar la solicitud
-        queue.add(stringRequest);
+        }
+        else{
+            //Mensaje para email incorrecto
+            Toast.makeText(getApplicationContext(), "Por favor, introduce un email válido.", Toast.LENGTH_SHORT).show();
+        }
 
     }
 
@@ -385,6 +411,13 @@ public class PerfilUsuario extends AppCompatActivity {
         int anchoImagen = bitmapFoto.getWidth();
         int altoImagen = bitmapFoto.getHeight();
 
+        // Asegurarse de que los valores destino sean mayores que cero
+        if (anchoDestino <= 0 || altoDestino <= 0) {
+            // Asignar valores predeterminados si los valores no son válidos
+            anchoDestino = 195;
+            altoDestino = 177;
+        }
+
         //Calculamos ancho y alto finales
         float ratioImagen = (float) anchoImagen / (float) altoImagen;
         float ratioDestino = (float) anchoDestino / (float) altoDestino;
@@ -401,6 +434,131 @@ public class PerfilUsuario extends AppCompatActivity {
 
         return bitmapredimensionado;
     }
+
+
+
+    //Método que abre un diálogo con los ejercicios creados por el usuario, donde puede seleccionar cuáles eliminar
+    public void onClick_EliminarEjercicios(View v){
+        DialogoEliminarEjercicios dialogoEliminarEjercicios = new DialogoEliminarEjercicios();
+        Bundle args = new Bundle();
+        args.putString("usuario", usuario);
+
+        //Aquí enviamos al diálogo las opciones que podrá elegir el usuario
+        args.putStringArray("listaNombresEjercicios", listaNombresEjercicios);
+
+        dialogoEliminarEjercicios.setArguments(args);
+        dialogoEliminarEjercicios.show(getSupportFragmentManager(), "eliminarEjercicios");
+    }
+
+
+
+    //Método para listar los ejercicios que el usuario podrá eliminar (los creados por él)
+    private String[] listarEjercicios(){
+
+        //Listamos los ejercicios que puede eliminar el usuario mediante la librería Volley
+
+        //Crear la cola de solicitudes
+        RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
+
+        //Url del servicio web en el servidor
+        String url = "http://ec2-54-93-62-124.eu-central-1.compute.amazonaws.com/jwojciechowska001/WEB/entrega3/perfilUsuario.php";
+
+        //Solicitud
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                //Procesar la respuesta del servidor
+
+                try {
+                    //El resultado es un array
+                    JSONArray jsonArray = new JSONArray(response);
+
+                    listaNombresEjercicios = new String[jsonArray.length()];
+
+                    for(int i = 0; i < jsonArray.length(); i++)
+                    {
+                        listaNombresEjercicios[i] = jsonArray.getJSONObject(i).getString("NombreEjercicio");
+                    }
+
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                //Manejar error de la solicitud
+                Toast.makeText(getApplicationContext(), "Error al listar los ejercicios", Toast.LENGTH_LONG).show();
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                //Agregar los parámetros necesarios
+                params.put("accion", "listarEjerciciosUsuario");
+                params.put("usuario", usuario);
+
+                return params;
+            }
+        };
+
+        //Encolar la solicitud
+        queue.add(stringRequest);
+
+
+        return listaNombresEjercicios;
+    }
+
+
+
+    //Método para eliminar un ejercicio creado por el usuario
+    public void eliminarEjercicio(String nombreEjercicio){
+
+        //Crear la cola de solicitudes
+        RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
+
+        //Url del servicio web en el servidor
+        String url = "http://ec2-54-93-62-124.eu-central-1.compute.amazonaws.com/jwojciechowska001/WEB/entrega3/perfilUsuario.php";
+
+        //Solicitud
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                //Procesar la respuesta del servidor
+
+                if (response.equals("ejercicioEliminado")) {
+                    Toast.makeText(getApplicationContext(), "Eliminación de ejercicios completa", Toast.LENGTH_LONG).show();
+                    listaNombresEjercicios = listarEjercicios();
+                }
+                else if (response.equals("error")) {
+                    Toast.makeText(getApplicationContext(), "Error al eliminar el ejercicio", Toast.LENGTH_LONG).show();
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                //Manejar error de la solicitud
+                Toast.makeText(getApplicationContext(), "Error al eliminar el ejercicio", Toast.LENGTH_LONG).show();
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                //Agregar los parámetros necesarios
+                params.put("accion", "eliminarEjercicio");
+                params.put("usuario", usuario);
+                params.put("nombreEjercicio", nombreEjercicio);
+
+                return params;
+            }
+        };
+
+        //Encolar la solicitud
+        queue.add(stringRequest);
+    }
+
 
 
     @Override

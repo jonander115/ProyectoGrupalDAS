@@ -215,7 +215,7 @@ public class Registro extends AppCompatActivity {
 
                         } else {
                             //mensaje para email incorrecto
-                            Toast.makeText(context, "Por favor introduce un email válido.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, "Por favor, introduce un email válido.", Toast.LENGTH_SHORT).show();
                         }
                 }
             }
