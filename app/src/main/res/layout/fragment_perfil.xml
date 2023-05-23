@@ -3,86 +3,122 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".PerfilFragment">
 
-    <TextView
-        android:id="@+id/tv_PerfilUsuario"
-        android:layout_width="132dp"
-        android:layout_height="25dp"
-        android:layout_marginTop="16dp"
-        android:text="PERFIL DE USUARIO"
-         />
-
-    <TextView
-        android:id="@+id/tv_EmailPerfil"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/linearLayoutTitulo2"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="Email:"
-      />
+        android:descendantFocusability="blocksDescendants"
+        android:orientation="vertical"
+        android:paddingLeft="15dp"
+        android:paddingTop="15dp"
+        android:paddingEnd="15dp"
+        android:paddingRight="15dp"
+        android:paddingBottom="15dp">
 
-    <TextView
-        android:id="@+id/tv_FotoPerfil"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:text="Foto de perfil:"
-         />
+        <TextView
+            android:id="@+id/tv_PerfilUsuario2"
+            android:layout_width="132dp"
+            android:layout_height="25dp"
+            android:layout_marginTop="16dp"
+            android:text="PERFIL DE USUARIO" />
 
-    <EditText
-        android:id="@+id/et_EmailPerfil"
-        android:layout_width="299dp"
-        android:layout_height="41dp"
-        android:layout_marginTop="8dp"
-        android:ems="10"
-        android:inputType="textPersonName" />
+        <TextView
+            android:id="@+id/tv_InfoPerfil2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="Aquí puedes ver y modificar información de tu perfil"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.498"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
-        android:id="@+id/fotoPerfil"
-        android:layout_width="195dp"
-        android:layout_height="177dp"
-        android:layout_marginTop="4dp" />
+        <TextView
+            android:id="@+id/tv_EmailPerfil2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="Email:"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.117"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_InfoPerfil2" />
 
-    <Button
-        android:id="@+id/bt_GuardarCambios"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="88dp"
-        android:onClick="onClick_GuardarCambios"
-        android:text="Guardar cambios" />
+        <EditText
+            android:id="@+id/et_EmailPerfil2"
+            android:layout_width="299dp"
+            android:layout_height="41dp"
+            android:layout_marginTop="8dp"
+            android:ems="10"
+            android:inputType="textPersonName"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.135"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/et_EmailPerfil2" />
 
-    <TextView
-        android:id="@+id/tv_InfoPerfil"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="Aquí puedes ver y modificar información de tu perfil" />
+        <TextView
+            android:id="@+id/tv_FotoPerfil2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="Foto de perfil:"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.392"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_EmailPerfil2" />
 
-    <ImageButton
-        android:id="@+id/bt_FotoGaleria"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="108dp"
-        android:onClick="onClick_FotoGaleria"
-         />
+        <ImageView
+            android:id="@+id/fotoPerfil2"
+            android:layout_width="191dp"
+            android:layout_height="177dp"
+            android:layout_marginTop="4dp" />
 
-    <ImageButton
-        android:id="@+id/bt_FotoCamara"
-        android:layout_width="56dp"
-        android:layout_height="50dp"
-        android:layout_marginStart="112dp"
-        android:layout_marginTop="8dp"
-        android:onClick="onClick_FotoCamara"
-        />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
-    <Button
-        android:id="@+id/bt_EliminarEjercicios"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:onClick="onClick_EliminarEjercicios"
-        android:text="Eliminar ejercicios creados"
-         />
+
+            <ImageButton
+                android:id="@+id/bt_FotoCamara2"
+                android:layout_width="65dp"
+                android:layout_height="58dp"
+                android:layout_marginStart="40dp"
+                android:layout_marginTop="8dp" />
+
+            <ImageButton
+                android:id="@+id/bt_FotoGaleria2"
+                android:layout_width="63dp"
+                android:layout_height="57dp"
+                android:layout_marginStart="120dp"
+                android:layout_marginTop="8dp" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/bt_GuardarCambios2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="88dp"
+            android:onClick="onClick_GuardarCambios"
+            android:text="Guardar cambios"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/fotoPerfil2"
+            app:srcCompat="@drawable/iconocamara" />
+
+        <Button
+            android:id="@+id/bt_EliminarEjercicios2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:onClick="onClick_EliminarEjercicios"
+            android:text="Eliminar ejercicios creados"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.497"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/bt_GuardarCambios2" />
+    </LinearLayout>
 
 </FrameLayout>

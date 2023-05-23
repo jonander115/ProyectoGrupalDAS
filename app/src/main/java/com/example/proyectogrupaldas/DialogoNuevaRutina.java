@@ -16,6 +16,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -67,7 +68,7 @@ public class DialogoNuevaRutina extends DialogFragment {
 
                     String nombre = nombreet.getText().toString();
 
-                    ((Rutinas) getActivity()).crearRutina(nombre);
+                    ((RutinasFragment) getParentFragment()).crearRutina(nombre);
 
                     dismiss();
                 }

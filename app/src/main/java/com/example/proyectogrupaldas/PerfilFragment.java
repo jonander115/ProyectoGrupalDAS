@@ -9,15 +9,16 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.net.ParseException;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.PickVisualMediaRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -36,6 +37,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -49,8 +51,9 @@ import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
+import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -87,6 +90,36 @@ public class PerfilFragment extends Fragment {
         return fragment;
     }
 
+    private ActivityResultLauncher<PickVisualMediaRequest> pickMedia = registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), uri -> {
+        if (uri != null) {
+
+            Log.d("fotoPerfil", "URI elegida: " + uri);
+
+            //Convertimos la uri en Bitmap
+            Bitmap bitmapFoto = null;
+            try {
+                bitmapFoto = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(), uri);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+            //Ajustamos la imagen al ImageView
+            Bitmap bitmapredimensionado = ajustarAImageView(bitmapFoto);
+
+            //Ponemos la foto en el ImageView
+            fotoPerfil.setImageBitmap(bitmapredimensionado);
+
+            //Convertimos el bitmap en un String en Base64 (que será lo que se suba a la base de datos cuando el usuario guarde los cambios)
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            bitmapredimensionado.compress(Bitmap.CompressFormat.PNG, 100, stream);
+            byte[] fototransformada = stream.toByteArray();
+            fotoen64 = Base64.encodeToString(fototransformada, Base64.DEFAULT);
+
+        } else {
+            Log.d("fotoPerfil", "No se ha elegido imagen");
+        }
+    });
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -107,10 +140,43 @@ public class PerfilFragment extends Fragment {
             usuario = extras.getString("usuario");
         }
 
-        //Recogemos los elementos de la vista
-        et_EmailPerfil = view.findViewById(R.id.et_EmailPerfil);
-        fotoPerfil = view.findViewById(R.id.fotoPerfil);
+        listaNombresEjercicios = listarEjercicios();
 
+        //Recogemos los elementos de la vista
+        et_EmailPerfil = view.findViewById(R.id.et_EmailPerfil2);
+        fotoPerfil = view.findViewById(R.id.fotoPerfil2);
+
+        ImageButton bot_cam= view.findViewById(R.id.bt_FotoCamara2);
+        ImageButton bot_gal= view.findViewById(R.id.bt_FotoGaleria2);
+        bot_cam.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if ( (ContextCompat.checkSelfPermission(getContext(), android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)
+                        && (ContextCompat.checkSelfPermission(getContext(), android.Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) ) {
+                    //Si ambos permisos están concedidos
+                    lanzarIntentFoto();
+                }
+                else{ //Si algún permiso, o los dos, no están concedidos
+                    //Pedimos los permisos
+                    String[] permisos = new String[] {android.Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA};
+                    ActivityCompat.requestPermissions(getActivity(),permisos, CODIGO_DE_PERMISOS_SACARFOTO);
+                }
+            }
+        });
+
+        bot_gal.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (ContextCompat.checkSelfPermission(getContext(), android.Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    //El permiso no está concedido, lo pedimos
+                    String[] permisos = new String[] {android.Manifest.permission.READ_EXTERNAL_STORAGE};
+                    ActivityCompat.requestPermissions(getActivity(),permisos, CODIGO_DE_PERMISO_LECTURA_GALERIA);
+                }
+                else{
+                    lanzarIntentGaleria();
+                }
+            }
+        });
         //Para mostrar sus datos al usuario usamos un servicio web al que accedemos con la librería Volley
 
         //Crear la cola de solicitudes
@@ -162,10 +228,6 @@ public class PerfilFragment extends Fragment {
                     byte[] fototransformada = stream.toByteArray();
                     fotoen64 = Base64.encodeToString(fototransformada, Base64.DEFAULT);
                 } catch (ParseException e) {
-                    throw new RuntimeException(e);
-                } catch (JSONException e) {
-                    throw new RuntimeException(e);
-                } catch (org.json.simple.parser.ParseException e) {
                     throw new RuntimeException(e);
                 }
             }
@@ -283,13 +345,19 @@ public class PerfilFragment extends Fragment {
         //Construimos el builder para lanzar la selección de imagen
 
         //Puede que Android Studio indique un error en la siguiente línea, pero el código funciona
-//        ActivityResultContracts.PickVisualMedia.VisualMediaType mediaType = (ActivityResultContracts.PickVisualMedia.VisualMediaType) ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE;
-//        pickMedia.launch(new PickVisualMediaRequest.Builder()
+        ActivityResultContracts.PickVisualMedia.VisualMediaType mediaType = (ActivityResultContracts.PickVisualMedia.VisualMediaType) ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE;
+        pickMedia.launch(new PickVisualMediaRequest.Builder()
+                .setMediaType(mediaType)
+               .build());
+//        registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), new ActivityResultCallback<Uri>() {
+//            @Override
+//            public void onActivityResult(Uri result) {
+//
+//            }
+//        }).launch(new PickVisualMediaRequest.Builder()
 //                .setMediaType(mediaType)
 //                .build());
-        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        intent.setType("image/*");
-        pickImageLauncher.launch("image/*");
+
     }
 
     //Método que sobreescribimos para gestionar la decisión del usuario tras responder al diálogo de los permisos
@@ -321,7 +389,7 @@ public class PerfilFragment extends Fragment {
     }
 
     //Método para abrir la cámara y sacar una foto que será la foto de perfil del usuario
-    public void onClick_FotoCamara(View v){
+    public void onClick_FotoCamara1(View v){
         //Necesitamos permisos de cámara y de escritura en galería
         if ( (ContextCompat.checkSelfPermission(getContext(), android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)
                 && (ContextCompat.checkSelfPermission(getContext(), android.Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) ) {
@@ -336,7 +404,7 @@ public class PerfilFragment extends Fragment {
     }
 
     //Método para elegir una foto de la galería que será la foto de perfil del usuario
-    public void onClick_FotoGaleria(View v){
+    public void onClick_FotoGaleria1(View v){
         //Comprobamos si el permiso de lectura de galería está concedido
         if (ContextCompat.checkSelfPermission(getContext(), android.Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             //El permiso no está concedido, lo pedimos
@@ -390,10 +458,10 @@ public class PerfilFragment extends Fragment {
         args.putStringArray("listaNombresEjercicios", listaNombresEjercicios);
 
         dialogoEliminarEjercicios.setArguments(args);
-        if (getActivity() != null) {
-            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-            dialogoEliminarEjercicios.show(fragmentManager, "eliminarEjercicios");
-        } }
+
+        assert getParentFragmentManager() != null;
+        dialogoEliminarEjercicios.show(getParentFragmentManager(), "eliminarEjercicios");
+    }
 
     //Método para listar los ejercicios que el usuario podrá eliminar (los creados por él)
     private String[] listarEjercicios(){
@@ -454,41 +522,36 @@ public class PerfilFragment extends Fragment {
     }
 
     //Método para eliminar un ejercicio creado por el usuario
+    private void eliminarEjercicio(String nombreEjercicio) {
+        // Crear la cola de solicitudes
+        RequestQueue queue = Volley.newRequestQueue(requireContext());
 
-    public void eliminarEjercicio(String nombreEjercicio){
-
-        //Crear la cola de solicitudes
-        RequestQueue queue = Volley.newRequestQueue(getContext());
-
-        //Url del servicio web en el servidor
+        // Url del servicio web en el servidor
         String url = "http://ec2-54-93-62-124.eu-central-1.compute.amazonaws.com/jwojciechowska001/WEB/entrega3/perfilUsuario.php";
 
-        //Solicitud
+        // Solicitud
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                //Procesar la respuesta del servidor
-
+                // Procesar la respuesta del servidor
                 if (response.equals("ejercicioEliminado")) {
-                    Toast.makeText(getContext(), "Eliminación de ejercicios completa", Toast.LENGTH_LONG).show();
+                    Toast.makeText(requireContext(), "Eliminación de ejercicios completa", Toast.LENGTH_LONG).show();
                     listaNombresEjercicios = listarEjercicios();
+                } else if (response.equals("error")) {
+                    Toast.makeText(requireContext(), "Error al eliminar el ejercicio", Toast.LENGTH_LONG).show();
                 }
-                else if (response.equals("error")) {
-                    Toast.makeText(getContext(), "Error al eliminar el ejercicio", Toast.LENGTH_LONG).show();
-                }
-
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                //Manejar error de la solicitud
-                Toast.makeText(getContext(), "Error al eliminar el ejercicio", Toast.LENGTH_LONG).show();
+                // Manejar error de la solicitud
+                Toast.makeText(requireContext(), "Error al eliminar el ejercicio", Toast.LENGTH_LONG).show();
             }
         }) {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> params = new HashMap<>();
-                //Agregar los parámetros necesarios
+                // Agregar los parámetros necesarios
                 params.put("accion", "eliminarEjercicio");
                 params.put("usuario", usuario);
                 params.put("nombreEjercicio", nombreEjercicio);
@@ -497,78 +560,59 @@ public class PerfilFragment extends Fragment {
             }
         };
 
-        //Encolar la solicitud
+        // Encolar la solicitud
         queue.add(stringRequest);
     }
 
     @SuppressLint("WrongThread")
     @Override
-    public void onSaveInstanceState(@NonNull Bundle savedInstanceState) {
-        super.onSaveInstanceState(savedInstanceState);
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
 
-        //Es posible que el usuario haya hecho una foto o haya elegido una foto de la galería y que gire el móvil antes de guardar los cambios.
-        //Como después del giro se ejecuta el onCreateView, se perdería la nueva foto y se mostraría la que se recoge de la base de datos.
-        //Por ello, lo que debemos guardar en el Bundle es el contenido que hay actualmente en el ImageView, que no tiene por qué
-        //coincidir con el que se ha recogido de la base de datos.
+        // Es posible que el usuario haya hecho una foto o haya elegido una foto de la galería y que gire el móvil antes de guardar los cambios.
+        // Como después del giro se ejecuta el onCreate, se perdería la nueva foto y se mostraría la que se recoge de la base de datos.
+        // Por ello, lo que debemos guardar en el Bundle es el contenido que hay actualmente en el ImageView, que no tiene por qué
+        // coincidir con el que se ha recogido de la base de datos
 
         Drawable drawable = fotoPerfil.getDrawable();
         Bitmap bitmap;
 
         if (drawable instanceof BitmapDrawable) {
-            //Obtenemos el bitmap de la foto
+            // Obtenemos el bitmap de la foto
             bitmap = ((BitmapDrawable) drawable).getBitmap();
 
-            //Guardamos el byte array de la foto en el atributo "fotoGiro"
+            // Guardamos el String en Base64 de la foto en el atributo "fotoGiro"
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
             byte[] fototransformada = stream.toByteArray();
             fotoGiro = Base64.encodeToString(fototransformada, Base64.DEFAULT);
 
-            savedInstanceState.putByteArray("foto", fototransformada);
+            outState.putByteArray("foto", fototransformada);
         }
     }
 
+    @SuppressLint("WrongThread")
     @Override
-    public void onViewStateRestored(Bundle savedInstanceState) {
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
 
-        byte[] byteArrayFotoGiro = savedInstanceState.getByteArray("foto");
+        byte[] byteArrayFotoGiro = null;
+        if (savedInstanceState != null) {
+            byteArrayFotoGiro = savedInstanceState.getByteArray("foto");
+        }
 
-        //Si hay un valor es porque el usuario ha establecido una foto de perfil
-        if (byteArrayFotoGiro!=null){
-
-            //Decodificamos la imagen
+        // Si hay un valor es porque el usuario ha establecido una foto de perfil
+        if (byteArrayFotoGiro != null) {
+            // Decodificamos la imagen
             Bitmap imagenBitmap = BitmapFactory.decodeByteArray(byteArrayFotoGiro, 0, byteArrayFotoGiro.length);
 
-            //Mostramos la imagen en el ImageView
+            // Mostramos la imagen en el ImageView
             fotoPerfil.setImageBitmap(imagenBitmap);
-
-            CompressImageTask task = new CompressImageTask();
-            task.execute(imagenBitmap);
-
-//            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-//            imagenBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-//            byte[] fototransformada = stream.toByteArray();
-//            fotoGiro = Base64.encodeToString(fototransformada, Base64.DEFAULT);
-
-        }
-    }
-    private class CompressImageTask extends AsyncTask<Bitmap, Void, byte[]> {
-        @Override
-        protected byte[] doInBackground(Bitmap... bitmaps) {
-            Bitmap imagenBitmap = bitmaps[0];
 
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             imagenBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-            return stream.toByteArray();
+            byte[] fototransformada = stream.toByteArray();
+            fotoGiro = Base64.encodeToString(fototransformada, Base64.DEFAULT);
         }
-
-        @Override
-        protected void onPostExecute(byte[] compressedImage) {
-            // Aquí puedes realizar las operaciones necesarias con la imagen comprimida,
-            // como convertirla a Base64 y asignarla a la variable fotoGiro.
-
-            fotoGiro = Base64.encodeToString(compressedImage, Base64.DEFAULT);
-        }
-}
+    }
 }
