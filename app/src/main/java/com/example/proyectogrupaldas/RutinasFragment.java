@@ -61,12 +61,13 @@ public class RutinasFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        super.onCreateView(inflater,container,savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_rutinas, container, false);
 
         context = requireContext();
 
-        if (savedInstanceState!=null) {
-            usuario = getArguments().getString("id");
+        if (getArguments()!=null) {
+            usuario = getArguments().getString("usuario");
         }
         Button aniadir = view.findViewById(R.id.ru_aniadir);
         aniadir.setOnClickListener(new View.OnClickListener() {
@@ -147,6 +148,8 @@ public class RutinasFragment extends Fragment {
                     }
 
                     ArrayAdapter<String> adapter = new ArrayAdapter<>(context, android.R.layout.simple_list_item_1, rutinas);
+                    //ListView lv = (ListView) findViewById(R.id.rut_ejercicios);
+
                     ListView listView = requireView().findViewById(R.id.rut_ejercicios);
                     listView.setAdapter(adapter);
 

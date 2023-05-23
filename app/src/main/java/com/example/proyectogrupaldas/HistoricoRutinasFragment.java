@@ -1,5 +1,6 @@
 package com.example.proyectogrupaldas;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -27,6 +28,7 @@ import java.util.Map;
 
 public class HistoricoRutinasFragment extends Fragment {
 
+    private Context contexto;
     private String usuario;
     private ExpandableListView listViewHistorico;
     private ArrayList<String> listaMesesAños;
@@ -36,10 +38,12 @@ public class HistoricoRutinasFragment extends Fragment {
         // Required empty public constructor
     }
 
+    public HistoricoRutinasFragment(Context pContext){
+        contexto=pContext;
+    }
 
-    public static HistoricoRutinasFragment newInstance(String param1, String param2) {
+    public static HistoricoRutinasFragment newInstance() {
         HistoricoRutinasFragment fragment = new HistoricoRutinasFragment();
-        Bundle args = new Bundle();
 
         return fragment;
     }
