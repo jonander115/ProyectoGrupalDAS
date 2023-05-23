@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="FragmentTheme" parent="Theme.AppCompat.Light">
+        <!-- Personaliza los atributos según tus necesidades -->
+        <item name="android:windowBackground">@color/white</item>
+        <item name="android:textColor">#ae21eb</item>
+        <item name="android:buttonTint">#cdb8d6</item>
+        <item name="android:colorButtonNormal">#9561ab</item>
+        <item name="android:colorControlNormal">#8c15bf</item>
+        <!-- Otros atributos -->
+    </style>
+
+    <style name="FragmentTheme2" parent="Theme.AppCompat.Light">
+        <!-- Personaliza los atributos según tus necesidades -->
+        <item name="android:windowBackground">@color/white</item>
+        <item name="android:textColor">#609bd6</item>
+        <item name="android:buttonTint">#133a61</item>
+        <item name="android:colorButtonNormal">#4189d1</item>
+        <item name="android:colorControlNormal">#6597c9</item>
+        <!-- Otros atributos -->
+    </style>
+
+
+
+
+</resources>
