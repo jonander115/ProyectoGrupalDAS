@@ -95,8 +95,18 @@ public class RutinaDeHistorico extends AppCompatActivity {
                     tv_HoraInicio.setText(fInicio[1]);
 
                     String[] fFinal = fechaHoraFinal.split(" ");
-                    tv_FechaFin.setText(fFinal[0]);
-                    tv_HoraFin.setText(fFinal[1]);
+                    if (fFinal[0].equals("null")){
+                        tv_FechaFin.setText("-En progreso-");
+                    }
+                    else{
+                        tv_FechaFin.setText(fFinal[0]);
+                    }
+                    if (fFinal[1].equals("null")){
+                        tv_HoraFin.setText("-En progreso-");
+                    }
+                    else{
+                        tv_HoraFin.setText(fFinal[1]);
+                    }
 
                 } catch (ParseException e) {
                     throw new RuntimeException(e);

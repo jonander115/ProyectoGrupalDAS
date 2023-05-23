@@ -120,6 +120,7 @@ public class Rutina extends AppCompatActivity {
                     //se genera un adapter para que cada elemento (ejercicio) obtenido sea un elemento del arraylist
                     a = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, nombres);
                     ListView lv = (ListView) findViewById(R.id.rut_ejercicios);
+                    lv.setFocusable(false);
                     lv.setAdapter(a);
                     //se llama para actualizar los datos una vez se modifica los elementos en el adapter
                     a.notifyDataSetChanged();

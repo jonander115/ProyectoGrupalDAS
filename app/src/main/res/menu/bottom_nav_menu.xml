@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/navigation_rutinas"
+        android:icon="@drawable/pesa"
+        android:title="Rutinas" />
+    <item
+        android:id="@+id/navigation_historico"
+        android:icon="@drawable/editar"
+        android:title="Historico" />
+    <item
+        android:id="@+id/navigation_estadisticas"
+        android:icon="@drawable/estadisticas"
+        android:title="Estadisticas" />
+
+    <item
+        android:id="@+id/navigation_perfil"
+        android:icon="@drawable/usuario"
+        android:title="Perfil" />
+</menu>

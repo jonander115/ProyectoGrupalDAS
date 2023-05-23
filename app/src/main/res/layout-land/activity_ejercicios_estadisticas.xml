@@ -34,7 +34,7 @@
                 android:layout_weight="0.5"
                 android:layout_height="wrap_content"
                 android:onClick="openDatePicker2"
-                android:text="@string/fechaFin"
+                android:text="@string/fechaInicio"
                 android:textColor="@color/black" />
 
             <Button
@@ -44,7 +44,7 @@
                 android:layout_weight="0.5"
                 android:layout_height="wrap_content"
                 android:onClick="openDatePicker"
-                android:text="@string/fechaInicio"
+                android:text="@string/fechaFin"
                 android:textColor="@color/black" />
         </LinearLayout>
 
