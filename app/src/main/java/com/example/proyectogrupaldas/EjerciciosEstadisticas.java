@@ -1,10 +1,13 @@
 package com.example.proyectogrupaldas;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.PreferenceManager;
 
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -15,9 +18,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -27,6 +28,15 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.Description;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
+import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
+import com.github.mikephil.charting.utils.ColorTemplate;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -43,12 +53,16 @@ public class EjerciciosEstadisticas extends AppCompatActivity {
     Button dataButton, dataButton2;
     String fechaIni, fechaFin, usuario, fechaIniGiro, fechaFinGiro ;
 
+
+    Boolean tema;
     Integer selectedPosCat, selectedPosEjer;
     Spinner spinnerCategorias, spinnerEjercicios;
     EditText pesoMedio, mediaRepes, seriesMedias;
 
-    ArrayList<String> listaRutinas;
-    ArrayList<String> listaEjers, listaCat;
+    ArrayList<String> listaRutinas, listaEjers, listaCat, listaFechasChart;
+
+    ArrayList<Integer> listaPesosChart2, listaRepesChart;
+    LineChart lineChart, lineChart2;
     private int year, month, day;
 
 
@@ -56,12 +70,19 @@ public class EjerciciosEstadisticas extends AppCompatActivity {
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        tema = prefs.getBoolean("tema",true);
+        if(tema) {
+            setTheme(R.style.TemaClaro);
+        }
+        else{
+            setTheme(R.style.TemaOscuro);
+        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ejercicios_estadisticas);
 
 
         usuario = getIntent().getExtras().getString("usuario");
-        Toast.makeText(getApplicationContext(), "Seleccionaste: " + usuario, Toast.LENGTH_SHORT).show();
 
         spinnerCategorias =findViewById(R.id.spinner_categorias);
 
@@ -73,11 +94,19 @@ public class EjerciciosEstadisticas extends AppCompatActivity {
         initDataPicker2();
         dataButton2 = findViewById(R.id.pickerFechaFin);
 
+        Boolean tema;
+
         pesoMedio = findViewById(R.id.pesoMedio);
         mediaRepes = findViewById(R.id.repMedias);
         seriesMedias = findViewById(R.id.SeriesMedias);
 
+        lineChart = findViewById(R.id.chart);
 
+
+        lineChart2 = findViewById(R.id.chart2);
+
+
+        ArrayList<LineChart> lineChartEntries = new ArrayList<>();
         if (savedInstanceState != null) {
             selectedPosCat = savedInstanceState.getInt("CategoriaElegida");
             selectedPosEjer = savedInstanceState.getInt("EjerElegido");
@@ -91,10 +120,10 @@ public class EjerciciosEstadisticas extends AppCompatActivity {
             //Guardamos los datos para cada diario
             //Nombre, fecha ini, hora ini, fecha fin, hora fin
             for (int i = 0; i < listaRutinas.size(); i++) {
-                    EditText textView = new EditText(EjerciciosEstadisticas.this);
-                    textView.setEnabled(false);
-                    textView.setText(listaRutinas.get(i));
-                    container.addView(textView);
+                EditText textView = new EditText(EjerciciosEstadisticas.this);
+                textView.setEnabled(false);
+                textView.setText(listaRutinas.get(i));
+                container.addView(textView);
             }
             container.post(new Runnable() {
                 @Override
@@ -112,6 +141,77 @@ public class EjerciciosEstadisticas extends AppCompatActivity {
 
 
     }
+
+    private void setupLineChart() {
+        // Crear una lista de Entry (valores de los puntos en el gráfico)
+        ArrayList<String> xValues = new ArrayList<>();
+        ArrayList<Entry> yValues = new ArrayList<>();
+
+        Log.d("longitud de fechas", String.valueOf(listaFechasChart.size()));
+        for (int i = 0; i < listaFechasChart.size(); i++) {
+            xValues.add(listaFechasChart.get(i));
+            yValues.add(new Entry(i, listaRepesChart.get(i)));
+        }
+
+        ArrayList<ILineDataSet> dataSets = new ArrayList<>();
+        LineDataSet dataSet = new LineDataSet(yValues, "Datos");
+        dataSet.setColors(ColorTemplate.COLORFUL_COLORS);
+        dataSet.setDrawCircles(true);
+        dataSet.setDrawValues(true);
+        dataSets.add(dataSet);
+
+        LineData lineData = new LineData(dataSets);
+
+
+        XAxis xAxis = lineChart.getXAxis();
+        xAxis.setLabelCount(xValues.size());
+        xAxis.setGranularity(1f);
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setValueFormatter(new IndexAxisValueFormatter(xValues));
+
+        xAxis.setLabelRotationAngle(45);
+
+
+        lineChart.setData(lineData);
+        lineChart.getDescription().setEnabled(false);
+        lineChart.getLegend().setEnabled(false);
+        lineChart.animateXY(1000, 1000);
+        lineChart.invalidate();
+    }
+
+    private void setupLineChart2() {
+        ArrayList<String> xValues = new ArrayList<>();
+        ArrayList<Entry> yValues = new ArrayList<>();
+
+        Log.d("longitud de fechas", String.valueOf(listaFechasChart.size()));
+        for (int i = 0; i < listaFechasChart.size(); i++) {
+            xValues.add(listaFechasChart.get(i));
+            yValues.add(new Entry(i, listaPesosChart2.get(i)));
+        }
+
+        ArrayList<ILineDataSet> dataSets = new ArrayList<>();
+        LineDataSet dataSet = new LineDataSet(yValues, "Datos");
+        dataSet.setColors(ColorTemplate.COLORFUL_COLORS);
+        dataSet.setDrawCircles(true);
+        dataSet.setDrawValues(true);
+        dataSets.add(dataSet);
+
+        LineData lineData = new LineData(dataSets);
+
+        XAxis xAxis = lineChart2.getXAxis();
+        xAxis.setLabelCount(xValues.size());
+        xAxis.setGranularity(1f);
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setValueFormatter(new IndexAxisValueFormatter(xValues));
+
+        xAxis.setLabelRotationAngle(45);
+        lineChart2.setData(lineData);
+        lineChart2.getDescription().setEnabled(false);
+        lineChart2.getLegend().setEnabled(false);
+        lineChart2.animateXY(1000, 1000);
+        lineChart2.invalidate();
+    }
+
 
     @Override
     protected void onSaveInstanceState(Bundle savedInstanceState) {
@@ -145,7 +245,13 @@ public class EjerciciosEstadisticas extends AppCompatActivity {
         day = calendar.get(Calendar.DAY_OF_MONTH);
 
 
-        datePickerDialog2 = new DatePickerDialog(this,R.style.DatePickerDialogMaterialStyle, dateSetListener, year, month,day);
+        if(tema){
+            datePickerDialog2 = new DatePickerDialog(this,R.style.DatePickerDialogMaterialStyle, dateSetListener, year, month,day);
+
+        }else{
+            datePickerDialog2 = new DatePickerDialog(this,R.style.DatePickerDialogMaterialStyle2, dateSetListener, year, month,day);
+
+        }
         datePickerDialog2.getDatePicker().setMaxDate(System.currentTimeMillis());
     }
 
@@ -166,8 +272,14 @@ public class EjerciciosEstadisticas extends AppCompatActivity {
         month = calendar.get(Calendar.MONTH);
         day = calendar.get(Calendar.DAY_OF_MONTH);
 
+        if(tema){
+            datePickerDialog = new DatePickerDialog(this,R.style.DatePickerDialogMaterialStyle, dateSetListener, year, month,day);
 
-        datePickerDialog = new DatePickerDialog(this,R.style.DatePickerDialogMaterialStyle, dateSetListener, year, month,day);
+        }else{
+            datePickerDialog = new DatePickerDialog(this,R.style.DatePickerDialogMaterialStyle2, dateSetListener, year, month,day);
+
+        }
+
         datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
     }
 
@@ -199,6 +311,17 @@ public class EjerciciosEstadisticas extends AppCompatActivity {
             @Override //En caso de exito
             public void onResponse(String response) {
 
+                LinearLayout container = findViewById(R.id.listadoRutinasLL);
+                lineChart.clear();
+                lineChart2.clear();
+
+                pesoMedio.setText("");
+                mediaRepes.setText("");
+                seriesMedias.setText("");
+
+                container.removeAllViews();
+
+
                 Log.d("respuesta", response);
 
                 ArrayList<String> listaDatos = new ArrayList<String>();
@@ -212,16 +335,23 @@ public class EjerciciosEstadisticas extends AppCompatActivity {
                     ArrayList<Integer> listaPesos = new ArrayList<>();
                     ArrayList<Integer> listaRepes = new ArrayList<>();
                     ArrayList<Integer> listaSeries = new ArrayList<>();
+
+                    listaRepesChart = new ArrayList<>();
                     listaRutinas = new ArrayList<>();
+                    listaFechasChart = new ArrayList<>();
+                    listaPesosChart2 = new ArrayList<>();
                     String rutina;
                     listaDatos.add("Elige una rutina");
-                    LinearLayout container = findViewById(R.id.listadoRutinasLL);
+
                     //Guardamos los datos para cada diario
                     //Nombre, fecha ini, hora ini, fecha fin, hora fin
                     for (int i = 0; i < json.length(); i++) {
 
-                        listaPesos.add(Integer.valueOf(json.getJSONObject(i).getString("peso")));
-                        listaRepes.add(Integer.valueOf(json.getJSONObject(i).getString("numRepes")));
+                        Integer peso = Integer.valueOf(json.getJSONObject(i).getString("peso"));
+                        listaPesos.add(peso);
+
+                        Integer rep = Integer.valueOf(json.getJSONObject(i).getString("numRepes"));
+                        listaRepes.add(rep);
                         listaSeries.add(Integer.valueOf(json.getJSONObject(i).getString("idRutina")));
                         rutina = json.getJSONObject(i).getString("nombreRutina");
                         if(!listaRutinas.contains(rutina)){
@@ -231,7 +361,20 @@ public class EjerciciosEstadisticas extends AppCompatActivity {
                             textView.setText(rutina);
                             container.addView(textView);
                         }
+                        String[] parts = json.getJSONObject(i).getString("fechaHora").split(" ");
+                        String date = parts[0];
+
+                        listaFechasChart.add(date);
+                        listaPesosChart2.add(peso);
+                        listaRepesChart.add(rep);
                     }
+                    Log.d("longitud Fechas", listaFechasChart.toString());
+                    Log.d("longitud Pesos", listaPesosChart2.toString());
+                    Log.d("longitud Repes", listaRepesChart.toString());
+
+                    setupLineChart2();
+                    setupLineChart();
+
                     container.post(new Runnable() {
                         @Override
                         public void run() {
@@ -240,7 +383,9 @@ public class EjerciciosEstadisticas extends AppCompatActivity {
                             container.requestLayout();
                         }
                     });
+
                     float media = listaPesos.stream().mapToInt(Integer::intValue).sum();
+                    System.out.print(String.valueOf(media));
                     pesoMedio.setText(String.valueOf(media/listaPesos.size()) + " Kg");
 
                     media = listaRepes.stream().mapToInt(Integer::intValue).sum();
@@ -254,6 +399,7 @@ public class EjerciciosEstadisticas extends AppCompatActivity {
                             .orElse(0);
 
                     seriesMedias.setText(String.valueOf(mediaSeries) + " series");
+                    //setupLineChart2();
 
                 } catch(JSONException e){
                     System.out.print("Estoy dentro del catch");
@@ -421,9 +567,14 @@ public class EjerciciosEstadisticas extends AppCompatActivity {
 
     public void onBackPressed() {
         //Volvemos a la lista de diarios
+        /*
         Intent intent = new Intent(this, MenuEstadisticas.class);
         intent.putExtra("usuario", usuario);
         startActivity(intent);
+
+         */
         finish();
     }
+
+
 }

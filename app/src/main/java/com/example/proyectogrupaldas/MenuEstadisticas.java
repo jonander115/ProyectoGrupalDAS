@@ -1,9 +1,11 @@
 package com.example.proyectogrupaldas;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.PreferenceManager;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -14,9 +16,17 @@ import java.util.ArrayList;
 
 public class MenuEstadisticas extends AppCompatActivity {
 
-    String usuario = "joni";
+    String usuario;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean tema = prefs.getBoolean("tema",true);
+        if(tema) {
+            setTheme(R.style.TemaClaro);
+        }
+        else{
+            setTheme(R.style.TemaOscuro);
+        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu_estadisticas);
 

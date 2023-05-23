@@ -25,6 +25,9 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".RutinaIniciada"
+            android:exported="false" />
+        <activity
             android:name=".Controlador_Barra_Navegacion"
             android:exported="false" />
         <activity
@@ -58,16 +61,11 @@
             android:exported="false" />
         <activity
             android:name=".EjerciciosEstadisticas"
-            android:exported="false"/>
+            android:exported="false" />
         <activity
             android:name=".MenuEstadisticas"
-            android:exported="false"/>
-        <activity
-            android:name=".RutinasEstadistica" />
-
-        <activity
-            android:name=".MainActivity"
             android:exported="false" />
+        <activity android:name=".RutinasEstadistica" />
         <activity
             android:name=".Login"
             android:exported="true">

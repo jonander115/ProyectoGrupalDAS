@@ -2,9 +2,7 @@ package com.example.proyectogrupaldas;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.preference.PreferenceManager;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
@@ -28,31 +26,19 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class RutinaDeHistorico extends AppCompatActivity {
+public class RutinaIniciada extends AppCompatActivity {
 
     private String usuario;
     private String idRutina;
-    private TextView tv_NombreDeRutina;
-    private TextView tv_FechaInicio;
-    private TextView tv_HoraInicio;
-    private TextView tv_FechaFin;
-    private TextView tv_HoraFin;
+    private TextView nombreRutinaIniciada;
     private ExpandableListView listViewEjercicios;
     private ArrayList<String> listaEjercicios;
     private HashMap<String, ArrayList<String>> mapSeries;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        boolean tema = prefs.getBoolean("tema",true);
-        if(tema) {
-            setTheme(R.style.TemaClaro);
-        }
-        else{
-            setTheme(R.style.TemaOscuro);
-        }
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_rutina_de_historico);
+        setContentView(R.layout.activity_rutina_iniciada);
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -61,90 +47,15 @@ public class RutinaDeHistorico extends AppCompatActivity {
         }
 
         //Recogemos los elementos de la vista
-        tv_NombreDeRutina = findViewById(R.id.tv_NombreDeRutina);
-        tv_FechaInicio = findViewById(R.id.tv_FechaInicio);
-        tv_HoraInicio = findViewById(R.id.tv_HoraInicio);
-        tv_FechaFin = findViewById(R.id.tv_FechaFin);
-        tv_HoraFin = findViewById(R.id.tv_HoraFin);
+        nombreRutinaIniciada = findViewById(R.id.nombreRutinaIniciada);
 
-        mostrarDatosDeRutina();
         mostrarDatosDeEjercicios();
     }
 
-    //Método para recoger la información de la rutina de la base de datos y mostrarla al usuario
-    private void mostrarDatosDeRutina(){
-        //Utilizamos un servicio web alojado en el servidor
 
-        //Crear la cola de solicitudes
-        RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
 
-        //Url del servicio web en el servidor
-        String url = "http://ec2-54-93-62-124.eu-central-1.compute.amazonaws.com/jwojciechowska001/WEB/entrega3/obtenerRutinasHistorico.php";
 
-        //Solicitud
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                //Procesar la respuesta del servidor tras haberse recogido la imagen
-                try {
 
-                    //El resultado es un JSON
-                    JSONParser parser = new JSONParser();
-                    JSONObject json = (JSONObject) parser.parse(response);
-
-                    //Extraemos el resultado
-                    String nombre = (String) json.get("Nombre");
-                    String fechaHoraInicio = (String) json.get("FechaHoraInicio");
-                    String fechaHoraFinal = (String) json.get("FechaHoraFinal");
-
-                    //Mostramos la información
-                    tv_NombreDeRutina.setText(nombre);
-
-                    String[] fInicio = fechaHoraInicio.split(" ");
-                    tv_FechaInicio.setText(fInicio[0]);
-                    tv_HoraInicio.setText(fInicio[1]);
-
-                    String[] fFinal = fechaHoraFinal.split(" ");
-                    if (fFinal[0].equals("null")){
-                        tv_FechaFin.setText("-En progreso-");
-                    }
-                    else{
-                        tv_FechaFin.setText(fFinal[0]);
-                    }
-                    if (fFinal[1].equals("null")){
-                        tv_HoraFin.setText("-En progreso-");
-                    }
-                    else{
-                        tv_HoraFin.setText(fFinal[1]);
-                    }
-
-                } catch (ParseException e) {
-                    throw new RuntimeException(e);
-                }
-
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                //Manejar error de la solicitud
-                Toast.makeText(getApplicationContext(), "Error al obtener los datos de la rutina", Toast.LENGTH_LONG).show();
-            }
-        }) {
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String, String> params = new HashMap<>();
-                // Agregar los parámetros necesarios
-                params.put("accion","obtenerFechasDeRutina");
-                params.put("usuario", usuario);
-                params.put("idRutina", idRutina);
-
-                return params;
-            }
-        };
-
-        //Encolar la solicitud
-        queue.add(stringRequest);
-    }
 
 
     //Método para mostrar los ejercicios de los que está compuesta la rutina
@@ -185,8 +96,8 @@ public class RutinaDeHistorico extends AppCompatActivity {
                     }
 
                     //Le pasamos a la vista los datos a mostrar mediante el adaptador
-                    listViewEjercicios = (ExpandableListView) findViewById(R.id.listViewEjerciciosRutina);
-                    EjerciciosRutinaAdapter adapter = new EjerciciosRutinaAdapter(usuario, getApplicationContext(), listaEjercicios, mapSeries);
+                    listViewEjercicios = (ExpandableListView) findViewById(R.id.listaEjerciciosSeriesRutinaIniciada);
+                    RutinaIniciadaAdapter adapter = new RutinaIniciadaAdapter(usuario, getApplicationContext(), listaEjercicios, mapSeries);
                     listViewEjercicios.setAdapter(adapter);
 
 
@@ -293,23 +204,21 @@ public class RutinaDeHistorico extends AppCompatActivity {
     }
 
 
+
+
+
+
+
+
     @Override
     protected void onSaveInstanceState(@NonNull Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
-        savedInstanceState.putString("tv_NombreDeRutina",tv_NombreDeRutina.getText().toString());
-        savedInstanceState.putString("tv_FechaInicio",tv_FechaInicio.getText().toString());
-        savedInstanceState.putString("tv_HoraInicio",tv_HoraInicio.getText().toString());
-        savedInstanceState.putString("tv_FechaFin",tv_FechaFin.getText().toString());
-        savedInstanceState.putString("tv_HoraFin",tv_HoraFin.getText().toString());
+        savedInstanceState.putString("tv_NombreDeRutina",nombreRutinaIniciada.getText().toString());
     }
 
     @Override
     protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        tv_NombreDeRutina.setText(savedInstanceState.getString("tv_NombreDeRutina"));
-        tv_FechaInicio.setText(savedInstanceState.getString("tv_FechaInicio"));
-        tv_HoraInicio.setText(savedInstanceState.getString("tv_HoraInicio"));
-        tv_FechaFin.setText(savedInstanceState.getString("tv_FechaFin"));
-        tv_HoraFin.setText(savedInstanceState.getString("tv_HoraFin"));
+        nombreRutinaIniciada.setText(savedInstanceState.getString("tv_NombreDeRutina"));
     }
 }

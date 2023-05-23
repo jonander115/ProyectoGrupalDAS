@@ -14,12 +14,52 @@
         <!-- Customize your theme here. -->
     </style>
 
+    <style name="TemaClaro" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">#c18bd9</item>
+        <item name="colorPrimaryVariant">#ae21eb</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">#eedff5</item>
+        <item name="colorSecondaryVariant">#716078</item>
+        <item name="colorOnSecondary">#959096</item>
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
+        <!-- Customize your theme here. -->
+    </style>
+
+    <style name="TemaOscuro" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">#4875bd</item>
+        <item name="colorPrimaryVariant">#617491</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">#07285e</item>
+        <item name="colorSecondaryVariant">#bcd3f7</item>
+        <item name="colorOnSecondary">#79a8f2</item>
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
+        <!-- Customize your theme here. -->
+    </style>
+
     <style name="DatePickerDialogMaterialStyle" parent="android:Theme.Material.Light.Dialog">
         <!--Header Background Color and selected Day Background Color-->
         <item name="colorAccent">@color/white</item>
         <item name="android:colorAccent">@color/purple_500</item>
         <!--Days unselected Text Color and Month Text Color-->
         <item name="android:textColorPrimary">@color/purple_700</item>
+        <!--Picker Background Color-->
+        <item name="android:windowBackground">@android:color/white</item>
+        <!--Buttons Style (Text Color & backgroundTint)-->
+        <item name="android:buttonBarButtonStyle">@style/MyButtonBarButtonStyle</item>
+    </style>
+
+    <style name="DatePickerDialogMaterialStyle2" parent="android:Theme.Material.Light.Dialog">
+        <!--Header Background Color and selected Day Background Color-->
+        <item name="colorAccent">@color/white</item>
+        <item name="android:colorAccent">#4875bd</item>
+        <!--Days unselected Text Color and Month Text Color-->
+        <item name="android:textColorPrimary">#79a8f2</item>
         <!--Picker Background Color-->
         <item name="android:windowBackground">@android:color/white</item>
         <!--Buttons Style (Text Color & backgroundTint)-->

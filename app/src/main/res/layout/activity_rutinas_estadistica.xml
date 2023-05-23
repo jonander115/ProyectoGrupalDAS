@@ -28,7 +28,7 @@
                 android:layout_weight="0.5"
                 android:layout_height="wrap_content"
                 android:onClick="openDatePicker2"
-                android:text="@string/fechaFin"
+                android:text="  Fecha inicio"
                 android:textColor="@color/black" />
 
             <Button
@@ -38,7 +38,7 @@
                 android:layout_weight="0.5"
                 android:layout_height="wrap_content"
                 android:onClick="openDatePicker"
-                android:text="@string/fechaInicio"
+                android:text="Fecha fin"
                 android:textColor="@color/black" />
         </LinearLayout>
 
@@ -76,6 +76,20 @@
             android:backgroundTint="@android:color/transparent"
             android:minHeight="48dp"
             android:text="" />
+
+        <EditText
+            android:id="@+id/tituloChart1R"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:enabled="false"
+            android:backgroundTint="@android:color/transparent"
+            android:hint="@string/app_name"
+            android:text="Evolucion del tiempo" />
+
+        <com.github.mikephil.charting.charts.CombinedChart
+            android:id="@+id/combinedChart"
+            android:layout_width="match_parent"
+            android:layout_height="356dp" />
 
     </LinearLayout>
 </ScrollView>

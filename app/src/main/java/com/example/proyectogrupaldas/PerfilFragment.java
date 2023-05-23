@@ -1,8 +1,11 @@
 package com.example.proyectogrupaldas;
 
+import static android.app.Activity.RESULT_OK;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -10,7 +13,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.activity.result.ActivityResultCallback;
@@ -19,25 +21,20 @@ import androidx.activity.result.PickVisualMediaRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
+
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 
-import android.os.Environment;
 import android.provider.MediaStore;
-import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
-import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -64,7 +61,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-public class PerfilFragment extends Fragment {
+public class PerfilFragment extends Fragment implements ActivityResultCallback {
     private final int CODIGO_DE_PERMISOS_SACARFOTO = 1;
     private int CODIGO_FOTO_ARCHIVO = 2;
     private final int CODIGO_DE_PERMISO_LECTURA_GALERIA = 3;
@@ -75,7 +72,6 @@ public class PerfilFragment extends Fragment {
     private String fotoen64 = "";
     private String fotoGiro = "";
     private String[] listaNombresEjercicios;
-    private ActivityResultLauncher<String> pickImageLauncher;
 
 
     public PerfilFragment() {
@@ -90,6 +86,49 @@ public class PerfilFragment extends Fragment {
         return fragment;
     }
 
+
+    //Se recoge la foto hecha con la cámara y se pone en el ImageView correspondiente
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == CODIGO_FOTO_ARCHIVO && resultCode == RESULT_OK) {
+            //Tenemos la uri de la foto en el atributo uriFoto
+            Log.d("fotoPerfil", "URI: " + uriFoto);
+
+            //Convertimos la uri en Bitmap
+            Bitmap bitmapFoto = null;
+            try {
+                bitmapFoto = MediaStore.Images.Media.getBitmap(requireActivity().getContentResolver(), uriFoto);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+            //Ajustamos la foto al ImageView
+            Bitmap bitmapredimensionado = ajustarAImageView(bitmapFoto);
+
+            //Ponemos la foto en el ImageView
+            fotoPerfil.setImageBitmap(bitmapredimensionado);
+
+            //Convertimos el Bitmap en un String en Base64 (que será lo que se suba a la base de datos cuando el usuario guarde los cambios)
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            bitmapredimensionado.compress(Bitmap.CompressFormat.PNG, 100, stream);
+            byte[] fototransformada = stream.toByteArray();
+            fotoen64 = Base64.encodeToString(fototransformada, Base64.DEFAULT);
+
+            //Ahora se podría lanzar un Broadcast para actualizar el repositorio multimedia donde se ha almacenado la foto sin tener que reiniciar el dispositivo
+            //Pero, como es un directorio privado de la aplicación y no va a ser accedido por otras aplicaciones, no tiene sentido hacerlo
+
+        }
+        else {
+            Log.d("fotoPerfil", "Problema con foto");
+        }
+    }
+
+
+
+
+
+    //Launcher que recoge la imagen elegida de la galería y la pone en el ImageView correspondiente
     private ActivityResultLauncher<PickVisualMediaRequest> pickMedia = registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), uri -> {
         if (uri != null) {
 
@@ -98,7 +137,7 @@ public class PerfilFragment extends Fragment {
             //Convertimos la uri en Bitmap
             Bitmap bitmapFoto = null;
             try {
-                bitmapFoto = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(), uri);
+                bitmapFoto = MediaStore.Images.Media.getBitmap(requireActivity().getContentResolver(), uri);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -123,18 +162,13 @@ public class PerfilFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        pickImageLauncher = registerForActivityResult(new ActivityResultContracts.GetContent(), result -> {
-            if (result != null) {
-                Uri imageUri = result;
-                // Realiza las operaciones necesarias con la Uri de la imagen seleccionada
-            }
-        });
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_perfil, container, false);
+
+        //Recogemos el usuario
         Bundle extras = getArguments();
         if (extras != null) {
             usuario = extras.getString("usuario");
@@ -143,14 +177,19 @@ public class PerfilFragment extends Fragment {
         listaNombresEjercicios = listarEjercicios();
 
         //Recogemos los elementos de la vista
-        et_EmailPerfil = view.findViewById(R.id.et_EmailPerfil2);
-        fotoPerfil = view.findViewById(R.id.fotoPerfil2);
+        et_EmailPerfil = view.findViewById(R.id.et_EmailPerfil);
+        fotoPerfil = view.findViewById(R.id.fotoPerfil);
 
-        ImageButton bot_cam= view.findViewById(R.id.bt_FotoCamara2);
-        ImageButton bot_gal= view.findViewById(R.id.bt_FotoGaleria2);
+        Button bot_cam = view.findViewById(R.id.bt_FotoCamara);
+        Button bot_gal = view.findViewById(R.id.bt_FotoGaleria);
+        Button bot_guardarCambios = view.findViewById(R.id.bt_GuardarCambios);
+        Button bot_eliminarEjers = view.findViewById(R.id.bt_EliminarEjercicios);
+
+        //Listener para el botón de sacar foto nueva, que abre la cámara para establecer una nueva foto de perfil
         bot_cam.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //Necesitamos permisos de cámara y de escritura en galería
                 if ( (ContextCompat.checkSelfPermission(getContext(), android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)
                         && (ContextCompat.checkSelfPermission(getContext(), android.Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) ) {
                     //Si ambos permisos están concedidos
@@ -164,9 +203,11 @@ public class PerfilFragment extends Fragment {
             }
         });
 
+        //Listener para el botón de elegir foto de galería, que abre la galería para establecer una nueva foto de perfil
         bot_gal.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //Comprobamos si el permiso de lectura de galería está concedido
                 if (ContextCompat.checkSelfPermission(getContext(), android.Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                     //El permiso no está concedido, lo pedimos
                     String[] permisos = new String[] {android.Manifest.permission.READ_EXTERNAL_STORAGE};
@@ -177,6 +218,48 @@ public class PerfilFragment extends Fragment {
                 }
             }
         });
+
+        //Listener para el botón de guardar cambios, que actualiza los datos en la base de datos
+        bot_guardarCambios.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                guardarCambios();
+            }
+        });
+
+
+        bot_eliminarEjers.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mostrarDialogo();
+            }
+        });
+
+
+
+        mostrarDatosUsuario();
+
+        return view;
+    }
+
+    //Método para abrir el diálogo con los ejercicios a eliminar
+    private void mostrarDialogo(){
+        DialogoEliminarEjercicios dialogoEliminarEjercicios = new DialogoEliminarEjercicios();
+        Bundle args = new Bundle();
+        args.putString("usuario", usuario);
+
+        //Aquí enviamos al diálogo las opciones que podrá elegir el usuario
+        args.putStringArray("listaNombresEjercicios", listaNombresEjercicios);
+
+        dialogoEliminarEjercicios.setTargetFragment(this, 0);
+        dialogoEliminarEjercicios.setArguments(args);
+        dialogoEliminarEjercicios.show(getActivity().getSupportFragmentManager(), "eliminarEjercicios");
+    }
+
+
+
+    //Método para recoger el email y la foto de perfil del usuario para que los pueda modificar
+    private void mostrarDatosUsuario(){
         //Para mostrar sus datos al usuario usamos un servicio web al que accedemos con la librería Volley
 
         //Crear la cola de solicitudes
@@ -251,12 +334,11 @@ public class PerfilFragment extends Fragment {
 
         // Encolar la solicitud
         queue.add(stringRequest);
-
-        return view;
     }
 
+
     //Método para actualizar los datos del usuario en la base de datos
-    public void onClick_GuardarCambios(View v){
+    private void guardarCambios(){
 
         //Miramos si el email es válido mediante regex
         java.util.regex.Pattern rp = java.util.regex.Pattern.compile("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$");
@@ -317,6 +399,8 @@ public class PerfilFragment extends Fragment {
 
     }
 
+
+
     private void lanzarIntentFoto(){
         //Antes de lanzar el Intent hay que preparar el fichero donde se guardará la foto
         //Utilizamos un FileProvider (definido en res/xml/file_provider.xml)
@@ -340,7 +424,9 @@ public class PerfilFragment extends Fragment {
         intentFoto.putExtra(MediaStore.EXTRA_OUTPUT, uriFoto); //Le mandamos al Intent la uri del fichero donde se almacenará la foto
         startActivityForResult(intentFoto,CODIGO_FOTO_ARCHIVO);
     }
-    //este esta modificado
+
+
+
     private void lanzarIntentGaleria(){
         //Construimos el builder para lanzar la selección de imagen
 
@@ -349,16 +435,9 @@ public class PerfilFragment extends Fragment {
         pickMedia.launch(new PickVisualMediaRequest.Builder()
                 .setMediaType(mediaType)
                .build());
-//        registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), new ActivityResultCallback<Uri>() {
-//            @Override
-//            public void onActivityResult(Uri result) {
-//
-//            }
-//        }).launch(new PickVisualMediaRequest.Builder()
-//                .setMediaType(mediaType)
-//                .build());
-
     }
+
+
 
     //Método que sobreescribimos para gestionar la decisión del usuario tras responder al diálogo de los permisos
     @Override
@@ -388,33 +467,6 @@ public class PerfilFragment extends Fragment {
         }
     }
 
-    //Método para abrir la cámara y sacar una foto que será la foto de perfil del usuario
-    public void onClick_FotoCamara1(View v){
-        //Necesitamos permisos de cámara y de escritura en galería
-        if ( (ContextCompat.checkSelfPermission(getContext(), android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)
-                && (ContextCompat.checkSelfPermission(getContext(), android.Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) ) {
-            //Si ambos permisos están concedidos
-            lanzarIntentFoto();
-        }
-        else{ //Si algún permiso, o los dos, no están concedidos
-            //Pedimos los permisos
-            String[] permisos = new String[] {android.Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA};
-            ActivityCompat.requestPermissions(getActivity(),permisos, CODIGO_DE_PERMISOS_SACARFOTO);
-        }
-    }
-
-    //Método para elegir una foto de la galería que será la foto de perfil del usuario
-    public void onClick_FotoGaleria1(View v){
-        //Comprobamos si el permiso de lectura de galería está concedido
-        if (ContextCompat.checkSelfPermission(getContext(), android.Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            //El permiso no está concedido, lo pedimos
-            String[] permisos = new String[] {android.Manifest.permission.READ_EXTERNAL_STORAGE};
-            ActivityCompat.requestPermissions(getActivity(),permisos, CODIGO_DE_PERMISO_LECTURA_GALERIA);
-        }
-        else{
-            lanzarIntentGaleria();
-        }
-    }
 
     //Método para ajustar el tamaño de la foto al tamaño del ImageView
     private Bitmap ajustarAImageView(Bitmap bitmapFoto){
@@ -424,9 +476,9 @@ public class PerfilFragment extends Fragment {
         int anchoImagen = bitmapFoto.getWidth();
         int altoImagen = bitmapFoto.getHeight();
 
-        // Asegurarse de que los valores destino sean mayores que cero
+        //Asegurarse de que los valores destino sean mayores que cero
         if (anchoDestino <= 0 || altoDestino <= 0) {
-            // Asignar valores predeterminados si los valores no son válidos
+            //Asignar valores predeterminados si los valores no son válidos
             anchoDestino = 195;
             altoDestino = 177;
         }
@@ -521,8 +573,10 @@ public class PerfilFragment extends Fragment {
         return listaNombresEjercicios;
     }
 
+
+
     //Método para eliminar un ejercicio creado por el usuario
-    private void eliminarEjercicio(String nombreEjercicio) {
+    public void eliminarEjercicio(String nombreEjercicio) {
         // Crear la cola de solicitudes
         RequestQueue queue = Volley.newRequestQueue(requireContext());
 
@@ -614,5 +668,11 @@ public class PerfilFragment extends Fragment {
             byte[] fototransformada = stream.toByteArray();
             fotoGiro = Base64.encodeToString(fototransformada, Base64.DEFAULT);
         }
+    }
+
+
+    @Override
+    public void onActivityResult(Object result) {
+
     }
 }

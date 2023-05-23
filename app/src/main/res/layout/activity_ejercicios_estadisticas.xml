@@ -34,7 +34,7 @@
                 android:layout_weight="0.5"
                 android:layout_height="wrap_content"
                 android:onClick="openDatePicker2"
-                android:text="@string/fechaInicio"
+                android:text="  Fecha inicio"
                 android:textColor="@color/black" />
 
             <Button
@@ -44,7 +44,7 @@
                 android:layout_weight="0.5"
                 android:layout_height="wrap_content"
                 android:onClick="openDatePicker"
-                android:text="@string/fechaFin"
+                android:text="@string/fechaInicio"
                 android:textColor="@color/black" />
         </LinearLayout>
 
@@ -88,6 +88,33 @@
             android:layout_height="52dp"
             android:orientation="vertical"></LinearLayout>
 
+        <EditText
+            android:id="@+id/tituloChart1"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:enabled="false"
+            android:backgroundTint="@android:color/transparent"
+            android:hint="@string/app_name"
+            android:text="Evolucion de pesos" />
+
+        <com.github.mikephil.charting.charts.LineChart
+            android:id="@+id/chart"
+            android:layout_width="match_parent"
+            android:layout_height="300dp" />
+
+        <EditText
+            android:id="@+id/tituloChart2"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:enabled="false"
+            android:backgroundTint="@android:color/transparent"
+            android:hint="@string/app_name"
+            android:text="Evolucion de repeticiones" />
+
+        <com.github.mikephil.charting.charts.LineChart
+            android:id="@+id/chart2"
+            android:layout_width="match_parent"
+            android:layout_height="300dp" />
 
     </LinearLayout>
 </ScrollView>

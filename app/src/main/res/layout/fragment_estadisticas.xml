@@ -5,13 +5,34 @@
     android:layout_height="match_parent"
     tools:context=".EstadisticasFragment">
 
-    <ListView
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/listaMenuEstadisticas"
+    <LinearLayout
+        android:id="@+id/linearLayoutTitulo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:clickable="false"
-        />
+        android:descendantFocusability="blocksDescendants"
+        android:orientation="vertical"
+        android:paddingLeft="15dp"
+        android:paddingTop="15dp"
+        android:paddingEnd="15dp"
+        android:paddingRight="15dp"
+        android:paddingBottom="15dp">
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Estadísticas"
+            android:textAlignment="center"
+            android:textSize="30dp"
+            android:textStyle="bold" />
+
+        <ListView
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/listaMenuEstadisticas"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="false"
+            />
+
+    </LinearLayout>
 
 </FrameLayout>

@@ -3,10 +3,12 @@ package com.example.proyectogrupaldas;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.PreferenceManager;
 
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -40,6 +42,15 @@ public class Rutina extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean tema = prefs.getBoolean("tema",true);
+        if(tema) {
+            setTheme(R.style.TemaClaro);
+        }
+        else{
+            setTheme(R.style.TemaOscuro);
+        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rutina);
 
@@ -52,6 +63,7 @@ public class Rutina extends AppCompatActivity {
 
         Button aniadir=findViewById(R.id.rut_guardar);
         Button ordenar=findViewById(R.id.rut_ordenar);
+        Button iniciarEntrenamiento = findViewById(R.id.rut_iniciar);
 
         //boton para aniadir un ejercicio a la rutina
         aniadir.setOnClickListener(new View.OnClickListener() {
@@ -78,6 +90,17 @@ public class Rutina extends AppCompatActivity {
                 i.putExtra("usuario", usuario);
                 i.putExtra("nombre", getIntent().getStringExtra("nombre"));
                 startActivityForResult(i, 1);
+            }
+        });
+
+        //boton para iniciar el entrenamiento
+        iniciarEntrenamiento.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+              //  intent pasar usuario
+
+
             }
         });
 
