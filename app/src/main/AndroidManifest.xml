@@ -25,6 +25,9 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".Controlador_Barra_Navegacion"
+            android:exported="false" />
+        <activity
             android:name=".Ordenar"
             android:exported="false" />
         <activity
@@ -53,6 +56,15 @@
         <activity
             android:name=".PerfilUsuario"
             android:exported="false" />
+        <activity
+            android:name=".EjerciciosEstadisticas"
+            android:exported="false"/>
+        <activity
+            android:name=".MenuEstadisticas"
+            android:exported="false"/>
+        <activity
+            android:name=".RutinasEstadistica" />
+
         <activity
             android:name=".MainActivity"
             android:exported="false" />

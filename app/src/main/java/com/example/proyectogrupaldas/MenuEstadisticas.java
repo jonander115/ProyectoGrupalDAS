@@ -20,6 +20,10 @@ public class MenuEstadisticas extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu_estadisticas);
 
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            usuario = extras.getString("usuario");
+        }
 
         ListView listView = findViewById(R.id.listaMenuEstadisticas);
         ArrayList<String> listaOpciones = new ArrayList<>();
