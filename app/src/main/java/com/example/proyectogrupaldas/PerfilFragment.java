@@ -13,7 +13,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.activity.result.ActivityResultCallback;
@@ -22,25 +21,20 @@ import androidx.activity.result.PickVisualMediaRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
+
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 
-import android.os.Environment;
 import android.provider.MediaStore;
-import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
-import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -79,7 +73,6 @@ public class PerfilFragment extends Fragment implements ActivityResultCallback {
     private String fotoen64 = "";
     private String fotoGiro = "";
     private String[] listaNombresEjercicios;
-    private ActivityResultLauncher<String> pickImageLauncher;
 
 
     public PerfilFragment() {
@@ -469,33 +462,6 @@ public class PerfilFragment extends Fragment implements ActivityResultCallback {
         }
     }
 
-    //Método para abrir la cámara y sacar una foto que será la foto de perfil del usuario
-    public void onClick_FotoCamara1(View v){
-        //Necesitamos permisos de cámara y de escritura en galería
-        if ( (ContextCompat.checkSelfPermission(getContext(), android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)
-                && (ContextCompat.checkSelfPermission(getContext(), android.Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) ) {
-            //Si ambos permisos están concedidos
-            lanzarIntentFoto();
-        }
-        else{ //Si algún permiso, o los dos, no están concedidos
-            //Pedimos los permisos
-            String[] permisos = new String[] {android.Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA};
-            ActivityCompat.requestPermissions(getActivity(),permisos, CODIGO_DE_PERMISOS_SACARFOTO);
-        }
-    }
-
-    //Método para elegir una foto de la galería que será la foto de perfil del usuario
-    public void onClick_FotoGaleria1(View v){
-        //Comprobamos si el permiso de lectura de galería está concedido
-        if (ContextCompat.checkSelfPermission(getContext(), android.Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            //El permiso no está concedido, lo pedimos
-            String[] permisos = new String[] {android.Manifest.permission.READ_EXTERNAL_STORAGE};
-            ActivityCompat.requestPermissions(getActivity(),permisos, CODIGO_DE_PERMISO_LECTURA_GALERIA);
-        }
-        else{
-            lanzarIntentGaleria();
-        }
-    }
 
     //Método para ajustar el tamaño de la foto al tamaño del ImageView
     private Bitmap ajustarAImageView(Bitmap bitmapFoto){
@@ -605,7 +571,7 @@ public class PerfilFragment extends Fragment implements ActivityResultCallback {
 
 
     //Método para eliminar un ejercicio creado por el usuario
-    public void eliminarEjercicio(String nombreEjercicio) {
+    private void eliminarEjercicio(String nombreEjercicio) {
         // Crear la cola de solicitudes
         RequestQueue queue = Volley.newRequestQueue(requireContext());
 
