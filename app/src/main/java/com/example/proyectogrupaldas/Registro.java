@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
+import androidx.preference.PreferenceManager;
 
 import android.Manifest;
 import android.app.Activity;
@@ -15,6 +16,7 @@ import android.app.NotificationManager;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -67,6 +69,14 @@ public class Registro extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean tema = prefs.getBoolean("tema",true);
+        if(tema) {
+            setTheme(R.style.TemaClaro);
+        }
+        else{
+            setTheme(R.style.TemaOscuro);
+        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registro);
 

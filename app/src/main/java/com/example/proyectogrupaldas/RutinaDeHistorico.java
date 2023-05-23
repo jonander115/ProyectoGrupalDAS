@@ -2,7 +2,9 @@ package com.example.proyectogrupaldas;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.PreferenceManager;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
@@ -41,6 +43,14 @@ public class RutinaDeHistorico extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean tema = prefs.getBoolean("tema",true);
+        if(tema) {
+            setTheme(R.style.TemaClaro);
+        }
+        else{
+            setTheme(R.style.TemaOscuro);
+        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rutina_de_historico);
 

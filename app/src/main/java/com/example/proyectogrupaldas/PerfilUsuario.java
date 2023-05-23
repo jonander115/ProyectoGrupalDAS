@@ -10,6 +10,7 @@ import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.Observer;
+import androidx.preference.PreferenceManager;
 import androidx.work.Data;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkInfo;
@@ -17,6 +18,7 @@ import androidx.work.WorkManager;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -70,6 +72,14 @@ public class PerfilUsuario extends AppCompatActivity {
 
     //Se recoge la foto hecha con la cámara y se pone en el ImageView correspondiente
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean tema = prefs.getBoolean("tema",true);
+        if(tema) {
+            setTheme(R.style.TemaClaro);
+        }
+        else{
+            setTheme(R.style.TemaOscuro);
+        }
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == CODIGO_FOTO_ARCHIVO && resultCode == RESULT_OK) {
             //Tenemos la uri de la foto en el atributo uriFoto
@@ -143,7 +153,7 @@ public class PerfilUsuario extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_perfil_usuario);
+        //setContentView(R.layout.activity_perfil_usuario);
 
         //Recogemos el usuario
         Bundle extras = getIntent().getExtras();

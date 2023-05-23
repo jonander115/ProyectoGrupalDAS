@@ -3,12 +3,15 @@ package com.example.proyectogrupaldas;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+import androidx.preference.PreferenceManager;
 
 import android.util.Log;
+import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,7 +38,7 @@ import java.util.Map;
 
 public class RutinasFragment extends Fragment {
 
-
+    private ContextThemeWrapper contextThemeWrapper;
     private RequestQueue rq;
     private Context context;
     private String usuario;
@@ -54,6 +57,7 @@ public class RutinasFragment extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
 
     }
@@ -61,10 +65,24 @@ public class RutinasFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        super.onCreateView(inflater,container,savedInstanceState);
-        View view = inflater.inflate(R.layout.fragment_rutinas, container, false);
 
         context = requireContext();
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        boolean tema = prefs.getBoolean("tema",true);
+        if(tema) {
+            contextThemeWrapper = new ContextThemeWrapper(getActivity(), R.style.FragmentTheme);
+        }
+        else{
+            contextThemeWrapper = new ContextThemeWrapper(getActivity(), R.style.FragmentTheme2);
+        }
+
+
+        // Infla el diseño utilizando el ContextThemeWrapper
+        LayoutInflater themedInflater = inflater.cloneInContext(contextThemeWrapper);
+        View view = themedInflater.inflate(R.layout.fragment_rutinas, container, false);
+
+        //super.onCreateView(inflater,container,savedInstanceState);
+        //View view = inflater.inflate(R.layout.fragment_rutinas, container, false);
 
         if (getArguments()!=null) {
             usuario = getArguments().getString("usuario");

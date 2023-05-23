@@ -1,10 +1,13 @@
 package com.example.proyectogrupaldas;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.preference.PreferenceManager;
 
+import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -60,7 +63,23 @@ public class HistoricoRutinasFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_historico_rutinas, container, false);
+
+        contexto = requireContext();
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(contexto);
+        boolean tema = prefs.getBoolean("tema",true);
+        ContextThemeWrapper contextThemeWrapper;
+        if(tema) {
+            contextThemeWrapper = new ContextThemeWrapper(getActivity(), R.style.FragmentTheme);
+        }
+        else{
+            contextThemeWrapper = new ContextThemeWrapper(getActivity(), R.style.FragmentTheme2);
+        }
+
+
+        // Infla el diseño utilizando el ContextThemeWrapper
+        LayoutInflater themedInflater = inflater.cloneInContext(contextThemeWrapper);
+        View view = themedInflater.inflate(R.layout.fragment_historico_rutinas, container, false);
+        //View view = inflater.inflate(R.layout.fragment_historico_rutinas, container, false);
         listViewHistorico = view.findViewById(R.id.listViewHistoricoRutinas);
 
         mostrarHistorico();

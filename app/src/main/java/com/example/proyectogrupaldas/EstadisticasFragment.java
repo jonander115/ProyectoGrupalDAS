@@ -1,12 +1,17 @@
 package com.example.proyectogrupaldas;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.preference.PreferenceManager;
 
+import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +24,9 @@ import java.util.ArrayList;
 public class EstadisticasFragment extends Fragment {
 
     String usuario = "joni";
+    private ContextThemeWrapper contextThemeWrapper;
+
+    private Context context;
 
     public EstadisticasFragment() {
         // Required empty public constructor
@@ -41,7 +49,23 @@ public class EstadisticasFragment extends Fragment {
     @NonNull
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_estadisticas, container, false);
+
+        context = requireContext();
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        boolean tema = prefs.getBoolean("tema",true);
+        if(tema) {
+            contextThemeWrapper = new ContextThemeWrapper(getActivity(), R.style.FragmentTheme);
+        }
+        else{
+            contextThemeWrapper = new ContextThemeWrapper(getActivity(), R.style.FragmentTheme2);
+        }
+
+
+        // Infla el diseño utilizando el ContextThemeWrapper
+        LayoutInflater themedInflater = inflater.cloneInContext(contextThemeWrapper);
+        View view = themedInflater.inflate(R.layout.fragment_estadisticas, container, false);
+
+        //View view = inflater.inflate(R.layout.fragment_estadisticas, container, false);
 
         Bundle extras = getArguments();
         if (extras != null) {
@@ -70,7 +94,7 @@ public class EstadisticasFragment extends Fragment {
                     intent.putExtra("usuario", usuario);
                     startActivity(intent);
                 }
-                requireActivity().finish();
+                //requireActivity().finish();
             }
         });
 

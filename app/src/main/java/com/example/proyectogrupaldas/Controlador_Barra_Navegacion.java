@@ -5,13 +5,19 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.preference.PreferenceManager;
+
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.example.proyectogrupaldas.databinding.ActivityControladorBarraNavegacionBinding;
 import com.google.android.material.navigation.NavigationBarView;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.View;
 
 public class Controlador_Barra_Navegacion extends AppCompatActivity {
 
@@ -21,6 +27,10 @@ public class Controlador_Barra_Navegacion extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+
+
+        // Infla el diseño utilizando el ContextThemeWrapper
         super.onCreate(savedInstanceState);
         Bundle extras = getIntent().getExtras();
         if (extras != null) {

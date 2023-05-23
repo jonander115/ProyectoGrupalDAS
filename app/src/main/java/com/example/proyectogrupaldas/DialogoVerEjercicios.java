@@ -3,6 +3,7 @@ package com.example.proyectogrupaldas;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,6 +15,7 @@ import android.widget.ListView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
+import androidx.preference.PreferenceManager;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -39,6 +41,7 @@ public class DialogoVerEjercicios extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+
         super.onCreateDialog(savedInstanceState);
 
         //Recogemos los elementos que ha recibido el diálogo
@@ -51,6 +54,7 @@ public class DialogoVerEjercicios extends DialogFragment {
         //Definimos un builder para construir el diálogo
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("Elige un ejercicio");
+
 
         //Mediante un LayoutInflater hacemos que la vista del diálogo sea un layout que hemos diseñado en un xml
         LayoutInflater inflater = getActivity().getLayoutInflater();

@@ -6,7 +6,6 @@
     tools:context=".RutinasFragment">
 
     <LinearLayout
-        android:id="@+id/linearLayoutTitulo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:descendantFocusability="blocksDescendants"
@@ -18,7 +17,6 @@
         android:paddingBottom="15dp">
 
         <TextView
-            android:id="@+id/tv_HistoricoRutinas"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Rutinas"
@@ -26,16 +24,17 @@
             android:textSize="30dp"
             android:textStyle="bold" />
 
-        <ListView
-            android:id="@+id/rut_ejercicios"
-            android:layout_width="match_parent"
-            android:layout_height="572dp" />
-
         <Button
             android:id="@+id/ru_aniadir"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Añadir rutina" />
+
+        <ListView
+            android:id="@+id/rut_ejercicios"
+            android:layout_width="match_parent"
+            android:layout_height="572dp" />
+
 
     </LinearLayout>
 

@@ -2,17 +2,24 @@ package com.example.proyectogrupaldas;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.arch.core.internal.SafeIterableMap;
+import androidx.preference.PreferenceManager;
+
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.Locale;
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -35,6 +42,18 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.github.mikephil.charting.charts.CombinedChart;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.CombinedData;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
+import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
+import com.github.mikephil.charting.utils.ColorTemplate;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -44,6 +63,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class RutinasEstadistica extends AppCompatActivity {
@@ -55,11 +75,26 @@ public class RutinasEstadistica extends AppCompatActivity {
     Spinner spinnerRutinas;
     EditText numRep, tiempoMedio, diaComun;
 
+    ArrayList<Float> listaSumas;
+    ArrayList<Long> result;
+    CombinedChart combinedChart;
+    ArrayList<String> listaMesesRep, listaMeses;
+
+    Boolean tema;
+    ArrayList<Float> listaTiempos;
     private int year, month, day;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        tema = prefs.getBoolean("tema",true);
+        if(tema) {
+            setTheme(R.style.TemaClaro);
+        }
+        else{
+            setTheme(R.style.TemaOscuro);
+        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rutinas_estadistica);
 
@@ -77,6 +112,8 @@ public class RutinasEstadistica extends AppCompatActivity {
         numRep = findViewById(R.id.NumeroRepeticionesRutina);
         tiempoMedio = findViewById(R.id.EstadMinsMedioRut);
         diaComun = findViewById(R.id.EstadDiaMasComun);
+        combinedChart = findViewById(R.id.combinedChart);
+
 
         if (savedInstanceState != null) {
             selectedPosRut = savedInstanceState.getInt("CategoriaElegida");
@@ -100,6 +137,58 @@ public class RutinasEstadistica extends AppCompatActivity {
 
     }
 
+    private void setupCombinedChart(ArrayList<Double> listaMedias) {
+        // Datos de ejemplo
+
+        ArrayList<BarEntry> barEntries = new ArrayList<>();
+        ArrayList<Entry> lineEntries = new ArrayList<>();
+        for (int i = 0; i < listaMeses.size(); i++) {
+
+            barEntries.add(new BarEntry(i, result.get(i)));
+            lineEntries.add(new Entry( i, listaMedias.get(i).floatValue()));
+        }
+
+
+
+        // Configurar conjunto de datos de barras
+        BarDataSet barDataSet = new BarDataSet(barEntries, "Datos de barras");
+        barDataSet.setColor(Color.BLUE);
+        barDataSet.setValueTextSize(12f);
+
+        // Configurar conjunto de datos de línea
+        LineDataSet lineDataSet = new LineDataSet(lineEntries, "Datos de línea");
+        lineDataSet.setColor(Color.RED);
+        lineDataSet.setCircleColor(Color.RED);
+        lineDataSet.setCircleRadius(4f);
+        lineDataSet.setLineWidth(2f);
+        lineDataSet.setValueTextSize(12f);
+
+        // Crear objeto CombinedData y agregar conjuntos de datos
+        CombinedData combinedData = new CombinedData();
+        BarData barData = new BarData(barDataSet);
+        combinedData.setData(barData);
+        combinedData.setData(new LineData(lineDataSet));
+
+
+        // Configurar datos, leyendas y animación del CombinedChart
+        combinedChart.setData(combinedData);
+        combinedChart.getDescription().setEnabled(false);
+        combinedChart.getLegend().setEnabled(false);
+        combinedChart.animateXY(1000, 1000);
+
+        // Configurar el eje X
+        XAxis xAxis = combinedChart.getXAxis();
+        xAxis.setLabelCount(listaMeses.size());
+        xAxis.setGranularity(1f);
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setValueFormatter(new IndexAxisValueFormatter(listaMeses));
+        xAxis.setLabelRotationAngle(45);
+
+        // Actualizar el gráfico
+        combinedChart.invalidate();
+    }
+
+
     private void initDataPicker() {
         DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
             @Override
@@ -116,8 +205,13 @@ public class RutinasEstadistica extends AppCompatActivity {
         month = calendar.get(Calendar.MONTH);
         day = calendar.get(Calendar.DAY_OF_MONTH);
 
+        if(tema){
+            datePickerDialog2 = new DatePickerDialog(this,R.style.DatePickerDialogMaterialStyle, dateSetListener, year, month,day);
 
-        datePickerDialog2 = new DatePickerDialog(this,R.style.DatePickerDialogMaterialStyle, dateSetListener, year, month,day);
+        }else{
+            datePickerDialog2 = new DatePickerDialog(this,R.style.DatePickerDialogMaterialStyle2, dateSetListener, year, month,day);
+
+        }
         datePickerDialog2.getDatePicker().setMaxDate(System.currentTimeMillis());
     }
 
@@ -138,8 +232,13 @@ public class RutinasEstadistica extends AppCompatActivity {
         month = calendar.get(Calendar.MONTH);
         day = calendar.get(Calendar.DAY_OF_MONTH);
 
+        if(tema){
+            datePickerDialog = new DatePickerDialog(this,R.style.DatePickerDialogMaterialStyle, dateSetListener, year, month,day);
 
-        datePickerDialog = new DatePickerDialog(this,R.style.DatePickerDialogMaterialStyle, dateSetListener, year, month,day);
+        }else{
+            datePickerDialog = new DatePickerDialog(this,R.style.DatePickerDialogMaterialStyle2, dateSetListener, year, month,day);
+
+        }
         datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
     }
 
@@ -181,6 +280,9 @@ public class RutinasEstadistica extends AppCompatActivity {
                     ArrayList<ArrayList<String>> listaListas = new ArrayList<ArrayList<String>>();
                     ArrayList<Integer> listaMinutos = new ArrayList<>();
                     ArrayList<String> listaDias = new ArrayList<String>();
+                    listaTiempos = new ArrayList<>();
+                    listaMeses = new ArrayList<>();
+                    listaMesesRep = new ArrayList<>();
                     listaDatos.add("Elige una rutina");
 
                     //Guardamos los datos para cada diario
@@ -198,21 +300,48 @@ public class RutinasEstadistica extends AppCompatActivity {
                         LocalTime hora1 = LocalTime.parse(time);
                         LocalTime hora2 = LocalTime.parse(time2);
 
-                        System.out.println("hora1: " + hora1);
-                        System.out.println("hora2: " + hora2);
+                        Log.d("hora1 ", hora1.toString());
+                        Log.d("hora2 ", hora2.toString());
+
                         long minutos = ChronoUnit.MINUTES.between(hora1, hora2);
-                        listaMinutos.add((int) minutos);
+                        listaTiempos.add((float) minutos/60);
 
                         DateTimeFormatter formateador = DateTimeFormatter.ofPattern("EEEE", new Locale("es", "ES"));
                         String diaSemana = formateador.format(LocalDate.parse(date));
 
+                        DateTimeFormatter formateador2 = DateTimeFormatter.ofPattern("MMMM", new Locale("es", "ES"));
+                        String nombreMes = formateador2.format(LocalDate.parse(date));
+
                         listaDias.add(diaSemana);
+                        listaMesesRep.add(nombreMes);
+
+                        if(!listaMeses.contains(nombreMes)){
+                            listaMeses.add(nombreMes);
+                        }
 
                     }
+                    Log.d("listaMeses", listaMeses.toString());
+                    Log.d("listaMesesRep", listaMesesRep.toString());
+
+
+                    result = listaMesesRep.stream()
+                            .collect(Collectors.groupingBy(Function.identity(), LinkedHashMap::new, Collectors.counting()))
+                            .values().stream()
+                            .mapToLong(Long::intValue)
+                            .boxed()
+                            .collect(Collectors.toCollection(ArrayList::new));
+
+
+                    Log.d("results", result.toString());
+                    Log.d("listaTiempos", listaTiempos.toString());
 
                     numRep.setText("Numero de veces que has hecho la rutina: " + String.valueOf(json.length()));
-                    int suma = listaMinutos.stream().mapToInt(Integer::intValue).sum();
-                    tiempoMedio.setText("Tiempo medio:" + String.valueOf(suma/listaMinutos.size()) + "min");
+                    float suma = (float) listaTiempos.stream()
+                            .mapToDouble(Float::doubleValue)
+                            .sum();
+
+                    Log.d("suma", String.valueOf(suma/listaTiempos.size()));
+                    tiempoMedio.setText("Tiempo medio:" + String.valueOf(suma/listaTiempos.size()) + "min");
 
                     String valorMasRepetido = listaDias.stream()
                             .collect(Collectors.groupingBy(e -> e, Collectors.counting()))
@@ -225,6 +354,26 @@ public class RutinasEstadistica extends AppCompatActivity {
                     Log.d("dias", valorMasRepetido);
                     diaComun.setText("Dia mas comun: " + String.valueOf(valorMasRepetido));
 
+                    Map<String, ArrayList<Double>> mapaValores = new LinkedHashMap<>();
+
+                    for (int i = 0; i < listaMesesRep.size(); i++) {
+                        String clave = listaMesesRep.get(i);
+                        double valor = listaTiempos.get(i);
+
+                        if (!mapaValores.containsKey(clave)) {
+                            mapaValores.put(clave, new ArrayList<>());
+                        }
+                        mapaValores.get(clave).add(valor);
+                    }
+
+                    ArrayList<Double> listaMedias = (ArrayList<Double>) mapaValores.values()
+                            .stream()
+                            .map(valores -> valores.stream().mapToDouble(Double::doubleValue).average().orElse(0))
+                            .collect(Collectors.toList());
+
+
+                    Log.d("listaSumas", listaMedias.toString());
+                    setupCombinedChart(listaMedias);
                 } catch(JSONException e){
                     System.out.print("Estoy dentro del catch");
                 }catch(Exception e) {
@@ -327,9 +476,14 @@ public class RutinasEstadistica extends AppCompatActivity {
 
     public void onBackPressed() {
         //Volvemos a la lista de diarios
+        /*
         Intent intent = new Intent(this, MenuEstadisticas.class);
         intent.putExtra("usuario", usuario);
         startActivity(intent);
+
+         */
         finish();
     }
+
+
 }
