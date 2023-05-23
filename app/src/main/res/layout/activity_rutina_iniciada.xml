@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".RutinaIniciada">
+
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/nombreRutinaIniciada"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="nombreRutina"
+                android:textAlignment="center"
+                android:textSize="30dp"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/bt_FinEntrenamiento"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Finalizar entrenamiento" />
+
+            <Button
+                android:id="@+id/bt_NuevaSerie"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Nueva serie" />
+
+            <ListView
+                android:id="@+id/listaSeries"
+                android:layout_width="match_parent"
+                android:layout_height="600dp"
+                android:nestedScrollingEnabled="true"/>
+
+        </LinearLayout>
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

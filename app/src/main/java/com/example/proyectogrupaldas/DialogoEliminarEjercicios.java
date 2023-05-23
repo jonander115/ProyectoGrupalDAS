@@ -12,6 +12,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -90,7 +91,11 @@ public class DialogoEliminarEjercicios extends DialogFragment {
                         String nombreEjercicioABorrar = listaNombresEjercicios[numeroOpcionElegida];
 
                         //Eliminamos el ejercicio
-                        ((PerfilUsuario) getActivity()).eliminarEjercicio(nombreEjercicioABorrar);
+                        FragmentManager fragmentManager = getChildFragmentManager();
+                        PerfilFragment fragment = (PerfilFragment) fragmentManager.findFragmentByTag("");
+                        if (fragment != null){
+                            fragment.eliminarEjercicio(nombreEjercicioABorrar);
+                        }
 
                     }
 
@@ -112,4 +117,6 @@ public class DialogoEliminarEjercicios extends DialogFragment {
 
         return builder.create();
     }
+
+
 }

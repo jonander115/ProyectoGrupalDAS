@@ -143,7 +143,7 @@ public class PerfilUsuario extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_perfil_usuario);
+        //setContentView(R.layout.activity_perfil_usuario);
 
         //Recogemos el usuario
         Bundle extras = getIntent().getExtras();
