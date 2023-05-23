@@ -21,22 +21,6 @@
             android:paddingRight="15dp"
             android:paddingBottom="15dp">
 
-        <fragment
-            android:id="@+id/preferenciasFragment"
-            android:name="com.example.proyectogrupaldas.Preferencias"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/tv_PerfilUsuario2"
-            android:layout_width="132dp"
-            android:layout_height="25dp"
-            android:layout_marginTop="16dp"
-            android:text="PERFIL DE USUARIO" />
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -50,19 +34,16 @@
                 android:layout_height="wrap_content"
                 android:text="Aquí puedes ver y modificar información de tu perfil"
                 android:layout_gravity="center" />
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Perfil de usuario"
-                android:textAlignment="center"
-                android:textSize="30dp"
-                android:textStyle="bold" />
 
-            <TextView
+            <fragment
+                android:id="@+id/preferenciasFragment"
+                android:name="com.example.proyectogrupaldas.Preferencias"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Aquí puedes ver y modificar información de tu perfil"
-                android:layout_gravity="center" />
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:layout_width="wrap_content"

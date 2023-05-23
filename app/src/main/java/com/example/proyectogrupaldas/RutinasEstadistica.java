@@ -99,7 +99,7 @@ public class RutinasEstadistica extends AppCompatActivity {
         setContentView(R.layout.activity_rutinas_estadistica);
 
         usuario = getIntent().getExtras().getString("usuario");
-        Toast.makeText(getApplicationContext(), "Seleccionaste: " + usuario, Toast.LENGTH_SHORT).show();
+
         spinnerRutinas=findViewById(R.id.spinner_rutinas);
         cargarRutinas(spinnerRutinas);
 

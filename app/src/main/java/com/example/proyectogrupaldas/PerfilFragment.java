@@ -68,7 +68,6 @@ public class PerfilFragment extends Fragment implements ActivityResultCallback {
     private String usuario;
     private EditText et_EmailPerfil;
     private ImageView fotoPerfil;
-    private Context context;
     private Uri uriFoto;
     private String fotoen64 = "";
     private String fotoGiro = "";
@@ -232,15 +231,7 @@ public class PerfilFragment extends Fragment implements ActivityResultCallback {
         bot_eliminarEjers.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DialogoEliminarEjercicios dialogoEliminarEjercicios = new DialogoEliminarEjercicios();
-                Bundle args = new Bundle();
-                args.putString("usuario", usuario);
-
-                //Aquí enviamos al diálogo las opciones que podrá elegir el usuario
-                args.putStringArray("listaNombresEjercicios", listaNombresEjercicios);
-
-                dialogoEliminarEjercicios.setArguments(args);
-                dialogoEliminarEjercicios.show(getActivity().getSupportFragmentManager(), "eliminarEjercicios");
+                mostrarDialogo();
             }
         });
 
@@ -249,6 +240,20 @@ public class PerfilFragment extends Fragment implements ActivityResultCallback {
         mostrarDatosUsuario();
 
         return view;
+    }
+
+    //Método para abrir el diálogo con los ejercicios a eliminar
+    private void mostrarDialogo(){
+        DialogoEliminarEjercicios dialogoEliminarEjercicios = new DialogoEliminarEjercicios();
+        Bundle args = new Bundle();
+        args.putString("usuario", usuario);
+
+        //Aquí enviamos al diálogo las opciones que podrá elegir el usuario
+        args.putStringArray("listaNombresEjercicios", listaNombresEjercicios);
+
+        dialogoEliminarEjercicios.setTargetFragment(this, 0);
+        dialogoEliminarEjercicios.setArguments(args);
+        dialogoEliminarEjercicios.show(getActivity().getSupportFragmentManager(), "eliminarEjercicios");
     }
 
 
@@ -571,7 +576,7 @@ public class PerfilFragment extends Fragment implements ActivityResultCallback {
 
 
     //Método para eliminar un ejercicio creado por el usuario
-    private void eliminarEjercicio(String nombreEjercicio) {
+    public void eliminarEjercicio(String nombreEjercicio) {
         // Crear la cola de solicitudes
         RequestQueue queue = Volley.newRequestQueue(requireContext());
 

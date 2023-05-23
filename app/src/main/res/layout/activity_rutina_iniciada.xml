@@ -17,7 +17,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="vertical">
 
             <TextView
@@ -35,17 +35,17 @@
                 android:layout_height="wrap_content"
                 android:text="Finalizar entrenamiento" />
 
-            <Button
-                android:id="@+id/bt_NuevaSerie"
-                android:layout_width="match_parent"
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Nueva serie" />
+                android:layout_marginStart="52dp"
+                android:layout_marginTop="10dp"
+                android:text="Ejercicios a realizar:" />
 
-            <ListView
-                android:id="@+id/listaSeries"
+            <ExpandableListView
+                android:id="@+id/listaEjerciciosSeriesRutinaIniciada"
                 android:layout_width="match_parent"
-                android:layout_height="600dp"
-                android:nestedScrollingEnabled="true"/>
+                android:layout_height="wrap_content" />
 
         </LinearLayout>
     </ScrollView>

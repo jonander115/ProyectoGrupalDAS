@@ -16,7 +16,7 @@ import java.util.ArrayList;
 
 public class MenuEstadisticas extends AppCompatActivity {
 
-    String usuario = "joni";
+    String usuario;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);

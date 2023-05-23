@@ -5,12 +5,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class EjerciciosRutinaAdapter extends BaseExpandableListAdapter {
+public class RutinaIniciadaAdapter extends BaseExpandableListAdapter {
 
     private final String usuario;
     private Context contexto;
@@ -18,14 +19,12 @@ public class EjerciciosRutinaAdapter extends BaseExpandableListAdapter {
     private ArrayList<String> listaEjercicios;
     private HashMap<String, ArrayList<String>> mapSeries;
 
-    public EjerciciosRutinaAdapter(String usuario, Context pContexto, ArrayList<String> pListaEjercicios, HashMap<String, ArrayList<String>> pMapSeries) {
+    public RutinaIniciadaAdapter(String usuario, Context pContexto, ArrayList<String> pListaEjercicios, HashMap<String, ArrayList<String>> pMapSeries) {
         this.usuario = usuario;
         contexto = pContexto;
         listaEjercicios = pListaEjercicios;
         mapSeries = pMapSeries;
     }
-
-
     @Override
     public int getGroupCount() {
         return listaEjercicios.size();
@@ -67,14 +66,23 @@ public class EjerciciosRutinaAdapter extends BaseExpandableListAdapter {
 
         if (convertView == null){
             inflater = (LayoutInflater) contexto.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = inflater.inflate(R.layout.layout_ejercicio, null);
+            convertView = inflater.inflate(R.layout.layout_ejercicio_rutina_iniciada, null);
         }
 
-        //Recogemos el elemento de la vista
-        TextView tv_EjercicioDeRutinaHistorico = (TextView) convertView.findViewById(R.id.tv_EjercicioDeRutinaHistorico);
+        //Recogemos los elementos de la vista
+        TextView tv_EjercicioDeRutinaIniciada = (TextView) convertView.findViewById(R.id.tv_EjercicioDeRutinaIniciada);
+        Button bt_AniadirSerie = (Button) convertView.findViewById(R.id.bt_AniadirSerie);
 
         //Mostramos el nombre del ejercicio
-        tv_EjercicioDeRutinaHistorico.setText(textoNombreEjercicio);
+        tv_EjercicioDeRutinaIniciada.setText(textoNombreEjercicio);
+
+        //Listener para abrir el diálogo que permite añadir una nueva serie del ejercicio
+        bt_AniadirSerie.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //abrir dialogode javi
+            }
+        });
 
         return convertView;
     }

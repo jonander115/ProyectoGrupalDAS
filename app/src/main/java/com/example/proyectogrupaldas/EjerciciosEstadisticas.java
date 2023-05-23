@@ -83,7 +83,6 @@ public class EjerciciosEstadisticas extends AppCompatActivity {
 
 
         usuario = getIntent().getExtras().getString("usuario");
-        Toast.makeText(getApplicationContext(), "Seleccionaste: " + usuario, Toast.LENGTH_SHORT).show();
 
         spinnerCategorias =findViewById(R.id.spinner_categorias);
 

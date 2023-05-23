@@ -63,6 +63,7 @@ public class Rutina extends AppCompatActivity {
 
         Button aniadir=findViewById(R.id.rut_guardar);
         Button ordenar=findViewById(R.id.rut_ordenar);
+        Button iniciarEntrenamiento = findViewById(R.id.rut_iniciar);
 
         //boton para aniadir un ejercicio a la rutina
         aniadir.setOnClickListener(new View.OnClickListener() {
@@ -89,6 +90,17 @@ public class Rutina extends AppCompatActivity {
                 i.putExtra("usuario", usuario);
                 i.putExtra("nombre", getIntent().getStringExtra("nombre"));
                 startActivityForResult(i, 1);
+            }
+        });
+
+        //boton para iniciar el entrenamiento
+        iniciarEntrenamiento.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+              //  intent pasar usuario
+
+
             }
         });
 
