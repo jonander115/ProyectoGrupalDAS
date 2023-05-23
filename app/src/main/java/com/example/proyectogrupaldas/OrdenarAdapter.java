@@ -95,7 +95,7 @@ public class OrdenarAdapter extends ArrayAdapter {
 
     //se realiza el intercambio de orden de ejercicio en la base de datos
     private void intercambiarOrden(int actual, int nuevo){
-        StringRequest sr = new StringRequest(Request.Method.POST, "http://ec2-54-93-62-124.eu-central-1.compute.amazonaws.com/jwojciechowska001/WEB/entrega3/ordenar.php", new Response.Listener<String>() {
+        StringRequest sr = new StringRequest(Request.Method.POST, "http://ec2-54-93-62-124.eu-central-1.compute.amazonaws.com/jwojciechowska001/WEB/entrega3/rutinasaniadirordenar.php", new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 String respuesta=response.toString();
@@ -116,6 +116,7 @@ public class OrdenarAdapter extends ArrayAdapter {
             protected Map<String, String> getParams() throws AuthFailureError {
                 //se pasan todos los parametros necesarios en la solicitud
                 HashMap<String, String> parametros = new HashMap<String, String>();
+                parametros.put("opcion", "ordenar");
                 parametros.put("usuario", usuario);
                 parametros.put("idrutina", rutina);
                 parametros.put("nombreactual", nombres.get(actual));

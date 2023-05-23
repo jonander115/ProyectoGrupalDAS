@@ -55,7 +55,7 @@ public class Ordenar extends AppCompatActivity {
 
     //se cogen de la base de datos los ejercicios de la rutina anteriormente seleccionada
     public void obtenerEjercicios(){
-        StringRequest sr = new StringRequest(Request.Method.POST, "http://ec2-54-93-62-124.eu-central-1.compute.amazonaws.com/jwojciechowska001/WEB/entrega3/obtenerejerciciosrutina.php", new Response.Listener<String>() {
+        StringRequest sr = new StringRequest(Request.Method.POST, "http://ec2-54-93-62-124.eu-central-1.compute.amazonaws.com/jwojciechowska001/WEB/entrega3/obtenerelementos.php", new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 //se crear arraylist para guardar los nombres y el orden de los ejercicios
@@ -107,6 +107,7 @@ public class Ordenar extends AppCompatActivity {
             protected Map<String, String> getParams() throws AuthFailureError {
                 //se pasan todos los parametros necesarios en la solicitud
                 HashMap<String, String> parametros = new HashMap<String, String>();
+                parametros.put("opcion", "obejerciciosrutina");
                 parametros.put("usuario", usuario);
                 parametros.put("rutina", idrutina);
                 return parametros;

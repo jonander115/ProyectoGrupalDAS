@@ -63,7 +63,7 @@ public class Rutinas extends AppCompatActivity {
 
     //se hace la llamada correspondiente para aniadir una rutina nueva a la base de datos
     public void crearRutina(String nombre){
-        StringRequest sr = new StringRequest(Request.Method.POST, "http://ec2-54-93-62-124.eu-central-1.compute.amazonaws.com/jwojciechowska001/WEB/entrega3/aniadirrutina.php", new Response.Listener<String>() {
+        StringRequest sr = new StringRequest(Request.Method.POST, "http://ec2-54-93-62-124.eu-central-1.compute.amazonaws.com/jwojciechowska001/WEB/entrega3/rutinasaniadirordenar.php", new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 //si la respuesta esta vacia imprime mensaje
@@ -89,6 +89,7 @@ public class Rutinas extends AppCompatActivity {
             protected Map<String, String> getParams() throws AuthFailureError {
                 //se pasan todos los parametros necesarios en la solicitud
                 HashMap<String, String> parametros = new HashMap<String, String>();
+                parametros.put("opcion", "anrutina");
                 parametros.put("usuario", usuario);
                 parametros.put("nombre", nombre);
 
@@ -103,7 +104,7 @@ public class Rutinas extends AppCompatActivity {
 
     //se actualizan los elementos de la vista para mostrar la nueva rutina
     private void actualizarLista(){
-        StringRequest sr = new StringRequest(Request.Method.POST, "http://ec2-54-93-62-124.eu-central-1.compute.amazonaws.com/jwojciechowska001/WEB/entrega3/obtenerrutinas.php", new Response.Listener<String>() {
+        StringRequest sr = new StringRequest(Request.Method.POST, "http://ec2-54-93-62-124.eu-central-1.compute.amazonaws.com/jwojciechowska001/WEB/entrega3/obtenerelementos.php", new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
 
@@ -181,6 +182,7 @@ public class Rutinas extends AppCompatActivity {
             protected Map<String, String> getParams() throws AuthFailureError {
                 //se pasan todos los parametros necesarios en la solicitud
                 HashMap<String, String> parametros = new HashMap<String, String>();
+                parametros.put("opcion", "obrutinas");
                 parametros.put("usuario", usuario);
 
                 return parametros;
@@ -194,7 +196,7 @@ public class Rutinas extends AppCompatActivity {
     }
 
     private void eliminarRutina(String id){
-        StringRequest sr = new StringRequest(Request.Method.POST, "http://ec2-54-93-62-124.eu-central-1.compute.amazonaws.com/jwojciechowska001/WEB/entrega3/eliminarrutina.php", new Response.Listener<String>() {
+        StringRequest sr = new StringRequest(Request.Method.POST, "http://ec2-54-93-62-124.eu-central-1.compute.amazonaws.com/jwojciechowska001/WEB/entrega3/eliminar.php", new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 //si la respuesta esta vacia imprime mensaje
@@ -215,6 +217,7 @@ public class Rutinas extends AppCompatActivity {
             protected Map<String, String> getParams() throws AuthFailureError {
                 //se pasan todos los parametros necesarios en la solicitud
                 HashMap<String, String> parametros = new HashMap<String, String>();
+                parametros.put("opcion", "eliminarrutina");
                 parametros.put("id", id);
 
                 return parametros;

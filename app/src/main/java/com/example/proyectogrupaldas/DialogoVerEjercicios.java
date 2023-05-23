@@ -89,7 +89,7 @@ public class DialogoVerEjercicios extends DialogFragment {
 
     //se hace la llamada a la base de datos para obtener los ejercicios de la categoria anteriormente seleccionada
     private void obtenerEjercicios(){
-        StringRequest sr = new StringRequest(Request.Method.POST, "http://ec2-54-93-62-124.eu-central-1.compute.amazonaws.com/jwojciechowska001/WEB/entrega3/obtenerejercicioscategoria.php", new Response.Listener<String>() {
+        StringRequest sr = new StringRequest(Request.Method.POST, "http://ec2-54-93-62-124.eu-central-1.compute.amazonaws.com/jwojciechowska001/WEB/entrega3/obtenerelementos.php", new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
 
@@ -121,6 +121,7 @@ public class DialogoVerEjercicios extends DialogFragment {
                     //se crea un adapter para el listview y poder añadir los ejercicios como elementos
                     ArrayAdapter a = new ArrayAdapter<String>(((Rutina) getActivity()).getApplicationContext(), android.R.layout.simple_list_item_1, ejercicios);
                     lv.setAdapter(a);
+                    a.notifyDataSetChanged();
 
                     rq.cancelAll("rutinas");
 
@@ -147,6 +148,7 @@ public class DialogoVerEjercicios extends DialogFragment {
             protected Map<String, String> getParams() throws AuthFailureError {
                 //se pasan todos los parametros necesarios en la solicitud
                 HashMap<String, String> parametros = new HashMap<String, String>();
+                parametros.put("opcion", "obejercicioscategoria");
                 parametros.put("categoria", categoria);
                 parametros.put("usuario", usuario);
 
@@ -162,7 +164,7 @@ public class DialogoVerEjercicios extends DialogFragment {
 
     //se aniade el ejercicio a la rutina
     private void aniadirEjercicio(String nombre){
-        StringRequest sr = new StringRequest(Request.Method.POST, "http://ec2-54-93-62-124.eu-central-1.compute.amazonaws.com/jwojciechowska001/WEB/entrega3/aniadirejercicioarutina.php", new Response.Listener<String>() {
+        StringRequest sr = new StringRequest(Request.Method.POST, "http://ec2-54-93-62-124.eu-central-1.compute.amazonaws.com/jwojciechowska001/WEB/entrega3/rutinasaniadirordenar.php", new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
 
@@ -181,6 +183,7 @@ public class DialogoVerEjercicios extends DialogFragment {
             protected Map<String, String> getParams() throws AuthFailureError {
                 //se pasan todos los parametros necesarios en la solicitud
                 HashMap<String, String> parametros = new HashMap<String, String>();
+                parametros.put("opcion", "anejerciciorutina");
                 parametros.put("idrutina", idrutina);
                 parametros.put("usuario", usuario);
                 parametros.put("nombre", nombre);
