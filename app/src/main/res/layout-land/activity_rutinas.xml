@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Rutina">
+    tools:context=".Rutinas">
 
     <ScrollView
         android:id="@+id/scrollView"
@@ -16,15 +16,22 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
+            android:id="@+id/linearLayoutTitulo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:descendantFocusability="blocksDescendants"
+            android:orientation="vertical"
+            android:paddingLeft="15dp"
+            android:paddingTop="15dp"
+            android:paddingEnd="15dp"
+            android:paddingRight="15dp"
+            android:paddingBottom="15dp">
 
             <TextView
-                android:id="@+id/rut_nombre"
+                android:id="@+id/tv_HistoricoRutinas"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Rutina"
+                android:text="Rutinas"
                 android:textAlignment="center"
                 android:textSize="30dp"
                 android:textStyle="bold" />
@@ -32,20 +39,14 @@
             <ListView
                 android:id="@+id/rut_ejercicios"
                 android:layout_width="match_parent"
-                android:layout_height="600dp"
+                android:layout_height="300dp"
                 android:nestedScrollingEnabled="true"/>
 
             <Button
-                android:id="@+id/rut_ordenar"
+                android:id="@+id/ru_aniadir"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Ordenar ejercicios" />
-
-            <Button
-                android:id="@+id/rut_guardar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Añadir ejercicio" />
+                android:text="Añadir rutina" />
 
         </LinearLayout>
     </ScrollView>

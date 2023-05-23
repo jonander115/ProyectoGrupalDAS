@@ -11,6 +11,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -42,15 +43,19 @@ public class DialogoNuevaCategoria extends DialogFragment {
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         super.onCreateDialog(savedInstanceState);
 
-        //Definimos un builder para construir el diálogo
+        //Definimos un builder para construir el dialogo
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
+        //obtener los datos pasados al dialogo
         if (getArguments() != null){
             usuario = getArguments().getString("usuario");
             titulo = getArguments().getString("categoria");
             idrutina = getArguments().getString("idrutina");
         }
 
+        //definir titulo para el dialogo
+        //si no se pasa titulo significa que se quiere crear una categoria nueva
+        //si se pasa titulo significa que se ha elegido una categoria y se crea un ejercicio
         if (titulo == null){
             builder.setTitle("Es necesario crear un ejercicio para poder crear la categoría");
         }
@@ -63,22 +68,30 @@ public class DialogoNuevaCategoria extends DialogFragment {
         View aspectoDialog = inflater.inflate(R.layout.dialogo_ejercicio_nuevo, null);
         builder.setView(aspectoDialog);
 
+        //obtener elementos de la vista
         categoria=aspectoDialog.findViewById(R.id.cat_cat);
         nombre=aspectoDialog.findViewById(R.id.cat_ej);
         categoria.setText(titulo);
 
 
-        //Opción de crear playlist, que añade la playlist y cierra el diálogo
+        //boton añadir para terminar de aniadir el ejercicio
         builder.setPositiveButton("Añadir", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                aniadircategoriayej();
-                ((Rutina) getActivity()).actualizarLista();
-                //dismiss();
+
+                if (categoria.getText().toString().length() == 0 || nombre.getText().toString().length() == 0) {
+                    Toast.makeText(getContext(), "Debes introducir datos para poder añadir un ejercicio", Toast.LENGTH_LONG).show();
+                }
+                else{
+                    aniadircategoriayej();
+                    //actualizar la lista con el ejercicio nuevo aniadido
+                    ((Rutina) getActivity()).actualizarLista();
+                    //dismiss();
+                }
             }
         });
 
-        //Opción de cancelar, que cierra el diálogo
+        //cancelar cierra el dialogo
         builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
@@ -86,17 +99,16 @@ public class DialogoNuevaCategoria extends DialogFragment {
             }
         });
 
-
         return builder.create();
     }
 
+    //se aniade el ejercicio con su correspondiente categoria, independientemente de si la categoria se ha creado o seleccionado
     private void aniadircategoriayej(){
         StringRequest sr = new StringRequest(Request.Method.POST, "http://ec2-54-93-62-124.eu-central-1.compute.amazonaws.com/jwojciechowska001/WEB/entrega3/aniadircategoriayejercicio.php", new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-
                 Log.d("respuesta",response);
-
+                //como es un insert en la db, no se hace nada con la respuesta
             }
         }, new Response.ErrorListener() {
 
