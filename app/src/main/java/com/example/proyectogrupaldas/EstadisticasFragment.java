@@ -23,7 +23,7 @@ import java.util.ArrayList;
 
 public class EstadisticasFragment extends Fragment {
 
-    String usuario = "joni";
+    String usuario;
     private ContextThemeWrapper contextThemeWrapper;
 
     private Context context;

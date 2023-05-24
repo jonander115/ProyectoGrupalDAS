@@ -6,28 +6,38 @@
     android:layout_height="match_parent"
     tools:context=".HistoricoRutinasFragment">
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:descendantFocusability="blocksDescendants"
-        android:orientation="vertical"
-        android:paddingLeft="15dp"
-        android:paddingTop="15dp"
-        android:paddingEnd="15dp"
-        android:paddingRight="15dp"
-        android:paddingBottom="15dp"     >
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Histórico de rutinas"
-        android:textAlignment="center"
-        android:textSize="30dp"
-        android:textStyle="bold" />
-    <ExpandableListView
-        android:id="@+id/listViewHistoricoRutinas"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayoutTitulo" />
-</LinearLayout>
+        android:layout_height="match_parent"
+        android:paddingBottom="50dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:descendantFocusability="blocksDescendants"
+            android:orientation="vertical"
+            android:paddingLeft="15dp"
+            android:paddingTop="15dp"
+            android:paddingEnd="15dp"
+            android:paddingRight="15dp"
+            android:paddingBottom="15dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Histórico de rutinas"
+                android:textAlignment="center"
+                android:textSize="30dp"
+                android:textStyle="bold" />
+
+            <ExpandableListView
+                android:id="@+id/listViewHistoricoRutinas"
+                android:layout_width="match_parent"
+                android:layout_height="600dp"
+                android:layout_weight="1"
+                app:layout_constraintTop_toBottomOf="@+id/linearLayoutTitulo"
+                android:nestedScrollingEnabled="true"/>
+        </LinearLayout>
+    </ScrollView>
+
 </FrameLayout>

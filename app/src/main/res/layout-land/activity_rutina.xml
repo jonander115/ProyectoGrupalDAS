@@ -18,7 +18,9 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp">
 
             <TextView
                 android:id="@+id/rut_nombre"
@@ -29,11 +31,11 @@
                 android:textSize="30dp"
                 android:textStyle="bold" />
 
-            <ListView
-                android:id="@+id/rut_ejercicios"
+            <Button
+                android:id="@+id/rut_guardar"
                 android:layout_width="match_parent"
-                android:layout_height="300dp"
-                android:nestedScrollingEnabled="true"/>
+                android:layout_height="wrap_content"
+                android:text="Añadir ejercicio" />
 
             <Button
                 android:id="@+id/rut_ordenar"
@@ -42,10 +44,22 @@
                 android:text="Ordenar ejercicios" />
 
             <Button
-                android:id="@+id/rut_guardar"
+                android:id="@+id/rut_iniciar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Añadir ejercicio" />
+                android:text="Iniciar entrenamiento" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ListView
+                android:id="@+id/rut_ejercicios"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:nestedScrollingEnabled="true" />
+
+        </LinearLayout>
 
         </LinearLayout>
     </ScrollView>

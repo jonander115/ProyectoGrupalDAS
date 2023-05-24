@@ -119,11 +119,16 @@ public class EjerciciosEstadisticas extends AppCompatActivity {
             LinearLayout container = findViewById(R.id.listadoRutinasLL);
             //Guardamos los datos para cada diario
             //Nombre, fecha ini, hora ini, fecha fin, hora fin
-            for (int i = 0; i < listaRutinas.size(); i++) {
-                EditText textView = new EditText(EjerciciosEstadisticas.this);
-                textView.setEnabled(false);
-                textView.setText(listaRutinas.get(i));
-                container.addView(textView);
+            try {
+                for (int i = 0; i < listaRutinas.size(); i++) {
+                    EditText textView = new EditText(EjerciciosEstadisticas.this);
+                    textView.setEnabled(false);
+                    textView.setText(listaRutinas.get(i));
+                    container.addView(textView);
+                }
+            }
+            catch(Exception e) {
+                //
             }
             container.post(new Runnable() {
                 @Override

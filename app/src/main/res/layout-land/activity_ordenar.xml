@@ -6,27 +6,33 @@
     android:layout_height="match_parent"
     tools:context=".Ordenar">
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/ord_nombre"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Rutina"
-            android:textAlignment="center"
-            android:textSize="30dp"
-            android:textStyle="bold" />
+            android:orientation="vertical"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp">
 
-        <ListView
-            android:id="@+id/ord_ejercicios"
-            android:layout_width="match_parent"
-            android:layout_height="459dp" />
+            <TextView
+                android:id="@+id/ord_nombre"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Rutina"
+                android:textAlignment="center"
+                android:textSize="30dp"
+                android:textStyle="bold" />
 
-    </LinearLayout>
+            <ListView
+                android:id="@+id/ord_ejercicios"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:nestedScrollingEnabled="true"/>
+
+        </LinearLayout>
+    </ScrollView>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Rutinas">
+    tools:context=".RutinaIniciada">
 
     <ScrollView
         android:id="@+id/scrollView"
@@ -16,37 +16,37 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
-            android:id="@+id/linearLayoutTitulo"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:descendantFocusability="blocksDescendants"
-            android:orientation="vertical"
-            android:paddingLeft="15dp"
-            android:paddingTop="15dp"
-            android:paddingEnd="15dp"
-            android:paddingRight="15dp"
-            android:paddingBottom="15dp">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
             <TextView
-                android:id="@+id/tv_HistoricoRutinas"
+                android:id="@+id/nombreRutinaIniciada"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Rutinas"
+                android:text="nombreRutina"
                 android:textAlignment="center"
                 android:textSize="30dp"
                 android:textStyle="bold" />
 
-            <ListView
-                android:id="@+id/rut_ejercicios"
+            <Button
+                android:id="@+id/bt_FinEntrenamiento"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Finalizar entrenamiento" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="52dp"
+                android:layout_marginTop="10dp"
+                android:text="Ejercicios a realizar:" />
+
+            <ExpandableListView
+                android:id="@+id/listaEjerciciosSeriesRutinaIniciada"
                 android:layout_width="match_parent"
                 android:layout_height="300dp"
                 android:nestedScrollingEnabled="true"/>
-
-            <Button
-                android:id="@+id/ru_aniadir"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Añadir rutina" />
 
         </LinearLayout>
     </ScrollView>

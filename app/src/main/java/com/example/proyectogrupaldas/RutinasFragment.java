@@ -114,8 +114,8 @@ public class RutinasFragment extends Fragment {
                     Toast.makeText(context, "Esa rutina ya existe", Toast.LENGTH_SHORT).show();
                 } else if (response.equals("1")) {
                     Toast.makeText(context, "Se ha añadido la rutina", Toast.LENGTH_SHORT).show();
-                    actualizarLista();
                 }
+                actualizarLista();
             }
         }, new Response.ErrorListener() {
             @Override

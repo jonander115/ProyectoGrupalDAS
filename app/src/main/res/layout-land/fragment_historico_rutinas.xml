@@ -1,22 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Rutinas">
+    tools:context=".HistoricoRutinasFragment">
 
     <ScrollView
-        android:id="@+id/scrollView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_height="wrap_content"
+        android:paddingBottom="50dp">
 
         <LinearLayout
-            android:id="@+id/linearLayoutTitulo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:descendantFocusability="blocksDescendants"
@@ -28,27 +23,21 @@
             android:paddingBottom="15dp">
 
             <TextView
-                android:id="@+id/tv_HistoricoRutinas"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Rutinas"
+                android:text="Histórico de rutinas"
                 android:textAlignment="center"
                 android:textSize="30dp"
                 android:textStyle="bold" />
 
-            <ListView
-                android:id="@+id/rut_ejercicios"
+            <ExpandableListView
+                android:id="@+id/listViewHistoricoRutinas"
                 android:layout_width="match_parent"
-                android:layout_height="600dp"
+                android:layout_height="300dp"
+                android:layout_weight="1"
+                app:layout_constraintTop_toBottomOf="@+id/linearLayoutTitulo"
                 android:nestedScrollingEnabled="true"/>
-
-            <Button
-                android:id="@+id/ru_aniadir"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Añadir rutina" />
-
         </LinearLayout>
     </ScrollView>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>

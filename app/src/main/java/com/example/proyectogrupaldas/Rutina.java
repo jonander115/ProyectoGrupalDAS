@@ -63,7 +63,7 @@ public class Rutina extends AppCompatActivity {
         usuario=getIntent().getStringExtra("usuario");
         idrutina=getIntent().getStringExtra("id");
 
-         nombreRutina = getIntent().getStringExtra("nombre");
+        nombreRutina = getIntent().getStringExtra("nombre");
 
         Button aniadir=findViewById(R.id.rut_guardar);
         Button ordenar=findViewById(R.id.rut_ordenar);
@@ -74,7 +74,7 @@ public class Rutina extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //se genera un dialogo al que se le pasan los datos necesarios para aniadir luego un ejercicio
-                DialogoVerCategorias dialogo = new DialogoVerCategorias();
+                DialogoVerCategorias dialogo = new DialogoVerCategorias(context);
                 Bundle args = new Bundle();
                 args.putString("usuario", usuario);
                 args.putString("idrutina", idrutina);
@@ -103,8 +103,6 @@ public class Rutina extends AppCompatActivity {
             public void onClick(View v) {
                 insertarRutinaIniciada(nombreRutina);
             }
-
-
         });
 
         //actualizamos los ejercicios de la rutina

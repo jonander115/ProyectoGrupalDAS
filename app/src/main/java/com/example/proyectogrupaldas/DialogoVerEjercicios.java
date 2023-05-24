@@ -2,6 +2,7 @@ package com.example.proyectogrupaldas;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -37,6 +39,11 @@ public class DialogoVerEjercicios extends DialogFragment {
     private RequestQueue rq;
     private String usuario, idrutina, categoria;
     ListView lv;
+    private Context context;
+
+    public DialogoVerEjercicios(Context con) {
+        this.context=con;
+    }
 
     @NonNull
     @Override
@@ -69,7 +76,7 @@ public class DialogoVerEjercicios extends DialogFragment {
         builder.setPositiveButton("Crear ejercicio", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                DialogoNuevaCategoria dialogo = new DialogoNuevaCategoria();
+                DialogoNuevaCategoria dialogo = new DialogoNuevaCategoria(context);
                 Bundle args = new Bundle();
                 args.putString("usuario", usuario);
                 args.putString("categoria", categoria);
@@ -174,6 +181,9 @@ public class DialogoVerEjercicios extends DialogFragment {
 
                 Log.d("respuesta",response);
                 //al ser un insert no se hace nada con la respuesta
+                if (response.equals("noPosible")){
+                    Toast.makeText(context,"El ejercicio ya está en la rutina",Toast.LENGTH_SHORT);
+                }
             }
         }, new Response.ErrorListener() {
 

@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".RutinasFragment">
+    tools:context=".EstadisticasFragment">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -11,6 +11,7 @@
         android:paddingBottom="50dp">
 
         <LinearLayout
+            android:id="@+id/linearLayoutTitulo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:descendantFocusability="blocksDescendants"
@@ -24,23 +25,17 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Rutinas"
+                android:text="Estadísticas"
                 android:textAlignment="center"
                 android:textSize="30dp"
                 android:textStyle="bold" />
 
-            <Button
-                android:id="@+id/ru_aniadir"
+            <ListView xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/listaMenuEstadisticas"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Añadir rutina" />
-
-            <ListView
-                android:id="@+id/rut_ejercicios"
-                android:layout_width="match_parent"
-                android:layout_height="600dp"
+                android:layout_height="150dp"
+                android:clickable="false"
                 android:nestedScrollingEnabled="true"/>
-
 
         </LinearLayout>
     </ScrollView>

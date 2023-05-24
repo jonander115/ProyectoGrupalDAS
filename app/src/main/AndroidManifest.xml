@@ -51,13 +51,7 @@
             android:name=".RutinaDeHistorico"
             android:exported="false" />
         <activity
-            android:name=".HistoricoRutinas"
-            android:exported="false" />
-        <activity
             android:name=".Rutina"
-            android:exported="false" />
-        <activity
-            android:name=".Rutinas"
             android:exported="false" />
 
         <provider
@@ -75,9 +69,6 @@
             android:exported="false" />
         <activity
             android:name=".EjerciciosEstadisticas"
-            android:exported="false" />
-        <activity
-            android:name=".MenuEstadisticas"
             android:exported="false" />
         <activity android:name=".RutinasEstadistica" />
         <activity

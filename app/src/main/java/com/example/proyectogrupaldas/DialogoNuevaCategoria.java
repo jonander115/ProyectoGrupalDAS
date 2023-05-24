@@ -2,6 +2,7 @@ package com.example.proyectogrupaldas;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
@@ -36,6 +37,11 @@ public class DialogoNuevaCategoria extends DialogFragment {
     private RequestQueue rq;
     private EditText categoria,nombre;
     private String usuario, titulo, idrutina;
+    private Context context;
+
+    public DialogoNuevaCategoria(Context con) {
+        this.context=con;
+    }
 
 
     @NonNull
@@ -108,7 +114,15 @@ public class DialogoNuevaCategoria extends DialogFragment {
             @Override
             public void onResponse(String response) {
                 Log.d("respuesta",response);
-                //como es un insert en la db, no se hace nada con la respuesta
+                //se actualiza la lista
+                ((Rutina) context).actualizarLista();
+
+                if (response.equals("rutinaYaTieneEjercicio")){
+                    Toast.makeText(context,"El ejercicio ya está en la rutina",Toast.LENGTH_SHORT);
+                }
+                else if (response.equals("yaExisteEjercicio")){
+                    Toast.makeText(context,"El ejercicio ya existe",Toast.LENGTH_SHORT);
+                }
             }
         }, new Response.ErrorListener() {
 

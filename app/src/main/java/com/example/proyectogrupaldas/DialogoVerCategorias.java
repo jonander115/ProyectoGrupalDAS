@@ -2,6 +2,7 @@ package com.example.proyectogrupaldas;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
@@ -36,6 +37,12 @@ public class DialogoVerCategorias extends DialogFragment {
     private String idrutina;
     ListView lv;
 
+    private Context context;
+
+    public DialogoVerCategorias(Context con) {
+        this.context=con;
+    }
+
 
     @NonNull
     @Override
@@ -65,7 +72,7 @@ public class DialogoVerCategorias extends DialogFragment {
         builder.setPositiveButton("Crear categoría", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                DialogoNuevaCategoria dialogo = new DialogoNuevaCategoria();
+                DialogoNuevaCategoria dialogo = new DialogoNuevaCategoria(context);
                 Bundle args = new Bundle();
                 args.putString("usuario", usuario);
                 args.putString("idrutina", idrutina);
@@ -131,7 +138,7 @@ public class DialogoVerCategorias extends DialogFragment {
                     lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int p, long id) {
-                            DialogoVerEjercicios dialogo = new DialogoVerEjercicios();
+                            DialogoVerEjercicios dialogo = new DialogoVerEjercicios(context);
                             Bundle args = new Bundle();
                             // se pasan todos los datos necesarios
                             args.putString("usuario", usuario);
