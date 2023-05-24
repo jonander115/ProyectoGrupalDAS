@@ -45,6 +45,7 @@ public class RutinasFragment extends Fragment {
     private Context context;
     private String usuario;
     private View view;
+    private ListView listView;
 
     public RutinasFragment() {
         // Required empty public constructor
@@ -103,9 +104,14 @@ public class RutinasFragment extends Fragment {
             }
         });
 
+        listView = view.findViewById(R.id.rut_ejercicios);
+
         actualizarLista();
 
-        return view; }
+        return view;
+    }
+
+
     public void crearRutina(String nombre) {
         StringRequest sr = new StringRequest(Request.Method.POST, "http://ec2-54-93-62-124.eu-central-1.compute.amazonaws.com/jwojciechowska001/WEB/entrega3/aniadirrutina.php", new Response.Listener<String>() {
             @Override
@@ -172,7 +178,7 @@ public class RutinasFragment extends Fragment {
                     ArrayAdapter<String> adapter = new ArrayAdapter<>(context, android.R.layout.simple_list_item_1, rutinas);
                     //ListView lv = (ListView) findViewById(R.id.rut_ejercicios);
 
-                    ListView listView = view.findViewById(R.id.rut_ejercicios);
+                   // ListView listView = view.findViewById(R.id.rut_ejercicios);
                     listView.setAdapter(adapter);
 
                     rq.cancelAll("rutinas");
@@ -190,6 +196,7 @@ public class RutinasFragment extends Fragment {
                         }
                     });
 
+                    /*
                     listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
                         @Override
                         public boolean onItemLongClick(AdapterView<?> parent, View view, int p, long id) {
@@ -197,6 +204,8 @@ public class RutinasFragment extends Fragment {
                             return false;
                         }
                     });
+
+                     */
                 }
             }
         }, new Response.ErrorListener() {
