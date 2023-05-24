@@ -29,6 +29,8 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -37,7 +39,7 @@ public class Rutina extends AppCompatActivity {
     private RequestQueue rq;
     private Context context=this;
     private String usuario;
-    private String idrutina;
+    private String idrutina, nombreRutina;
     private ArrayAdapter a;
 
     @Override
@@ -60,6 +62,8 @@ public class Rutina extends AppCompatActivity {
         nombre.setText(getIntent().getStringExtra("nombre"));
         usuario=getIntent().getStringExtra("usuario");
         idrutina=getIntent().getStringExtra("id");
+
+         nombreRutina = getIntent().getStringExtra("nombre");
 
         Button aniadir=findViewById(R.id.rut_guardar);
         Button ordenar=findViewById(R.id.rut_ordenar);
@@ -98,10 +102,16 @@ public class Rutina extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-              //  intent pasar usuario
+                insertarRutinaIniciada(nombreRutina);
 
-
+                Intent i = new Intent (Rutina.this, RutinaIniciada.class);
+                i.putExtra("idrutina", idrutina);
+                i.putExtra("usuario", usuario);
+                i.putExtra("nombre", nombreRutina);
+                startActivity(i);
             }
+
+
         });
 
         //actualizamos los ejercicios de la rutina
@@ -251,6 +261,51 @@ public class Rutina extends AppCompatActivity {
         if(requestCode==1){
             actualizarLista();
         }
+    }
+    private void insertarRutinaIniciada(String nombreRutina) {
+        RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
+
+        //Url del servicio web en el servidor
+        String url = "http://ec2-54-93-62-124.eu-central-1.compute.amazonaws.com/jwojciechowska001/WEB/entrega3/rutinaIniciada.php";
+
+        //Solicitud
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                //Procesar la respuesta del servidor
+
+                //La respuesta es un String
+                if (response.equals("rutinaCreada")){
+                    Toast.makeText(getApplicationContext(), "Rutina comenzada", Toast.LENGTH_LONG).show();
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                //Manejar error de la solicitud
+                Toast.makeText(getApplicationContext(), "Error al crear la rutina", Toast.LENGTH_LONG).show();
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                // Agregar los parámetros necesarios
+                LocalDateTime now = LocalDateTime.now();
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+                String horaInicio = now.format(formatter);
+                params.put("accion", "insertarRutina");
+                params.put("fechaHoraInicio",horaInicio);
+                params.put("usuario", usuario);
+                params.put("idRutina",idrutina);
+                params.put("nombreRutina",nombreRutina);
+
+                return params;
+            }
+        };
+
+        //Encolar la solicitud
+        queue.add(stringRequest);
     }
 
 }

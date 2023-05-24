@@ -3,8 +3,14 @@ package com.example.proyectogrupaldas;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ExpandableListView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,7 +24,7 @@ import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.simple.JSONObject;
+import org.json.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
@@ -28,7 +34,7 @@ import java.util.Map;
 
 public class RutinaIniciada extends AppCompatActivity {
 
-    private String usuario;
+    private String usuario, nombre;
     private String idRutina;
     private TextView nombreRutinaIniciada;
     private ExpandableListView listViewEjercicios;
@@ -43,7 +49,8 @@ public class RutinaIniciada extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             usuario = extras.getString("usuario");
-            idRutina = extras.getString("idRutina");
+            idRutina = extras.getString("idrutina");
+            nombre = extras.getString("nombre");
         }
 
         //Recogemos los elementos de la vista
@@ -97,7 +104,7 @@ public class RutinaIniciada extends AppCompatActivity {
 
                     //Le pasamos a la vista los datos a mostrar mediante el adaptador
                     listViewEjercicios = (ExpandableListView) findViewById(R.id.listaEjerciciosSeriesRutinaIniciada);
-                    RutinaIniciadaAdapter adapter = new RutinaIniciadaAdapter(usuario, getApplicationContext(), listaEjercicios, mapSeries);
+                    RutinaIniciadaAdapter adapter = new RutinaIniciadaAdapter(usuario, RutinaIniciada.this, listaEjercicios, mapSeries);
                     listViewEjercicios.setAdapter(adapter);
 
 
@@ -202,8 +209,42 @@ public class RutinaIniciada extends AppCompatActivity {
         queue.add(stringRequest);
 
     }
+    public void aniadirSerie(int peso, int reps, String notas, String nombre) {
+        StringRequest sr = new StringRequest(Request.Method.POST, "http://ec2-54-93-62-124.eu-central-1.compute.amazonaws.com/jwojciechowska001/WEB/entrega3/aniadirserie.php", new Response.Listener<String>() {
+            public void onResponse(String response) {
+                // Si la respuesta está vacía imprime un mensaje
+                if (response.equals("0")) {
+                    //  Toast.makeText(context, "Esa rutina ya existe", Toast.LENGTH_SHORT).show();
+                } else if (response.equals("1")) {
+                    Toast.makeText(getApplicationContext(), "Se ha añadido la serie", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                // Si ha habido algún error con la solicitud
+                Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                // Se pasan todos los parámetros necesarios en la solicitud
+                HashMap<String, String> parametros = new HashMap<>();
+                parametros.put("usuario", usuario);
+                parametros.put("nombre",nombre);
+                parametros.put("peso", String.valueOf(peso));
+                parametros.put("repeticiones", String.valueOf(reps));
+                parametros.put("notas", notas);
 
+                return parametros;
+            }
+        };
 
+        // Se envía la solicitud con los parámetros
+        RequestQueue rq = Volley.newRequestQueue(getApplicationContext());
+        sr.setTag("ejs");
+        rq.add(sr);
+    }
 
 
 
@@ -221,4 +262,5 @@ public class RutinaIniciada extends AppCompatActivity {
         super.onRestoreInstanceState(savedInstanceState);
         nombreRutinaIniciada.setText(savedInstanceState.getString("tv_NombreDeRutina"));
     }
+
 }

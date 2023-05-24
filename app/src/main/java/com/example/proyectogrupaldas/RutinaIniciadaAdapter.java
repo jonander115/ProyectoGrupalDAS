@@ -1,12 +1,16 @@
 package com.example.proyectogrupaldas;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
 import android.widget.TextView;
+
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -80,7 +84,15 @@ public class RutinaIniciadaAdapter extends BaseExpandableListAdapter {
         bt_AniadirSerie.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //abrir dialogode javi
+               DialogoCantidadSeries dialogo=new DialogoCantidadSeries();
+               Bundle args = new Bundle();
+               args.putString("usuario", usuario);
+               dialogo.setArguments(args);
+
+               FragmentManager fragmentManager = ((FragmentActivity) contexto).getSupportFragmentManager();
+
+
+                dialogo.show(fragmentManager, "añadirSerie");
             }
         });
 

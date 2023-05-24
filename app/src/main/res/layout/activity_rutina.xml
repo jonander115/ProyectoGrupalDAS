@@ -46,12 +46,18 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Iniciar entrenamiento" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
             <ListView
                 android:id="@+id/rut_ejercicios"
                 android:layout_width="match_parent"
                 android:layout_height="600dp"
-                android:nestedScrollingEnabled="true"/>
+                android:nestedScrollingEnabled="true" />
+
+        </LinearLayout>
 
         </LinearLayout>
     </ScrollView>
