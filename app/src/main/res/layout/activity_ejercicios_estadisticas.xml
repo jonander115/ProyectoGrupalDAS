@@ -87,6 +87,16 @@
             android:text=""
             android:textColor="@color/black"/>
 
+        <EditText
+            android:id="@+id/nombreListado"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:enabled="false"
+            android:textColor="@color/black"
+            android:backgroundTint="@android:color/transparent"
+            android:hint="@string/app_name"
+            android:text="Aparece en : " />
+
         <LinearLayout
             android:id="@+id/listadoRutinasLL"
             android:layout_width="match_parent"

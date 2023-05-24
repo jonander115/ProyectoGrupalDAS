@@ -5,7 +5,6 @@ import androidx.preference.PreferenceManager;
 
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -29,7 +28,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
@@ -49,10 +47,10 @@ import java.util.stream.Collectors;
 
 public class EjerciciosEstadisticas extends AppCompatActivity {
 
+    //Atributos necesarios para el funcionamiento correcto
     DatePickerDialog datePickerDialog, datePickerDialog2;
     Button dataButton, dataButton2;
-    String fechaIni, fechaFin, usuario, fechaIniGiro, fechaFinGiro ;
-
+    String fechaIni, fechaFin, usuario;
 
     Boolean tema;
     Integer selectedPosCat, selectedPosEjer;
@@ -66,10 +64,12 @@ public class EjerciciosEstadisticas extends AppCompatActivity {
     private int year, month, day;
 
 
+    //Metodo de creacion de la view
 
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //Aplicacion del tema
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         tema = prefs.getBoolean("tema",true);
         if(tema) {
@@ -81,20 +81,22 @@ public class EjerciciosEstadisticas extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ejercicios_estadisticas);
 
+        //Definicion de los elementos de la view
 
+        //Obtencion del extra, en este caso usuario
         usuario = getIntent().getExtras().getString("usuario");
 
         spinnerCategorias =findViewById(R.id.spinner_categorias);
 
         spinnerEjercicios =findViewById(R.id.spinner_ejercicios);
 
+        //Initializacion del primer picker
         initDataPicker();
         dataButton = findViewById(R.id.pickerFechaIni);
 
+        //Inicializacin del segundo picker
         initDataPicker2();
         dataButton2 = findViewById(R.id.pickerFechaFin);
-
-        Boolean tema;
 
         pesoMedio = findViewById(R.id.pesoMedio);
         mediaRepes = findViewById(R.id.repMedias);
@@ -103,14 +105,16 @@ public class EjerciciosEstadisticas extends AppCompatActivity {
         pesoMedio.setText("Peso medio");
         mediaRepes.setText("Repeticiones medias");
         seriesMedias.setText("Series medias");
+
+        //Inicializacion de los graficos
         lineChart = findViewById(R.id.chart);
-
-
         lineChart2 = findViewById(R.id.chart2);
 
 
-        ArrayList<LineChart> lineChartEntries = new ArrayList<>();
+        //En caso de girar pantalla
         if (savedInstanceState != null) {
+
+            //Recuperamos los valores perdidos
             selectedPosCat = savedInstanceState.getInt("CategoriaElegida");
             selectedPosEjer = savedInstanceState.getInt("EjerElegido");
             dataButton.setText(savedInstanceState.getString("dataButton"));
@@ -123,7 +127,7 @@ public class EjerciciosEstadisticas extends AppCompatActivity {
             listaRepesChart = savedInstanceState.getIntegerArrayList("listaRepesChart");
 
             try {
-                setupLineChart();
+                configuracionChart1();
                 setupLineChart2();
 
 
@@ -133,7 +137,8 @@ public class EjerciciosEstadisticas extends AppCompatActivity {
                 for (int i = 0; i < listaRutinas.size(); i++) {
                     EditText textView = new EditText(EjerciciosEstadisticas.this);
                     textView.setEnabled(false);
-                    textView.setText(listaRutinas.get(i));
+                    textView.setTextColor(Color.BLACK);
+                    textView.setText("-"+listaRutinas.get(i));
                     container.addView(textView);
                 }
                 container.post(new Runnable() {
@@ -149,23 +154,24 @@ public class EjerciciosEstadisticas extends AppCompatActivity {
 
         }
 
+        //Cargamos informacion en los desplegables
         cargarCatEjers(spinnerCategorias,spinnerEjercicios);
 
 
 
     }
+    //FUENTE DE LA BIBLIOTECA DE GRAFICOS : https://github.com/PhilJay/MPAndroidChart
 
-    private void setupLineChart() {
-        // Crear una lista de Entry (valores de los puntos en el gráfico)
-        ArrayList<String> xValues = new ArrayList<>();
+    private void configuracionChart1() {
+        // Creacion de listas de valores que luego apareceran en los graficos
         ArrayList<Entry> yValues = new ArrayList<>();
 
         Log.d("longitud de fechas", String.valueOf(listaFechasChart.size()));
         for (int i = 0; i < listaFechasChart.size(); i++) {
-            xValues.add(listaFechasChart.get(i));
             yValues.add(new Entry(i, listaRepesChart.get(i)));
         }
 
+        //Formateo de los datos
         ArrayList<ILineDataSet> dataSets = new ArrayList<>();
         LineDataSet dataSet = new LineDataSet(yValues, "Datos");
         dataSet.setColors(ColorTemplate.COLORFUL_COLORS);
@@ -173,18 +179,18 @@ public class EjerciciosEstadisticas extends AppCompatActivity {
         dataSet.setDrawValues(true);
         dataSets.add(dataSet);
 
+
+        //Configuracion del eje x, ya que son strings hay que aplicar estos cambios
         LineData lineData = new LineData(dataSets);
-
-
         XAxis xAxis = lineChart.getXAxis();
-        xAxis.setLabelCount(xValues.size());
+        xAxis.setLabelCount(listaFechasChart.size());
         xAxis.setGranularity(1f);
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        xAxis.setValueFormatter(new IndexAxisValueFormatter(xValues));
-
+        xAxis.setValueFormatter(new IndexAxisValueFormatter(listaFechasChart));
         xAxis.setLabelRotationAngle(45);
 
 
+        //Configuracion del chart final
         lineChart.setData(lineData);
         lineChart.getDescription().setEnabled(false);
         lineChart.getLegend().setEnabled(false);
@@ -192,16 +198,16 @@ public class EjerciciosEstadisticas extends AppCompatActivity {
         lineChart.invalidate();
     }
 
-    private void setupLineChart2() {
-        ArrayList<String> xValues = new ArrayList<>();
+    private void setearchart2() {
+        // Creacion de listas de valores que luego apareceran en los graficos
         ArrayList<Entry> yValues = new ArrayList<>();
 
         Log.d("longitud de fechas", String.valueOf(listaFechasChart.size()));
         for (int i = 0; i < listaFechasChart.size(); i++) {
-            xValues.add(listaFechasChart.get(i));
             yValues.add(new Entry(i, listaPesosChart2.get(i)));
         }
 
+        //Formateo de los datos
         ArrayList<ILineDataSet> dataSets = new ArrayList<>();
         LineDataSet dataSet = new LineDataSet(yValues, "Datos");
         dataSet.setColors(ColorTemplate.COLORFUL_COLORS);
@@ -209,14 +215,15 @@ public class EjerciciosEstadisticas extends AppCompatActivity {
         dataSet.setDrawValues(true);
         dataSets.add(dataSet);
 
+        //Configuracion del eje x, ya que son strings hay que aplicar estos cambios
         LineData lineData = new LineData(dataSets);
-
         XAxis xAxis = lineChart2.getXAxis();
-        xAxis.setLabelCount(xValues.size());
+        xAxis.setLabelCount(listaFechasChart.size());
         xAxis.setGranularity(1f);
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        xAxis.setValueFormatter(new IndexAxisValueFormatter(xValues));
+        xAxis.setValueFormatter(new IndexAxisValueFormatter(listaFechasChart));
 
+        //Configuracion del chart final
         xAxis.setLabelRotationAngle(45);
         lineChart2.setData(lineData);
         lineChart2.getDescription().setEnabled(false);
@@ -226,6 +233,7 @@ public class EjerciciosEstadisticas extends AppCompatActivity {
     }
 
 
+    //Metodo para almacenar los datos necesarios cuando se gira el movil
     @Override
     protected void onSaveInstanceState(Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
@@ -245,9 +253,14 @@ public class EjerciciosEstadisticas extends AppCompatActivity {
 
 
     }
+    //Inicializacion del DataPicker1
+    //Fuente del codigo relacionado con los data picker: https://youtu.be/qCoidM98zNk
     private void initDataPicker() {
+
+        //Asignacion de un evento de listener
         DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
             @Override
+            //Guardado de los valores del calendario en una variable
             public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
 
                 String date = makeDateString(i2, i1+1, i);
@@ -256,12 +269,14 @@ public class EjerciciosEstadisticas extends AppCompatActivity {
             }
         };
 
+        //Inicializacion del comentario
         Calendar calendar = Calendar.getInstance();
         year = calendar.get(Calendar.YEAR);
         month = calendar.get(Calendar.MONTH);
         day = calendar.get(Calendar.DAY_OF_MONTH);
 
 
+        //Asignacion del tema al dialogo del data picker
         if(tema){
             datePickerDialog2 = new DatePickerDialog(this,R.style.DatePickerDialogMaterialStyle, dateSetListener, year, month,day);
 
@@ -272,7 +287,10 @@ public class EjerciciosEstadisticas extends AppCompatActivity {
         datePickerDialog2.getDatePicker().setMaxDate(System.currentTimeMillis());
     }
 
+    //Inicializacion del DataPicker1
     private void initDataPicker2() {
+
+        //Asignacion de un listener al datapicker y un dialogo al datapicker
         DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
@@ -381,7 +399,8 @@ public class EjerciciosEstadisticas extends AppCompatActivity {
                                 listaRutinas.add(rutina);
                                 EditText textView = new EditText(EjerciciosEstadisticas.this);
                                 textView.setEnabled(false);
-                                textView.setText(rutina);
+                                textView.setText("-"+rutina);
+                                textView.setTextColor(Color.BLACK);
                                 container.addView(textView);
                             }
                             String[] parts = json.getJSONObject(i).getString("fechaHora").split(" ");
@@ -395,8 +414,8 @@ public class EjerciciosEstadisticas extends AppCompatActivity {
                         Log.d("longitud Pesos", listaPesosChart2.toString());
                         Log.d("longitud Repes", listaRepesChart.toString());
 
-                        setupLineChart2();
-                        setupLineChart();
+                        setearchart2();
+                        configuracionChart1();
 
                         container.post(new Runnable() {
                             @Override
@@ -409,10 +428,10 @@ public class EjerciciosEstadisticas extends AppCompatActivity {
 
                         float media = listaPesos.stream().mapToInt(Integer::intValue).sum();
                         System.out.print(String.valueOf(media));
-                        pesoMedio.setText(String.valueOf(media / listaPesos.size()) + " Kg");
+                        pesoMedio.setText("Peso medio : " + String.valueOf(media / listaPesos.size()) + " Kg");
 
                         media = listaRepes.stream().mapToInt(Integer::intValue).sum();
-                        mediaRepes.setText(String.valueOf(media / listaRepes.size()) + " repeticiones");
+                        mediaRepes.setText("Repeticiones medias : " + String.valueOf(media / listaRepes.size()) + " repeticiones");
 
                         double mediaSeries = listaSeries.stream()
                                 .collect(Collectors.groupingBy(Integer::intValue, Collectors.counting()))
@@ -421,7 +440,7 @@ public class EjerciciosEstadisticas extends AppCompatActivity {
                                 .average()
                                 .orElse(0);
 
-                        seriesMedias.setText(String.valueOf(mediaSeries) + " series");
+                        seriesMedias.setText("Series medias : " + String.valueOf(mediaSeries) + " series");
 
 
 
@@ -430,9 +449,6 @@ public class EjerciciosEstadisticas extends AppCompatActivity {
                     } catch (Exception e) {
                         System.out.print("Ha ocurrido un error: " + e.getMessage());
                     }
-
-
-
                 }
             },new Response.ErrorListener()
 
@@ -443,7 +459,6 @@ public class EjerciciosEstadisticas extends AppCompatActivity {
                     Toast.makeText(EjerciciosEstadisticas.this, "Se ha producido un error", Toast.LENGTH_SHORT).show();
                 }
             })
-
             {
                 @Override
                 protected Map<String, String> getParams () throws AuthFailureError {
