@@ -118,10 +118,10 @@ public class DialogoNuevaCategoria extends DialogFragment {
                 ((Rutina) context).actualizarLista();
 
                 if (response.equals("rutinaYaTieneEjercicio")){
-                    Toast.makeText(context,"El ejercicio ya está en la rutina",Toast.LENGTH_SHORT);
+                    Toast.makeText(context,"El ejercicio ya está en la rutina",Toast.LENGTH_SHORT).show();
                 }
                 else if (response.equals("yaExisteEjercicio")){
-                    Toast.makeText(context,"El ejercicio ya existe",Toast.LENGTH_SHORT);
+                    Toast.makeText(context,"El ejercicio ya existe",Toast.LENGTH_SHORT).show();
                 }
             }
         }, new Response.ErrorListener() {
