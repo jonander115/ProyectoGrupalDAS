@@ -6,6 +6,8 @@ import androidx.preference.PreferenceManager;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,6 +26,8 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -37,6 +41,7 @@ public class RutinaDeHistorico extends AppCompatActivity {
     private TextView tv_HoraInicio;
     private TextView tv_FechaFin;
     private TextView tv_HoraFin;
+    private Button botonFinalizarDesdeHistorico;
     private ExpandableListView listViewEjercicios;
     private ArrayList<String> listaEjercicios;
     private HashMap<String, ArrayList<String>> mapSeries;
@@ -67,9 +72,86 @@ public class RutinaDeHistorico extends AppCompatActivity {
         tv_FechaFin = findViewById(R.id.tv_FechaFin);
         tv_HoraFin = findViewById(R.id.tv_HoraFin);
 
+
         mostrarDatosDeRutina();
         mostrarDatosDeEjercicios();
+
+
+        botonFinalizarDesdeHistorico = findViewById(R.id.botonFinalizarDesdeHistorico);
+
+        /*
+        if (!tv_FechaFin.getText().toString().equals("-En progreso-") && !tv_HoraFin.getText().toString().equals("-En progreso-") ){
+            botonFinalizarDesdeHistorico.setVisibility(View.INVISIBLE);
+        }
+        else{
+            botonFinalizarDesdeHistorico.setVisibility(View.VISIBLE);
+        }
+        */
+
+
+        botonFinalizarDesdeHistorico.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finalizarEntrenamiento();
+            }
+        });
+
+
     }
+
+
+    //Método para finalizar el entrenamiento
+    private void finalizarEntrenamiento(){
+        //Utilizamos un servicio web alojado en el servidor
+
+        //Crear la cola de solicitudes
+        RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
+
+        //Url del servicio web en el servidor
+        String url = "http://ec2-54-93-62-124.eu-central-1.compute.amazonaws.com/jwojciechowska001/WEB/entrega3/rutinaIniciada.php";
+
+        //Solicitud
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                //Procesar la respuesta del servidor
+                if (response.equals("finalizado")){
+                    Toast.makeText(getApplicationContext(), "Entrenamiento finalizado", Toast.LENGTH_LONG).show();
+                    //Terminar la actividad
+                    finish();
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                //Manejar error de la solicitud
+                Toast.makeText(getApplicationContext(), "Error al finalizar el entrenamiento", Toast.LENGTH_LONG).show();
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                // Agregar los parámetros necesarios
+                LocalDateTime now = LocalDateTime.now();
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+                String horaFin = now.format(formatter);
+                params.put("accion","finalizarEntrenamiento");
+                params.put("usuario",usuario);
+                params.put("idRutina", idRutina);
+                params.put("fechaHoraFin", horaFin);
+
+                return params;
+            }
+        };
+
+        //Encolar la solicitud
+        queue.add(stringRequest);
+    }
+
+
+
+
 
     //Método para recoger la información de la rutina de la base de datos y mostrarla al usuario
     private void mostrarDatosDeRutina(){
@@ -108,26 +190,13 @@ public class RutinaDeHistorico extends AppCompatActivity {
                         String[] fFinal = fechaHoraFinal.split(" ");
                         tv_FechaFin.setText(fFinal[0]);
                         tv_HoraFin.setText(fFinal[1]);
+                        botonFinalizarDesdeHistorico.setVisibility(View.INVISIBLE);
                     }
                     else{
                         tv_FechaFin.setText("-En progreso-");
                         tv_HoraFin.setText("-En progreso-");
+                        botonFinalizarDesdeHistorico.setVisibility(View.VISIBLE);
                     }
-/*
-                    if (fFinal[0].equals("null")){
-                        tv_FechaFin.setText("-En progreso-");
-                    }
-                    else{
-                        tv_FechaFin.setText(fFinal[0]);
-                    }
-                    if (fFinal[1].equals("null")){
-                        tv_HoraFin.setText("-En progreso-");
-                    }
-                    else{
-                        tv_HoraFin.setText(fFinal[1]);
-                    }
-
- */
 
                 } catch (ParseException e) {
                     throw new RuntimeException(e);
@@ -196,6 +265,7 @@ public class RutinaDeHistorico extends AppCompatActivity {
 
                     //Le pasamos a la vista los datos a mostrar mediante el adaptador
                     listViewEjercicios = (ExpandableListView) findViewById(R.id.listViewEjerciciosRutina);
+                    listViewEjercicios.setFocusable(false);
                     EjerciciosRutinaAdapter adapter = new EjerciciosRutinaAdapter(usuario, getApplicationContext(), listaEjercicios, mapSeries);
                     listViewEjercicios.setAdapter(adapter);
 
@@ -252,7 +322,7 @@ public class RutinaDeHistorico extends AppCompatActivity {
                     ArrayList<String> listaSeriesDelEjercicio = new ArrayList<>();
 
                     //Contador para el número de serie
-                    int cont = 0;
+                    int cont = -1;
 
                     //Por cada serie del ejercicio
                     for(int i = 0; i < jsonArray.length(); i++)
@@ -262,9 +332,20 @@ public class RutinaDeHistorico extends AppCompatActivity {
                         String numRepeticiones = jsonArray.getJSONObject(i).getString("NumRepeticiones");
                         String notas = jsonArray.getJSONObject(i).getString("Notas");
 
+                        if (peso==null || peso.equals("null")){
+                            peso="-";
+                        }
+                        if (numRepeticiones==null || numRepeticiones.equals("null")){
+                            numRepeticiones="-";
+                        }
+                        if (notas==null || notas.equals("null")){
+                            notas="-";
+                        }
 
                         //Añadimos a la lista de ejercicios la información de la serie
-                        listaSeriesDelEjercicio.add(cont + "/" + peso + "/" + numRepeticiones + "/" + notas);
+                        if (cont!=0){
+                            listaSeriesDelEjercicio.add(cont + "/" + peso + "/" + numRepeticiones + "/" + notas);
+                        }
 
                     }
 
