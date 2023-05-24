@@ -45,7 +45,7 @@
             <ExpandableListView
                 android:id="@+id/listaEjerciciosSeriesRutinaIniciada"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="598dp" />
 
         </LinearLayout>
     </ScrollView>

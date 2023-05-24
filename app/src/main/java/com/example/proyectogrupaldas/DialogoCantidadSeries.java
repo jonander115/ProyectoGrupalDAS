@@ -14,7 +14,7 @@ import androidx.fragment.app.DialogFragment;
 
 public class DialogoCantidadSeries extends DialogFragment {
     private EditText peso, num_rep, notas;
-    private String usuario, ejercicio;
+    private String usuario, ejercicio, idRutina;
 
 
     @Nullable
@@ -26,7 +26,8 @@ public class DialogoCantidadSeries extends DialogFragment {
 
         if (getArguments() != null){
             usuario = getArguments().getString("usuario");
-            //ejercicio = getArguments().getString("ejercicio");
+            ejercicio = getArguments().getString("ejercicio");
+            idRutina = getArguments().getString("idRutina");
         }
 
         LayoutInflater inflater= getActivity().getLayoutInflater();
@@ -44,7 +45,7 @@ public class DialogoCantidadSeries extends DialogFragment {
                     if (notas ==null){
                         notas.setText("sin notas");
                     }
-                    ((RutinaIniciada) getActivity()).aniadirSerie(Integer.parseInt(peso.getText().toString()), Integer.parseInt(num_rep.getText().toString()), notas.getText().toString(), usuario);
+                    ((RutinaIniciada) getActivity()).aniadirSerie(ejercicio, Integer.parseInt(peso.getText().toString()), Integer.parseInt(num_rep.getText().toString()), notas.getText().toString());
 
                 }
                 else{

@@ -17,14 +17,15 @@ import java.util.HashMap;
 
 public class RutinaIniciadaAdapter extends BaseExpandableListAdapter {
 
-    private final String usuario;
+    private final String usuario, idRutina;
     private Context contexto;
     private LayoutInflater inflater;
     private ArrayList<String> listaEjercicios;
     private HashMap<String, ArrayList<String>> mapSeries;
 
-    public RutinaIniciadaAdapter(String usuario, Context pContexto, ArrayList<String> pListaEjercicios, HashMap<String, ArrayList<String>> pMapSeries) {
+    public RutinaIniciadaAdapter(String usuario, Context pContexto, ArrayList<String> pListaEjercicios, HashMap<String, ArrayList<String>> pMapSeries, String idRutina) {
         this.usuario = usuario;
+        this.idRutina = idRutina;
         contexto = pContexto;
         listaEjercicios = pListaEjercicios;
         mapSeries = pMapSeries;
@@ -87,6 +88,8 @@ public class RutinaIniciadaAdapter extends BaseExpandableListAdapter {
                DialogoCantidadSeries dialogo=new DialogoCantidadSeries();
                Bundle args = new Bundle();
                args.putString("usuario", usuario);
+               args.putString("idRutina", idRutina);
+               args.putString("ejercicio", textoNombreEjercicio);
                dialogo.setArguments(args);
 
                FragmentManager fragmentManager = ((FragmentActivity) contexto).getSupportFragmentManager();
@@ -143,8 +146,11 @@ public class RutinaIniciadaAdapter extends BaseExpandableListAdapter {
         return convertView;
     }
 
+
     @Override
     public boolean isChildSelectable(int groupPosition, int childPosition) {
         return false;
     }
+
+
 }

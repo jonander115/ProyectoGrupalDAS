@@ -101,14 +101,7 @@ public class Rutina extends AppCompatActivity {
         iniciarEntrenamiento.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 insertarRutinaIniciada(nombreRutina);
-
-                Intent i = new Intent (Rutina.this, RutinaIniciada.class);
-                i.putExtra("idrutina", idrutina);
-                i.putExtra("usuario", usuario);
-                i.putExtra("nombre", nombreRutina);
-                startActivity(i);
             }
 
 
@@ -262,6 +255,8 @@ public class Rutina extends AppCompatActivity {
             actualizarLista();
         }
     }
+
+
     private void insertarRutinaIniciada(String nombreRutina) {
         RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
 
@@ -273,11 +268,16 @@ public class Rutina extends AppCompatActivity {
             @Override
             public void onResponse(String response) {
                 //Procesar la respuesta del servidor
+                Toast.makeText(getApplicationContext(), "Rutina comenzada", Toast.LENGTH_LONG).show();
 
-                //La respuesta es un String
-                if (response.equals("rutinaCreada")){
-                    Toast.makeText(getApplicationContext(), "Rutina comenzada", Toast.LENGTH_LONG).show();
-                }
+                //La respuesta es el id de la nueva rutina, lo enviamos a la nueva actividad
+                Intent i = new Intent (Rutina.this, RutinaIniciada.class);
+                i.putExtra("idRutinaPlantilla", idrutina); //id de la rutina plantilla
+                i.putExtra("idRutina", response); //id de la nueva rutina insertada
+                i.putExtra("usuario", usuario);
+                i.putExtra("nombreRutina", nombreRutina);
+                startActivity(i);
+
 
             }
         }, new Response.ErrorListener() {
@@ -297,8 +297,8 @@ public class Rutina extends AppCompatActivity {
                 params.put("accion", "insertarRutina");
                 params.put("fechaHoraInicio",horaInicio);
                 params.put("usuario", usuario);
-                params.put("idRutina",idrutina);
                 params.put("nombreRutina",nombreRutina);
+                params.put("idRutina",idrutina);
 
                 return params;
             }

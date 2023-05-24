@@ -35,7 +35,7 @@ import java.util.Map;
 public class RutinaIniciada extends AppCompatActivity {
 
     private String usuario, nombre;
-    private String idRutina;
+    private String idRutinaPlantilla, idRutina;
     private TextView nombreRutinaIniciada;
     private ExpandableListView listViewEjercicios;
     private ArrayList<String> listaEjercicios;
@@ -49,19 +49,17 @@ public class RutinaIniciada extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             usuario = extras.getString("usuario");
-            idRutina = extras.getString("idrutina");
-            nombre = extras.getString("nombre");
+            idRutina = extras.getString("idRutina");
+            idRutinaPlantilla = extras.getString("idRutinaPlantilla");
+            nombre = extras.getString("nombreRutina");
         }
 
         //Recogemos los elementos de la vista
         nombreRutinaIniciada = findViewById(R.id.nombreRutinaIniciada);
+        nombreRutinaIniciada.setText(nombre);
 
         mostrarDatosDeEjercicios();
     }
-
-
-
-
 
 
 
@@ -104,7 +102,7 @@ public class RutinaIniciada extends AppCompatActivity {
 
                     //Le pasamos a la vista los datos a mostrar mediante el adaptador
                     listViewEjercicios = (ExpandableListView) findViewById(R.id.listaEjerciciosSeriesRutinaIniciada);
-                    RutinaIniciadaAdapter adapter = new RutinaIniciadaAdapter(usuario, RutinaIniciada.this, listaEjercicios, mapSeries);
+                    RutinaIniciadaAdapter adapter = new RutinaIniciadaAdapter(usuario, RutinaIniciada.this, listaEjercicios, mapSeries, idRutina);
                     listViewEjercicios.setAdapter(adapter);
 
 
@@ -209,13 +207,10 @@ public class RutinaIniciada extends AppCompatActivity {
         queue.add(stringRequest);
 
     }
-    public void aniadirSerie(int peso, int reps, String notas, String nombre) {
-        StringRequest sr = new StringRequest(Request.Method.POST, "http://ec2-54-93-62-124.eu-central-1.compute.amazonaws.com/jwojciechowska001/WEB/entrega3/aniadirserie.php", new Response.Listener<String>() {
+    public void aniadirSerie(String ejercicio, int peso, int reps, String notas) {
+        StringRequest sr = new StringRequest(Request.Method.POST, "http://ec2-54-93-62-124.eu-central-1.compute.amazonaws.com/jwojciechowska001/WEB/entrega3/rutinaIniciada.php", new Response.Listener<String>() {
             public void onResponse(String response) {
-                // Si la respuesta está vacía imprime un mensaje
-                if (response.equals("0")) {
-                    //  Toast.makeText(context, "Esa rutina ya existe", Toast.LENGTH_SHORT).show();
-                } else if (response.equals("1")) {
+                if (response.equals("correcto")) {
                     Toast.makeText(getApplicationContext(), "Se ha añadido la serie", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -230,8 +225,11 @@ public class RutinaIniciada extends AppCompatActivity {
             protected Map<String, String> getParams() throws AuthFailureError {
                 // Se pasan todos los parámetros necesarios en la solicitud
                 HashMap<String, String> parametros = new HashMap<>();
+                parametros.put("accion", "insertarSerie");
                 parametros.put("usuario", usuario);
-                parametros.put("nombre",nombre);
+                parametros.put("idRutina", idRutina);
+                parametros.put("nombre",nombre); //nombre de la rutina
+                parametros.put("ejercicio",ejercicio);
                 parametros.put("peso", String.valueOf(peso));
                 parametros.put("repeticiones", String.valueOf(reps));
                 parametros.put("notas", notas);
@@ -244,12 +242,15 @@ public class RutinaIniciada extends AppCompatActivity {
         RequestQueue rq = Volley.newRequestQueue(getApplicationContext());
         sr.setTag("ejs");
         rq.add(sr);
+
     }
 
 
-
-
-
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mostrarDatosDeEjercicios();
+    }
 
     @Override
     protected void onSaveInstanceState(@NonNull Bundle savedInstanceState) {
