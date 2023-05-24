@@ -78,17 +78,6 @@ public class RutinaDeHistorico extends AppCompatActivity {
 
 
         botonFinalizarDesdeHistorico = findViewById(R.id.botonFinalizarDesdeHistorico);
-
-        /*
-        if (!tv_FechaFin.getText().toString().equals("-En progreso-") && !tv_HoraFin.getText().toString().equals("-En progreso-") ){
-            botonFinalizarDesdeHistorico.setVisibility(View.INVISIBLE);
-        }
-        else{
-            botonFinalizarDesdeHistorico.setVisibility(View.VISIBLE);
-        }
-        */
-
-
         botonFinalizarDesdeHistorico.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
