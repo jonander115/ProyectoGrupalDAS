@@ -38,6 +38,9 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.scottyab.aescrypt.AESCrypt;
 
 import java.io.ByteArrayOutputStream;
@@ -182,6 +185,7 @@ public class Registro extends AppCompatActivity {
                                     public void onResponse(String response) {
                                         if (!response.equals("sucess")) {
                                             //si la solicitud se ha procesado correctamente
+                                            emitirnotificacion();
                                             finish();
                                             rq.cancelAll("registro");
                                         }
@@ -328,5 +332,50 @@ public class Registro extends AppCompatActivity {
         //se recupera la uri y se setea de nuevo para verse
         imagen=savedInstanceState.getParcelable("imagen");
         vistaimagen.setImageURI(savedInstanceState.getParcelable("imagen"));
+    }
+
+    private void emitirnotificacion(){
+        FirebaseMessaging.getInstance().getToken()
+                .addOnCompleteListener(new OnCompleteListener<String>() {
+                    @Override
+                    public void onComplete(@NonNull Task<String> task) {
+                        if (!task.isSuccessful()){
+                            task.getException();
+                            return;
+                        }
+                        else{
+                            String token = task.getResult();
+
+                            Log.d("token",token);
+
+                            //Solicitud
+                            StringRequest sr = new StringRequest(Request.Method.POST, "http://ec2-54-93-62-124.eu-central-1.compute.amazonaws.com/jwojciechowska001/WEB/entrega3/notificacionbienvenida.php", new Response.Listener<String>() {
+                                @Override
+                                public void onResponse(String response) {
+                                }
+                            }, new Response.ErrorListener() {
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    //Manejar error de la solicitud
+                                    Log.d("firebase","error de servicio firebase");
+                                    Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_LONG).show();
+                                }
+                            }) {
+                                @Override
+                                protected Map<String, String> getParams() throws AuthFailureError {
+                                    Map<String, String> params = new HashMap<>();
+                                    // Agregar los parámetros necesarios para la solicitud
+                                    params.put("token",token);
+
+                                    return params;
+                                }
+                            };
+                            rq = Volley.newRequestQueue(context);
+                            sr.setTag("registro");
+                            rq.add(sr);
+                        }
+                    }
+
+                });
     }
 }

@@ -1,5 +1,6 @@
 package com.example.proyectogrupaldas;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,6 +16,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -27,6 +29,9 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.scottyab.aescrypt.AESCrypt;
 
 import java.io.BufferedReader;
@@ -42,6 +47,7 @@ public class Login extends AppCompatActivity {
     private final Activity activity=this;
     private Context context=this;
     private ArrayList<String> lineas=new ArrayList<>();
+    private final int CODIGO_DE_PERMISO_NOTIFICACIONES = 10;
 
     private RequestQueue rq;
 
@@ -55,6 +61,16 @@ public class Login extends AppCompatActivity {
         EditText contrasenia = findViewById(R.id.is_t_contrasenia);
         Button iniciars = findViewById(R.id.is_b_iniciarsesion);
         Button registrarse = findViewById(R.id.is_b_registrarse);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            //Comprobamos si el permiso de notificaciones está concedido
+            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+
+                //El permiso no está concedido, lo pedimos
+                String[] permisos = new String[]{android.Manifest.permission.POST_NOTIFICATIONS};
+                ActivityCompat.requestPermissions(this, permisos, CODIGO_DE_PERMISO_NOTIFICACIONES);
+            }
+        }
 
         iniciars.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -94,6 +110,7 @@ public class Login extends AppCompatActivity {
                                 //Intent intent = new Intent(Login.this, PerfilUsuario.class);
                                 //intent.putExtra("usuario", usuario.getText().toString().trim());
                                 //startActivity(intent);
+                                guardarToken();
                                 Intent intent = new Intent(Login.this, Rutinas.class);
                                 intent.putExtra("id", usuario.getText().toString().trim());
                                 Login.this.startActivity(intent);
@@ -146,6 +163,76 @@ public class Login extends AppCompatActivity {
         super.onActivityResult(requestCode,resultCode,data);
         if(requestCode==1){
             recreate();
+        }
+    }
+
+    private void guardarToken(){
+        FirebaseMessaging.getInstance().getToken().addOnCompleteListener(new OnCompleteListener<String>() {
+            @Override
+            public void onComplete(@NonNull Task<String> task) {
+                if (!task.isSuccessful()){
+                    task.getException();
+                    return;
+                }
+                else{
+                    String token = task.getResult();
+                    Log.d("token",token);
+                    subirtoken(token);
+                }
+            }
+        });
+    }
+
+    private void subirtoken(String token){
+        //Se lanza una notificación de bienvenida mediante Firebase
+        RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
+
+        //Url del servicio web en el servidor
+        String url = "http://ec2-54-93-62-124.eu-central-1.compute.amazonaws.com/jwojciechowska001/WEB/entrega3/aniadirtoken.php";
+
+        //Solicitud
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                //Procesar la respuesta del servidor
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                //Manejar error de la solicitud
+                Log.d("firebase","error de servicio firebase");
+                Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_LONG).show();
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                // Agregar los parámetros necesarios para la solicitud
+                params.put("token",token);
+                return params;
+            }
+        };
+        //Encolar la solicitud
+        queue.add(stringRequest);
+    }
+
+    //Método que sobreescribimos para gestionar la decisión del usuario tras responder al diálogo de los permisos
+    //Los permisos de notificaciones solo se piden si la versión es mayor o igual a Android 13
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch(requestCode) {
+
+            case CODIGO_DE_PERMISO_NOTIFICACIONES: {
+                // Si la petición se cancela, granResults estará vacío
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    //Permiso concedido, se pueden recibir notificaciones
+                } else {
+                    // PERMISO DENEGADO
+                    Toast.makeText(getApplicationContext(), "No se pueden recibir notificaciones", Toast.LENGTH_LONG).show();
+                }
+                return;
+            }
         }
     }
 
