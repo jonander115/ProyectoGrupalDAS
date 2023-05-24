@@ -182,7 +182,7 @@ public class DialogoVerEjercicios extends DialogFragment {
                 Log.d("respuesta",response);
                 //al ser un insert no se hace nada con la respuesta
                 if (response.equals("noPosible")){
-                    Toast.makeText(context,"El ejercicio ya está en la rutina",Toast.LENGTH_SHORT);
+                    Toast.makeText(context,"El ejercicio ya está en la rutina",Toast.LENGTH_SHORT).show();
                 }
             }
         }, new Response.ErrorListener() {
