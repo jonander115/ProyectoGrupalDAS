@@ -80,25 +80,25 @@ public class DialogoCantidadSeries extends DialogFragment {
                 if (textoNotas.equals("")){
                     notas.setText("-");
                 }
-
-                if (Integer.parseInt(num_rep.getText().toString()) >= 0 && Integer.parseInt(peso.getText().toString()) >= 0) {
-                    if (!ejercicioSeleccionado.equals("")){
-
-                        //Añadir serie al ejercicio
-                        ((RutinaIniciada) getActivity()).aniadirSerie(ejercicioSeleccionado, Integer.parseInt(peso.getText().toString()), Integer.parseInt(num_rep.getText().toString()), notas.getText().toString());
-
-
-                    }
-                    else{
-                        Toast.makeText(getContext(), "Debes introducir un ejercicio", Toast.LENGTH_LONG).show();
-                    }
-
-
+                if (ejercicioSeleccionado==null){
+                    Toast.makeText(getContext(), "No has seleccionado ejercicio", Toast.LENGTH_LONG).show();
                 }
                 else{
-                    Toast.makeText(getContext(), "Debes introducir un número positivo en peso y repeticiones", Toast.LENGTH_LONG).show();
+
+
+                    if (Integer.parseInt(num_rep.getText().toString()) >= 0 && Integer.parseInt(peso.getText().toString()) >= 0) {
+                        if (!ejercicioSeleccionado.equals("")){
+
+                            //Añadir serie al ejercicio
+                            ((RutinaIniciada) getActivity()).aniadirSerie(ejercicioSeleccionado, Integer.parseInt(peso.getText().toString()), Integer.parseInt(num_rep.getText().toString()), notas.getText().toString());
+
+                        }
+
+
+                    }
 
                 }
+
             }
         });
 

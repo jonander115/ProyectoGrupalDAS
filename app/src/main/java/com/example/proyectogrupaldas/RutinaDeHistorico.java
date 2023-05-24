@@ -104,14 +104,14 @@ public class RutinaDeHistorico extends AppCompatActivity {
                     tv_FechaInicio.setText(fInicio[0]);
                     tv_HoraInicio.setText(fInicio[1]);
 
-                    if (fechaHoraFinal.split(" ").length==0){
-                        tv_FechaFin.setText("-En progreso-");
-                        tv_HoraFin.setText("-En progreso-");
-                    }
-                    else{
+                    if (fechaHoraFinal != null && fechaHoraFinal.split(" ").length == 2) {
                         String[] fFinal = fechaHoraFinal.split(" ");
                         tv_FechaFin.setText(fFinal[0]);
                         tv_HoraFin.setText(fFinal[1]);
+                    }
+                    else{
+                        tv_FechaFin.setText("-En progreso-");
+                        tv_HoraFin.setText("-En progreso-");
                     }
 /*
                     if (fFinal[0].equals("null")){
@@ -185,13 +185,12 @@ public class RutinaDeHistorico extends AppCompatActivity {
                     //Por cada ejercicio
                     for(int i = 0; i < jsonArray.length(); i++) {
                         String nombreEjercicio = jsonArray.getJSONObject(i).getString("NombreEjercicio");
-                        String orden = jsonArray.getJSONObject(i).getString("Orden");
 
                         //Actualizamos la lista de los ejercicios
                         listaEjercicios.add(nombreEjercicio);
 
                         //Ahora hay que obtener las series, y actualizar el HashMap que relaciona las series con los ejercicios
-                        obtenerSeriesDeEjercicio(nombreEjercicio, orden, i);
+                        obtenerSeriesDeEjercicio(nombreEjercicio, i);
 
                     }
 
@@ -231,7 +230,7 @@ public class RutinaDeHistorico extends AppCompatActivity {
 
 
     //Método para obtener la información de las series de un ejercicio
-    private void obtenerSeriesDeEjercicio(String nombreEjercicio, String orden, int posEjercicioEnLista){
+    private void obtenerSeriesDeEjercicio(String nombreEjercicio, int posEjercicioEnLista){
         //Utilizamos un servicio web alojado en el servidor
 
         //Crear la cola de solicitudes
@@ -292,7 +291,6 @@ public class RutinaDeHistorico extends AppCompatActivity {
                 params.put("usuario", usuario);
                 params.put("idRutina", idRutina);
                 params.put("nombreEjercicio", nombreEjercicio);
-                params.put("orden", orden);
 
                 return params;
             }

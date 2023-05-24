@@ -517,20 +517,6 @@ public class PerfilFragment extends Fragment implements ActivityResultCallback {
         return bitmapredimensionado;
     }
 
-    //Método que abre un diálogo con los ejercicios creados por el usuario, donde puede seleccionar cuáles eliminar
-    public void onClick_EliminarEjercicios(View v){
-        DialogoEliminarEjercicios dialogoEliminarEjercicios = new DialogoEliminarEjercicios();
-        Bundle args = new Bundle();
-        args.putString("usuario", usuario);
-
-        //Aquí enviamos al diálogo las opciones que podrá elegir el usuario
-        args.putStringArray("listaNombresEjercicios", listaNombresEjercicios);
-
-        dialogoEliminarEjercicios.setArguments(args);
-
-        assert getParentFragmentManager() != null;
-        dialogoEliminarEjercicios.show(getParentFragmentManager(), "eliminarEjercicios");
-    }
 
     //Método para listar los ejercicios que el usuario podrá eliminar (los creados por él)
     private String[] listarEjercicios(){
@@ -595,7 +581,7 @@ public class PerfilFragment extends Fragment implements ActivityResultCallback {
     //Método para eliminar un ejercicio creado por el usuario
     public void eliminarEjercicio(String nombreEjercicio) {
         // Crear la cola de solicitudes
-        RequestQueue queue = Volley.newRequestQueue(requireContext());
+        RequestQueue queue = Volley.newRequestQueue(getContext());
 
         // Url del servicio web en el servidor
         String url = "http://ec2-54-93-62-124.eu-central-1.compute.amazonaws.com/jwojciechowska001/WEB/entrega3/perfilUsuario.php";
@@ -634,6 +620,8 @@ public class PerfilFragment extends Fragment implements ActivityResultCallback {
         // Encolar la solicitud
         queue.add(stringRequest);
     }
+
+
 
     @SuppressLint("WrongThread")
     @Override
