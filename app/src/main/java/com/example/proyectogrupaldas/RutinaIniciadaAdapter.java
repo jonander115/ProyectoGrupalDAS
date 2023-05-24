@@ -71,33 +71,14 @@ public class RutinaIniciadaAdapter extends BaseExpandableListAdapter {
 
         if (convertView == null){
             inflater = (LayoutInflater) contexto.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = inflater.inflate(R.layout.layout_ejercicio_rutina_iniciada, null);
+            convertView = inflater.inflate(R.layout.layout_ejercicio, null);
         }
 
         //Recogemos los elementos de la vista
-        TextView tv_EjercicioDeRutinaIniciada = (TextView) convertView.findViewById(R.id.tv_EjercicioDeRutinaIniciada);
-        Button bt_AniadirSerie = (Button) convertView.findViewById(R.id.bt_AniadirSerie);
+        TextView tv_EjercicioDeRutinaIniciada = (TextView) convertView.findViewById(R.id.tv_EjercicioDeRutinaHistorico);
 
         //Mostramos el nombre del ejercicio
         tv_EjercicioDeRutinaIniciada.setText(textoNombreEjercicio);
-
-        //Listener para abrir el diálogo que permite añadir una nueva serie del ejercicio
-        bt_AniadirSerie.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-               DialogoCantidadSeries dialogo=new DialogoCantidadSeries();
-               Bundle args = new Bundle();
-               args.putString("usuario", usuario);
-               args.putString("idRutina", idRutina);
-               args.putString("ejercicio", textoNombreEjercicio);
-               dialogo.setArguments(args);
-
-               FragmentManager fragmentManager = ((FragmentActivity) contexto).getSupportFragmentManager();
-
-
-                dialogo.show(fragmentManager, "añadirSerie");
-            }
-        });
 
         return convertView;
     }
@@ -122,26 +103,9 @@ public class RutinaIniciadaAdapter extends BaseExpandableListAdapter {
         //Mostramos los datos de la serie
         tv_NumSerie.setText(textoSerie[0]);
 
-        if (!textoSerie[1].equals("null")){
-            tv_Peso.setText(textoSerie[1]);
-        }
-        else{
-            tv_Peso.setText("-");
-        }
-
-        if (!textoSerie[2].equals("null")){
-            tv_Repeticiones.setText(textoSerie[2]);
-        }
-        else{
-            tv_Repeticiones.setText("-");
-        }
-
-        if (!textoSerie[3].equals("null")){
-            tv_Notas.setText(textoSerie[3]);
-        }
-        else{
-            tv_Notas.setText("-");
-        }
+        tv_Peso.setText(textoSerie[1]);
+        tv_Repeticiones.setText(textoSerie[2]);
+        tv_Notas.setText(textoSerie[3]);
 
         return convertView;
     }

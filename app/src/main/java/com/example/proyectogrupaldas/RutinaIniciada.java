@@ -2,6 +2,8 @@ package com.example.proyectogrupaldas;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -28,6 +31,8 @@ import org.json.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -58,6 +63,30 @@ public class RutinaIniciada extends AppCompatActivity {
         nombreRutinaIniciada = findViewById(R.id.nombreRutinaIniciada);
         nombreRutinaIniciada.setText(nombre);
 
+        Button bt_FinEntrenamiento = findViewById(R.id.bt_FinEntrenamiento);
+        //Cuando el usuario termina el entrenamiento se actualiza la fecha de fin en la base de datos y se cierra la actividad
+        bt_FinEntrenamiento.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finalizarEntrenamiento();
+            }
+        });
+
+        Button bt_AniadirSerieRutinaIniciada = findViewById(R.id.bt_AniadirSerieRutinaIniciada);
+        //Listener para abrir el diálogo que permite añadir una nueva serie a un ejercicio
+        bt_AniadirSerieRutinaIniciada.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DialogoCantidadSeries dialogo=new DialogoCantidadSeries();
+                Bundle args = new Bundle();
+                args.putString("usuario", usuario);
+                args.putString("idRutina", idRutina);
+                dialogo.setArguments(args);
+                dialogo.show(getSupportFragmentManager(), "añadirSerie");
+            }
+        });
+
+
         mostrarDatosDeEjercicios();
     }
 
@@ -77,7 +106,7 @@ public class RutinaIniciada extends AppCompatActivity {
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                //Procesar la respuesta del servidor tras haberse recogido la imagen
+                //Procesar la respuesta del servidor
                 try {
 
                     //El resultado es un array
@@ -90,20 +119,21 @@ public class RutinaIniciada extends AppCompatActivity {
                     //Por cada ejercicio
                     for(int i = 0; i < jsonArray.length(); i++) {
                         String nombreEjercicio = jsonArray.getJSONObject(i).getString("NombreEjercicio");
-                        String orden = jsonArray.getJSONObject(i).getString("Orden");
 
                         //Actualizamos la lista de los ejercicios
                         listaEjercicios.add(nombreEjercicio);
 
                         //Ahora hay que obtener las series, y actualizar el HashMap que relaciona las series con los ejercicios
-                        obtenerSeriesDeEjercicio(nombreEjercicio, orden, i);
+                        obtenerSeriesDeEjercicio(nombreEjercicio, i);
 
                     }
 
                     //Le pasamos a la vista los datos a mostrar mediante el adaptador
                     listViewEjercicios = (ExpandableListView) findViewById(R.id.listaEjerciciosSeriesRutinaIniciada);
+                    listViewEjercicios.setFocusable(false);
                     RutinaIniciadaAdapter adapter = new RutinaIniciadaAdapter(usuario, RutinaIniciada.this, listaEjercicios, mapSeries, idRutina);
                     listViewEjercicios.setAdapter(adapter);
+
 
 
                 } catch (JSONException e) {
@@ -136,7 +166,7 @@ public class RutinaIniciada extends AppCompatActivity {
 
 
     //Método para obtener la información de las series de un ejercicio
-    private void obtenerSeriesDeEjercicio(String nombreEjercicio, String orden, int posEjercicioEnLista){
+    private void obtenerSeriesDeEjercicio(String nombreEjercicio, int posEjercicioEnLista){
         //Utilizamos un servicio web alojado en el servidor
 
         //Crear la cola de solicitudes
@@ -149,7 +179,7 @@ public class RutinaIniciada extends AppCompatActivity {
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                //Procesar la respuesta del servidor tras haberse recogido la imagen
+                //Procesar la respuesta del servidor
                 try {
 
                     //El resultado es un array
@@ -168,6 +198,15 @@ public class RutinaIniciada extends AppCompatActivity {
                         String numRepeticiones = jsonArray.getJSONObject(i).getString("NumRepeticiones");
                         String notas = jsonArray.getJSONObject(i).getString("Notas");
 
+                        if (peso==null || peso.equals("null")){
+                            peso="-";
+                        }
+                        if (numRepeticiones==null || numRepeticiones.equals("null")){
+                            numRepeticiones="-";
+                        }
+                        if (notas==null || notas.equals("null")){
+                            notas="-";
+                        }
 
                         //Añadimos a la lista de ejercicios la información de la serie
                         listaSeriesDelEjercicio.add(cont + "/" + peso + "/" + numRepeticiones + "/" + notas);
@@ -197,7 +236,6 @@ public class RutinaIniciada extends AppCompatActivity {
                 params.put("usuario", usuario);
                 params.put("idRutina", idRutina);
                 params.put("nombreEjercicio", nombreEjercicio);
-                params.put("orden", orden);
 
                 return params;
             }
@@ -212,6 +250,7 @@ public class RutinaIniciada extends AppCompatActivity {
             public void onResponse(String response) {
                 if (response.equals("correcto")) {
                     Toast.makeText(getApplicationContext(), "Se ha añadido la serie", Toast.LENGTH_SHORT).show();
+                    mostrarDatosDeEjercicios();
                 }
             }
         }, new Response.ErrorListener() {
@@ -244,6 +283,57 @@ public class RutinaIniciada extends AppCompatActivity {
         rq.add(sr);
 
     }
+
+
+    //Método para finalizar el entrenamiento
+    private void finalizarEntrenamiento(){
+        //Utilizamos un servicio web alojado en el servidor
+
+        //Crear la cola de solicitudes
+        RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
+
+        //Url del servicio web en el servidor
+        String url = "http://ec2-54-93-62-124.eu-central-1.compute.amazonaws.com/jwojciechowska001/WEB/entrega3/rutinaIniciada.php";
+
+        //Solicitud
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                //Procesar la respuesta del servidor
+                if (response.equals("finalizado")){
+                    Toast.makeText(getApplicationContext(), "Entrenamiento finalizado", Toast.LENGTH_LONG).show();
+                    //Terminar la actividad
+                    finish();
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                //Manejar error de la solicitud
+                Toast.makeText(getApplicationContext(), "Error al finalizar el entrenamiento", Toast.LENGTH_LONG).show();
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                // Agregar los parámetros necesarios
+                LocalDateTime now = LocalDateTime.now();
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+                String horaFin = now.format(formatter);
+                params.put("accion","finalizarEntrenamiento");
+                params.put("usuario",usuario);
+                params.put("idRutina", idRutina);
+                params.put("fechaHoraFin", horaFin);
+
+                return params;
+            }
+        };
+
+        //Encolar la solicitud
+        queue.add(stringRequest);
+    }
+
 
 
     @Override

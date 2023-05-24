@@ -21,6 +21,29 @@
             android:weightSum="1">
 
             <TextView
+                android:id="@+id/campo_ejercicio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ejercicio"
+                tools:layout_editor_absoluteX="175dp"
+                tools:layout_editor_absoluteY="70dp" />
+
+            <Spinner
+                android:id="@+id/spinner_ejercicio"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:contentDescription="@string/app_name"
+                android:spinnerMode="dropdown" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="1">
+
+            <TextView
                 android:id="@+id/campo_peso"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -33,8 +56,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:hint="Introduzca el peso"
-                android:textStyle="bold"
+                android:hint="Introduce el peso"
                 app:layout_constraintStart_toStartOf="parent"
                 tools:layout_editor_absoluteY="70dp" />
         </LinearLayout>
@@ -48,7 +70,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Número de repeticiones:"
-                android:textStyle="bold"
                 tools:layout_editor_absoluteX="5dp"
                 tools:layout_editor_absoluteY="38dp" />
 
@@ -58,7 +79,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
 
-                android:hint="Introduzca el numero de reps"
+                android:hint="Introduce el numero de reps"
                 app:layout_constraintStart_toStartOf="parent"
                 tools:layout_editor_absoluteY="81dp" />
         </LinearLayout>
@@ -82,7 +103,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
 
-                android:hint="Introduzca alguna nota"
+                android:hint="Introduce alguna nota"
                 app:layout_constraintStart_toStartOf="parent"
                 tools:layout_editor_absoluteY="81dp" />
         </LinearLayout>
