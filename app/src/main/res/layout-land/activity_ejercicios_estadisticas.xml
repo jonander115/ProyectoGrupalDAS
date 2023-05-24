@@ -64,7 +64,8 @@
             android:enabled="false"
             android:background="@null"
             android:hint="@string/app_name"
-            android:text="" />
+            android:text=""
+            android:textColor="@color/black"/>
 
         <EditText
             android:id="@+id/pesoMedio"
@@ -73,7 +74,8 @@
             android:enabled="false"
             android:background="@null"
             android:hint="@string/app_name"
-            android:text="" />
+            android:text=""
+            android:textColor="@color/black"/>
 
         <EditText
             android:id="@+id/SeriesMedias"
@@ -82,7 +84,8 @@
             android:enabled="false"
             android:backgroundTint="@android:color/transparent"
             android:hint="@string/app_name"
-            android:text="" />
+            android:text=""
+            android:textColor="@color/black"/>
 
         <LinearLayout
             android:id="@+id/listadoRutinasLL"
@@ -97,7 +100,8 @@
             android:enabled="false"
             android:backgroundTint="@android:color/transparent"
             android:hint="@string/app_name"
-            android:text="Evolucion de pesos" />
+            android:text="Evolucion de pesos"
+            android:textColor="@color/black"/>
 
         <com.github.mikephil.charting.charts.LineChart
             android:id="@+id/chart"
@@ -111,7 +115,8 @@
             android:enabled="false"
             android:backgroundTint="@android:color/transparent"
             android:hint="@string/app_name"
-            android:text="Evolucion de repeticiones" />
+            android:text="Evolucion de repeticiones"
+            android:textColor="@color/black"/>
 
         <com.github.mikephil.charting.charts.LineChart
             android:id="@+id/chart2"

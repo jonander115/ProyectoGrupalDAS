@@ -21,6 +21,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -80,6 +81,7 @@ public class RutinasEstadistica extends AppCompatActivity {
     CombinedChart combinedChart;
     ArrayList<String> listaMesesRep, listaMeses;
 
+    ArrayList<Double> listaMedias;
     Boolean tema;
     ArrayList<Float> listaTiempos;
     private int year, month, day;
@@ -114,30 +116,47 @@ public class RutinasEstadistica extends AppCompatActivity {
         diaComun = findViewById(R.id.EstadDiaMasComun);
         combinedChart = findViewById(R.id.combinedChart);
 
+        numRep.setText("Numero repeticiones medias");
+        tiempoMedio.setText("Tiempo medio de la rutina");
+        diaComun.setText("Dia mas comun");
+
 
         if (savedInstanceState != null) {
-            selectedPosRut = savedInstanceState.getInt("CategoriaElegida");
+            combinedChart = findViewById(R.id.combinedChart);
+            selectedPosRut = savedInstanceState.getInt("RutinaElegida");
 
             dataButton.setText(savedInstanceState.getString("dataButton"));
             fechaIni = savedInstanceState.getString("dataButton");
             dataButton2.setText(savedInstanceState.getString("dataButton2"));
             fechaFin = savedInstanceState.getString("dataButton2");
+            listaMedias = (ArrayList<Double>) savedInstanceState.getSerializable("listaMedias");
+            result = (ArrayList<Long>) savedInstanceState.getSerializable("result");
+            listaMeses =  savedInstanceState.getStringArrayList("listaMeses");
+            try{
+                setupCombinedChart();
+            } catch (NullPointerException e){}
 
+            cargarRutinas(spinnerRutinas);
         }
     }
 
     protected void onSaveInstanceState(Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
 
+
+
         int selectedPosition = spinnerRutinas.getSelectedItemPosition();
         Log.d("selectedPos", String.valueOf(selectedPosition));
         savedInstanceState.putCharSequence("dataButton", dataButton.getText());
         savedInstanceState.putCharSequence("dataButton2", dataButton2.getText());
         savedInstanceState.putInt("RutinaElegida", selectedPosition);
+        savedInstanceState.putSerializable("listaMedias", listaMedias);
+        savedInstanceState.putStringArrayList("listaMeses", listaMeses);
+        savedInstanceState.putSerializable("result", result);
 
     }
 
-    private void setupCombinedChart(ArrayList<Double> listaMedias) {
+    private void setupCombinedChart() {
         // Datos de ejemplo
 
         ArrayList<BarEntry> barEntries = new ArrayList<>();
@@ -183,6 +202,7 @@ public class RutinasEstadistica extends AppCompatActivity {
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setValueFormatter(new IndexAxisValueFormatter(listaMeses));
         xAxis.setLabelRotationAngle(45);
+
 
         // Actualizar el gráfico
         combinedChart.invalidate();
@@ -269,6 +289,12 @@ public class RutinasEstadistica extends AppCompatActivity {
         StringRequest sr = new StringRequest(Request.Method.POST, "http://ec2-54-93-62-124.eu-central-1.compute.amazonaws.com/jwojciechowska001/WEB/entrega3/estadisticas.php", new Response.Listener<String>() {
             @Override //En caso de exito
             public void onResponse(String response) {
+
+                numRep.setText("Numero Repeticiones medias : Nulo");
+                tiempoMedio.setText("Tiempo medio de la rutina : Nulo");
+                diaComun.setText("Dia mas comun : Nulo");
+                combinedChart.clear();
+
 
                 Log.d("respuesta", response);
                 ArrayList<String> listaDatos = new ArrayList<String>();
@@ -366,16 +392,15 @@ public class RutinasEstadistica extends AppCompatActivity {
                         mapaValores.get(clave).add(valor);
                     }
 
-                    ArrayList<Double> listaMedias = (ArrayList<Double>) mapaValores.values()
+                    listaMedias = (ArrayList<Double>) mapaValores.values()
                             .stream()
                             .map(valores -> valores.stream().mapToDouble(Double::doubleValue).average().orElse(0))
                             .collect(Collectors.toList());
 
 
                     Log.d("listaSumas", listaMedias.toString());
-                    setupCombinedChart(listaMedias);
+                    setupCombinedChart();
                 } catch(JSONException e){
-                    System.out.print("Estoy dentro del catch");
                 }catch(Exception e) {
                     System.out.print("Ha ocurrido un error: " + e.getMessage());
                 }
@@ -441,6 +466,9 @@ public class RutinasEstadistica extends AppCompatActivity {
                     adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     spinnerRutinas.setAdapter(adapter);
 
+                    if(selectedPosRut != null){
+                        spinnerRutinas.setSelection(selectedPosRut);
+                    }
 
                 } catch(JSONException e){
                     System.out.print("Estoy dentro del catch");
@@ -475,13 +503,6 @@ public class RutinasEstadistica extends AppCompatActivity {
     }
 
     public void onBackPressed() {
-        //Volvemos a la lista de diarios
-        /*
-        Intent intent = new Intent(this, MenuEstadisticas.class);
-        intent.putExtra("usuario", usuario);
-        startActivity(intent);
-
-         */
         finish();
     }
 

@@ -15,6 +15,19 @@
             android:layout_height="wrap_content"
             android:orientation="vertical" >
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+                <Button
+                    android:id="@+id/botonFinalizarDesdeHistorico"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Finalizar rutina"/>
+
+            </LinearLayout>
+
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -24,7 +37,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="52dp"
-                android:layout_marginTop="40dp"
+                android:layout_marginTop="20dp"
                 android:text="Nombre de la rutina:" />
 
             <TextView
@@ -32,7 +45,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="52dp"
-                android:layout_marginTop="40dp"
+                android:layout_marginTop="20dp"
                 android:textSize="16sp"
                 android:textStyle="bold" />
         </LinearLayout>
@@ -45,7 +58,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="52dp"
-                    android:layout_marginTop="40dp"
+                    android:layout_marginTop="20dp"
                     android:text="Fecha de inicio:" />
 
                 <TextView
@@ -53,12 +66,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="52dp"
-                    android:layout_marginTop="40dp"/>
-
-
+                    android:layout_marginTop="20dp"/>
 
 
             </LinearLayout>
+
             <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -70,14 +82,14 @@
                 android:layout_height="wrap_content"
                 android:text="Hora de inicio:"
                 android:layout_marginStart="52dp"
-                android:layout_marginTop="40dp"/>
+                android:layout_marginTop="20dp"/>
 
             <TextView
                 android:id="@+id/tv_HoraInicio"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="52dp"
-                android:layout_marginTop="40dp"
+                android:layout_marginTop="20dp"
                  />
 
         </LinearLayout>
@@ -90,7 +102,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="52dp"
-                    android:layout_marginTop="40dp"
+                    android:layout_marginTop="20dp"
                     android:text="Fecha de fin:" />
 
                 <TextView
@@ -98,7 +110,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="52dp"
-                    android:layout_marginTop="40dp"
+                    android:layout_marginTop="20dp"
                     />
             </LinearLayout>
         <LinearLayout
@@ -110,7 +122,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="52dp"
-                android:layout_marginTop="40dp"
+                android:layout_marginTop="20dp"
                 android:text="Hora de fin:" />
 
             <TextView
@@ -118,17 +130,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="52dp"
-                android:layout_marginTop="40dp"
+                android:layout_marginTop="20dp"
                  />
 
         </LinearLayout>
-
-
-
-
-
-
-
 
 
 
@@ -137,13 +142,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="52dp"
-                android:layout_marginTop="48dp"
+                android:layout_marginTop="20dp"
                 android:text="Ejercicios realizados:" />
 
             <ExpandableListView
                 android:id="@+id/listViewEjerciciosRutina"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="470dp"
+                android:layout_weight="1"
                 android:nestedScrollingEnabled="true" />
         </LinearLayout>
     </ScrollView>

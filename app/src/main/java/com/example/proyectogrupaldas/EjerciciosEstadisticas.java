@@ -100,6 +100,9 @@ public class EjerciciosEstadisticas extends AppCompatActivity {
         mediaRepes = findViewById(R.id.repMedias);
         seriesMedias = findViewById(R.id.SeriesMedias);
 
+        pesoMedio.setText("Peso medio");
+        mediaRepes.setText("Repeticiones medias");
+        seriesMedias.setText("Series medias");
         lineChart = findViewById(R.id.chart);
 
 
@@ -115,29 +118,34 @@ public class EjerciciosEstadisticas extends AppCompatActivity {
             dataButton2.setText(savedInstanceState.getString("dataButton2"));
             fechaFin = savedInstanceState.getString("dataButton2");
             listaRutinas = savedInstanceState.getStringArrayList("listaRutinas");
+            listaFechasChart = savedInstanceState.getStringArrayList("listaFechasChart");
+            listaPesosChart2 = savedInstanceState.getIntegerArrayList("listaPesosChart2");
+            listaRepesChart = savedInstanceState.getIntegerArrayList("listaRepesChart");
 
-            LinearLayout container = findViewById(R.id.listadoRutinasLL);
-            //Guardamos los datos para cada diario
-            //Nombre, fecha ini, hora ini, fecha fin, hora fin
             try {
+                setupLineChart();
+                setupLineChart2();
+
+
+                LinearLayout container = findViewById(R.id.listadoRutinasLL);
+                //Guardamos los datos para cada diario
+                //Nombre, fecha ini, hora ini, fecha fin, hora fin
                 for (int i = 0; i < listaRutinas.size(); i++) {
                     EditText textView = new EditText(EjerciciosEstadisticas.this);
                     textView.setEnabled(false);
                     textView.setText(listaRutinas.get(i));
                     container.addView(textView);
                 }
-            }
-            catch(Exception e) {
-                //
-            }
-            container.post(new Runnable() {
-                @Override
-                public void run() {
-                    // Ajustar el tamaño del contenedor al contenido
-                    container.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
-                    container.requestLayout();
-                }
-            });
+                container.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        // Ajustar el tamaño del contenedor al contenido
+                        container.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
+                        container.requestLayout();
+                    }
+                });
+
+            } catch (NullPointerException e){}
 
         }
 
@@ -230,6 +238,10 @@ public class EjerciciosEstadisticas extends AppCompatActivity {
         savedInstanceState.putCharSequence("dataButton", dataButton.getText());
         savedInstanceState.putCharSequence("dataButton2", dataButton2.getText());
         savedInstanceState.putStringArrayList("listaRutinas", listaRutinas);
+        savedInstanceState.putStringArrayList("listaFechasChart", listaFechasChart);
+        savedInstanceState.putIntegerArrayList("listaPesosChart2", listaPesosChart2);
+        savedInstanceState.putIntegerArrayList("listaRepesChart", listaRepesChart);
+
 
 
     }
@@ -305,138 +317,157 @@ public class EjerciciosEstadisticas extends AppCompatActivity {
 
     public void cargarEstadisticas(View view) {
 
-        //Documentacion de volley : https://google.github.io/volley/
+
+        try {
+            //Documentacion de volley : https://google.github.io/volley/
 
 
-        //Inicializamos la cola de peticiones
-        RequestQueue rq = Volley.newRequestQueue(EjerciciosEstadisticas.this);
+            //Inicializamos la cola de peticiones
+            RequestQueue rq = Volley.newRequestQueue(EjerciciosEstadisticas.this);
 
-        //Definimos la URL a la que se va a hacer peticiones
-        StringRequest sr = new StringRequest(Request.Method.POST, "http://ec2-54-93-62-124.eu-central-1.compute.amazonaws.com/jwojciechowska001/WEB/entrega3/estadisticas.php", new Response.Listener<String>() {
-            @Override //En caso de exito
-            public void onResponse(String response) {
-
-                LinearLayout container = findViewById(R.id.listadoRutinasLL);
-                lineChart.clear();
-                lineChart2.clear();
-
-                pesoMedio.setText("");
-                mediaRepes.setText("");
-                seriesMedias.setText("");
-
-                container.removeAllViews();
+            //Definimos la URL a la que se va a hacer peticiones
+            StringRequest sr = new StringRequest(Request.Method.POST, "http://ec2-54-93-62-124.eu-central-1.compute.amazonaws.com/jwojciechowska001/WEB/entrega3/estadisticas.php", new Response.Listener<String>() {
+                @Override //En caso de exito
+                public void onResponse(String response) {
 
 
-                Log.d("respuesta", response);
+                    LinearLayout container = findViewById(R.id.listadoRutinasLL);
+                    lineChart.clear();
+                    lineChart2.clear();
 
-                ArrayList<String> listaDatos = new ArrayList<String>();
+                    pesoMedio.setText("Peso medio : Nulo");
+                    mediaRepes.setText("Repeticiones medias : Nulo");
+                    seriesMedias.setText("Series medias : Nulo");
+                    container.removeAllViews();
+                    if(response.length() >1){
 
-                try {
-                    //{"idRutina":"4","peso":"3","nombreRutina":"Tren Superior","numRepes":"3"}
-                    //Convertimos la respuesta en JSON para poder recorrerla
-                    JSONArray json = new JSONArray(response);
-
-                    ArrayList<ArrayList<String>> listaListas = new ArrayList<ArrayList<String>>();
-                    ArrayList<Integer> listaPesos = new ArrayList<>();
-                    ArrayList<Integer> listaRepes = new ArrayList<>();
-                    ArrayList<Integer> listaSeries = new ArrayList<>();
-
-                    listaRepesChart = new ArrayList<>();
-                    listaRutinas = new ArrayList<>();
-                    listaFechasChart = new ArrayList<>();
-                    listaPesosChart2 = new ArrayList<>();
-                    String rutina;
-                    listaDatos.add("Elige una rutina");
-
-                    //Guardamos los datos para cada diario
-                    //Nombre, fecha ini, hora ini, fecha fin, hora fin
-                    for (int i = 0; i < json.length(); i++) {
-
-                        Integer peso = Integer.valueOf(json.getJSONObject(i).getString("peso"));
-                        listaPesos.add(peso);
-
-                        Integer rep = Integer.valueOf(json.getJSONObject(i).getString("numRepes"));
-                        listaRepes.add(rep);
-                        listaSeries.add(Integer.valueOf(json.getJSONObject(i).getString("idRutina")));
-                        rutina = json.getJSONObject(i).getString("nombreRutina");
-                        if(!listaRutinas.contains(rutina)){
-                            listaRutinas.add(rutina);
-                            EditText textView = new EditText(EjerciciosEstadisticas.this);
-                            textView.setEnabled(false);
-                            textView.setText(rutina);
-                            container.addView(textView);
-                        }
-                        String[] parts = json.getJSONObject(i).getString("fechaHora").split(" ");
-                        String date = parts[0];
-
-                        listaFechasChart.add(date);
-                        listaPesosChart2.add(peso);
-                        listaRepesChart.add(rep);
+                    }else{
+                        Toast.makeText(getApplicationContext(), "No hay datos de este ejercicio", Toast.LENGTH_SHORT).show();
                     }
-                    Log.d("longitud Fechas", listaFechasChart.toString());
-                    Log.d("longitud Pesos", listaPesosChart2.toString());
-                    Log.d("longitud Repes", listaRepesChart.toString());
 
-                    setupLineChart2();
-                    setupLineChart();
+                    Log.d("respuesta", response);
 
-                    container.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            // Ajustar el tamaño del contenedor al contenido
-                            container.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
-                            container.requestLayout();
+                    ArrayList<String> listaDatos = new ArrayList<String>();
+
+                    try {
+                        //{"idRutina":"4","peso":"3","nombreRutina":"Tren Superior","numRepes":"3"}
+                        //Convertimos la respuesta en JSON para poder recorrerla
+                        JSONArray json = new JSONArray(response);
+
+                        ArrayList<ArrayList<String>> listaListas = new ArrayList<ArrayList<String>>();
+                        ArrayList<Integer> listaPesos = new ArrayList<>();
+                        ArrayList<Integer> listaRepes = new ArrayList<>();
+                        ArrayList<Integer> listaSeries = new ArrayList<>();
+
+                        listaRepesChart = new ArrayList<>();
+                        listaRutinas = new ArrayList<>();
+                        listaFechasChart = new ArrayList<>();
+                        listaPesosChart2 = new ArrayList<>();
+                        String rutina;
+                        listaDatos.add("Elige una rutina");
+
+                        //Guardamos los datos para cada diario
+                        //Nombre, fecha ini, hora ini, fecha fin, hora fin
+                        for (int i = 0; i < json.length(); i++) {
+
+                            Integer peso = Integer.valueOf(json.getJSONObject(i).getString("peso"));
+                            listaPesos.add(peso);
+
+                            Integer rep = Integer.valueOf(json.getJSONObject(i).getString("numRepes"));
+                            listaRepes.add(rep);
+                            listaSeries.add(Integer.valueOf(json.getJSONObject(i).getString("idRutina")));
+                            rutina = json.getJSONObject(i).getString("nombreRutina");
+                            if (!listaRutinas.contains(rutina)) {
+                                listaRutinas.add(rutina);
+                                EditText textView = new EditText(EjerciciosEstadisticas.this);
+                                textView.setEnabled(false);
+                                textView.setText(rutina);
+                                container.addView(textView);
+                            }
+                            String[] parts = json.getJSONObject(i).getString("fechaHora").split(" ");
+                            String date = parts[0];
+
+                            listaFechasChart.add(date);
+                            listaPesosChart2.add(peso);
+                            listaRepesChart.add(rep);
                         }
-                    });
+                        Log.d("longitud Fechas", listaFechasChart.toString());
+                        Log.d("longitud Pesos", listaPesosChart2.toString());
+                        Log.d("longitud Repes", listaRepesChart.toString());
 
-                    float media = listaPesos.stream().mapToInt(Integer::intValue).sum();
-                    System.out.print(String.valueOf(media));
-                    pesoMedio.setText(String.valueOf(media/listaPesos.size()) + " Kg");
+                        setupLineChart2();
+                        setupLineChart();
 
-                    media = listaRepes.stream().mapToInt(Integer::intValue).sum();
-                    mediaRepes.setText(String.valueOf(media/listaRepes.size()) + " repeticiones");
+                        container.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                // Ajustar el tamaño del contenedor al contenido
+                                container.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
+                                container.requestLayout();
+                            }
+                        });
 
-                    double mediaSeries = listaSeries.stream()
-                            .collect(Collectors.groupingBy(Integer::intValue, Collectors.counting()))
-                            .values().stream()
-                            .mapToLong(Long::intValue)
-                            .average()
-                            .orElse(0);
+                        float media = listaPesos.stream().mapToInt(Integer::intValue).sum();
+                        System.out.print(String.valueOf(media));
+                        pesoMedio.setText(String.valueOf(media / listaPesos.size()) + " Kg");
 
-                    seriesMedias.setText(String.valueOf(mediaSeries) + " series");
-                    //setupLineChart2();
+                        media = listaRepes.stream().mapToInt(Integer::intValue).sum();
+                        mediaRepes.setText(String.valueOf(media / listaRepes.size()) + " repeticiones");
 
-                } catch(JSONException e){
-                    System.out.print("Estoy dentro del catch");
-                }catch(Exception e) {
-                    System.out.print("Ha ocurrido un error: " + e.getMessage());
+                        double mediaSeries = listaSeries.stream()
+                                .collect(Collectors.groupingBy(Integer::intValue, Collectors.counting()))
+                                .values().stream()
+                                .mapToLong(Long::intValue)
+                                .average()
+                                .orElse(0);
+
+                        seriesMedias.setText(String.valueOf(mediaSeries) + " series");
+
+
+
+                    } catch (JSONException e) {
+                        System.out.print("Estoy dentro del catch");
+                    } catch (Exception e) {
+                        System.out.print("Ha ocurrido un error: " + e.getMessage());
+                    }
+
+
+
                 }
+            },new Response.ErrorListener()
 
-            }
-        }, new Response.ErrorListener() {
-            @Override //En caso de error
-            public void onErrorResponse(VolleyError error) {
-                //Notificamos al usuario
-                Toast.makeText(EjerciciosEstadisticas.this, "Se ha producido un error", Toast.LENGTH_SHORT).show();
-            }
-        }) {
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                //Definicion de los parametros necesarios para realizar la peticion
-                String ejer = (String) spinnerEjercicios.getSelectedItem();
-                HashMap<String, String> parametros = new HashMap<String, String>();
-                parametros.put("usuario", usuario);
-                parametros.put("ejercicio", ejer);
-                parametros.put("tarea", "estadisticasEjers");
-                parametros.put("fechaIni", fechaIni);
-                parametros.put("fechaFin", fechaFin);
-                return parametros;
-            }
-        };
+            {
+                @Override //En caso de error
+                public void onErrorResponse (VolleyError error){
+                    //Notificamos al usuario
+                    Toast.makeText(EjerciciosEstadisticas.this, "Se ha producido un error", Toast.LENGTH_SHORT).show();
+                }
+            })
 
-        //Enviamos la peticion
-        rq = Volley.newRequestQueue(EjerciciosEstadisticas.this);
-        rq.add(sr);
+            {
+                @Override
+                protected Map<String, String> getParams () throws AuthFailureError {
+                    //Definicion de los parametros necesarios para realizar la peticion
+                    String ejer = (String) spinnerEjercicios.getSelectedItem();
+                    HashMap<String, String> parametros = new HashMap<String, String>();
+                    parametros.put("usuario", usuario);
+                    parametros.put("ejercicio", ejer);
+                    parametros.put("tarea", "estadisticasEjers");
+                    parametros.put("fechaIni", fechaIni);
+                    parametros.put("fechaFin", fechaFin);
+                    return parametros;
+                }
+            };
+
+            //Enviamos la peticion
+            rq =Volley.newRequestQueue(EjerciciosEstadisticas .this);
+            rq.add(sr);
+
+
+        }catch(IllegalArgumentException e){
+            Toast.makeText(this, "Introduce todos los campos", Toast.LENGTH_SHORT);
+        }
+
 
     }
 
@@ -571,13 +602,7 @@ public class EjerciciosEstadisticas extends AppCompatActivity {
 
 
     public void onBackPressed() {
-        //Volvemos a la lista de diarios
-        /*
-        Intent intent = new Intent(this, MenuEstadisticas.class);
-        intent.putExtra("usuario", usuario);
-        startActivity(intent);
 
-         */
         finish();
     }
 

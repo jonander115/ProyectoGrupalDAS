@@ -58,7 +58,8 @@
             android:enabled="false"
             android:hint="@string/app_name"
             android:minHeight="48dp"
-            android:text="" />
+            android:text=""
+            android:textColor="@color/black"/>
 
         <EditText
             android:id="@+id/EstadMinsMedioRut"
@@ -67,7 +68,8 @@
             android:enabled="false"
             android:hint="@string/app_name"
             android:minHeight="48dp"
-            android:text="" />
+            android:text=""
+            android:textColor="@color/black"/>
 
         <EditText
             android:id="@+id/EstadDiaMasComun"
@@ -77,7 +79,8 @@
             android:hint="@string/app_name"
             android:backgroundTint="@android:color/transparent"
             android:minHeight="48dp"
-            android:text="" />
+            android:text=""
+            android:textColor="@color/black"/>
 
         <EditText
             android:id="@+id/tituloChart1R"
@@ -86,7 +89,8 @@
             android:enabled="false"
             android:backgroundTint="@android:color/transparent"
             android:hint="@string/app_name"
-            android:text="Evolucion del tiempo" />
+            android:text="Evolucion del tiempo"
+            android:textColor="@color/black"/>
 
         <com.github.mikephil.charting.charts.CombinedChart
             android:id="@+id/combinedChart"
