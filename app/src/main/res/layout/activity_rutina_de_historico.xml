@@ -23,19 +23,28 @@
                 android:layout_marginTop="4dp" />
 
             <TextView
-                android:id="@+id/tv_HoraFin"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:layout_marginEnd="96dp" />
-
-            <TextView
                 android:id="@+id/nombreRutina"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="52dp"
                 android:layout_marginTop="40dp"
                 android:text="Nombre de la rutina:" />
+
+            <TextView
+                android:id="@+id/tv_NombreDeRutina"
+                android:layout_width="wrap_content"
+                android:layout_height="28dp"
+                android:layout_marginStart="52dp"
+                android:layout_marginTop="4dp"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_HoraFin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="96dp" />
 
             <TextView
                 android:id="@+id/horaInicio"
@@ -61,15 +70,6 @@
                 android:layout_marginEnd="96dp" />
 
             <TextView
-                android:id="@+id/tv_NombreDeRutina"
-                android:layout_width="wrap_content"
-                android:layout_height="28dp"
-                android:layout_marginStart="52dp"
-                android:layout_marginTop="4dp"
-                android:textSize="16sp"
-                android:textStyle="bold" />
-
-            <TextView
                 android:id="@+id/fechaInicio"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -91,6 +91,7 @@
                 android:layout_marginTop="40dp"
                 android:layout_marginEnd="92dp"
                 android:text="Hora de fin:" />
+
 
             <TextView
                 android:id="@+id/ejercicios"

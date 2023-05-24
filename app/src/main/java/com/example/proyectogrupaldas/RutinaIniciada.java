@@ -188,7 +188,7 @@ public class RutinaIniciada extends AppCompatActivity {
                     ArrayList<String> listaSeriesDelEjercicio = new ArrayList<>();
 
                     //Contador para el número de serie
-                    int cont = 0;
+                    int cont = -1;
 
                     //Por cada serie del ejercicio
                     for(int i = 0; i < jsonArray.length(); i++)
@@ -209,7 +209,10 @@ public class RutinaIniciada extends AppCompatActivity {
                         }
 
                         //Añadimos a la lista de ejercicios la información de la serie
-                        listaSeriesDelEjercicio.add(cont + "/" + peso + "/" + numRepeticiones + "/" + notas);
+                        if (cont!=0){
+                            listaSeriesDelEjercicio.add(cont + "/" + peso + "/" + numRepeticiones + "/" + notas);
+                        }
+
 
                     }
 

@@ -141,7 +141,7 @@ public class DialogoVerEjercicios extends DialogFragment {
                         public void onItemClick(AdapterView<?> parent, View view, int p, long id) {
                             //si se pulsa sobre un ejercicio este se aniade a la rutina
                             aniadirEjercicio(ejercicios.get(p));
-                            ((Rutina) getActivity()).actualizarLista();
+                            //((Rutina) getActivity()).actualizarLista();
                             dismiss();
                         }
                     });
@@ -184,6 +184,7 @@ public class DialogoVerEjercicios extends DialogFragment {
                 if (response.equals("noPosible")){
                     Toast.makeText(context,"El ejercicio ya está en la rutina",Toast.LENGTH_SHORT).show();
                 }
+                ((Rutina) getActivity()).actualizarLista();
             }
         }, new Response.ErrorListener() {
 
