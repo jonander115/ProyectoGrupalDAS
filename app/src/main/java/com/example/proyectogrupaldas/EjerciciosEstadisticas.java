@@ -128,7 +128,7 @@ public class EjerciciosEstadisticas extends AppCompatActivity {
 
             try {
                 configuracionChart1();
-                setupLineChart2();
+                configuracionChart2();
 
 
                 LinearLayout container = findViewById(R.id.listadoRutinasLL);
@@ -144,7 +144,7 @@ public class EjerciciosEstadisticas extends AppCompatActivity {
                 container.post(new Runnable() {
                     @Override
                     public void run() {
-                        // Ajustar el tamaño del contenedor al contenido
+                        // Ajustar el tamaÃ±o del contenedor al contenido
                         container.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
                         container.requestLayout();
                     }
@@ -198,7 +198,7 @@ public class EjerciciosEstadisticas extends AppCompatActivity {
         lineChart.invalidate();
     }
 
-    private void setearchart2() {
+    private void configuracionChart2() {
         // Creacion de listas de valores que luego apareceran en los graficos
         ArrayList<Entry> yValues = new ArrayList<>();
 
@@ -414,13 +414,13 @@ public class EjerciciosEstadisticas extends AppCompatActivity {
                         Log.d("longitud Pesos", listaPesosChart2.toString());
                         Log.d("longitud Repes", listaRepesChart.toString());
 
-                        setearchart2();
+                        configuracionChart2();
                         configuracionChart1();
 
                         container.post(new Runnable() {
                             @Override
                             public void run() {
-                                // Ajustar el tamaño del contenedor al contenido
+                                // Ajustar el tamaÃ±o del contenedor al contenido
                                 container.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
                                 container.requestLayout();
                             }
@@ -449,6 +449,9 @@ public class EjerciciosEstadisticas extends AppCompatActivity {
                     } catch (Exception e) {
                         System.out.print("Ha ocurrido un error: " + e.getMessage());
                     }
+
+
+
                 }
             },new Response.ErrorListener()
 
@@ -459,6 +462,7 @@ public class EjerciciosEstadisticas extends AppCompatActivity {
                     Toast.makeText(EjerciciosEstadisticas.this, "Se ha producido un error", Toast.LENGTH_SHORT).show();
                 }
             })
+
             {
                 @Override
                 protected Map<String, String> getParams () throws AuthFailureError {
@@ -509,7 +513,7 @@ public class EjerciciosEstadisticas extends AppCompatActivity {
                     JSONArray json = new JSONArray(response);
 
 
-                    listaCat.add("Elige una categoria");
+                    listaCat.add("Elige una categoría");
                     System.out.print(json);
                     String nombreCat = "";
                     String nombreEjer = "";
@@ -540,10 +544,10 @@ public class EjerciciosEstadisticas extends AppCompatActivity {
                     spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                         @Override
                         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                            // Obtén el valor seleccionado en el primer spinner
+                            // ObtÃ©n el valor seleccionado en el primer spinner
                             String opcionSeleccionada = (String) parent.getItemAtPosition(position);
 
-                            // Obtén los datos para el segundo spinner basados en la opción seleccionada
+                            // ObtÃ©n los datos para el segundo spinner basados en la opciÃ³n seleccionada
                             ArrayList<String> opcionesSpinner2 = null;
                             try {
                                 opcionesSpinner2 = obtenerOpcionesSpinnerEjers(opcionSeleccionada, json);
@@ -577,7 +581,7 @@ public class EjerciciosEstadisticas extends AppCompatActivity {
 
                         @Override
                         public void onNothingSelected(AdapterView<?> parent) {
-                            // No se seleccionó ninguna opción en el primer spinner
+                            // No se seleccionÃ³ ninguna opciÃ³n en el primer spinner
                         }
                     });
 
@@ -617,7 +621,6 @@ public class EjerciciosEstadisticas extends AppCompatActivity {
 
 
     public void onBackPressed() {
-
         finish();
     }
 

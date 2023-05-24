@@ -116,9 +116,9 @@ public class RutinasEstadistica extends AppCompatActivity {
         diaComun = findViewById(R.id.EstadDiaMasComun);
         combinedChart = findViewById(R.id.combinedChart);
 
-        numRep.setText("Numero repeticiones medias");
+        numRep.setText("Número de repeticiones medias");
         tiempoMedio.setText("Tiempo medio de la rutina");
-        diaComun.setText("Dia mas comun");
+        diaComun.setText("Día más común");
 
 
         if (savedInstanceState != null) {
@@ -133,7 +133,7 @@ public class RutinasEstadistica extends AppCompatActivity {
             result = (ArrayList<Long>) savedInstanceState.getSerializable("result");
             listaMeses =  savedInstanceState.getStringArrayList("listaMeses");
             try{
-                setupCombinedChart();
+                configuracionChart();
             } catch (NullPointerException e){}
 
             cargarRutinas(spinnerRutinas);
@@ -156,7 +156,7 @@ public class RutinasEstadistica extends AppCompatActivity {
 
     }
 
-    private void setupCombinedChart() {
+    private void configuracionChart() {
         // Datos de ejemplo
 
         ArrayList<BarEntry> barEntries = new ArrayList<>();
@@ -399,7 +399,7 @@ public class RutinasEstadistica extends AppCompatActivity {
 
 
                     Log.d("listaSumas", listaMedias.toString());
-                    setupCombinedChart();
+                    configuracionChart();
                 } catch(JSONException e){
                 }catch(Exception e) {
                     System.out.print("Ha ocurrido un error: " + e.getMessage());
@@ -499,7 +499,6 @@ public class RutinasEstadistica extends AppCompatActivity {
         //Enviamos la peticion
         rq = Volley.newRequestQueue(RutinasEstadistica.this);
         rq.add(sr);
-
     }
 
     public void onBackPressed() {

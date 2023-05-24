@@ -30,7 +30,7 @@
                 android:layout_weight="0.5"
                 android:layout_height="wrap_content"
                 android:onClick="openDatePicker2"
-                android:text="  Fecha inicio"
+                android:text="Fecha inicio"
                 android:textColor="@color/black" />
 
             <Button
@@ -49,7 +49,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:onClick="cargarEstadisticas"
-            android:text="@string/botonEstad" />
+            android:text="Mostrar estadísticas" />
 
         <EditText
             android:id="@+id/NumeroRepeticionesRutina"
@@ -89,7 +89,7 @@
             android:enabled="false"
             android:backgroundTint="@android:color/transparent"
             android:hint="@string/app_name"
-            android:text="Evolucion del tiempo"
+            android:text="Evolucion del tiempo medio por mes"
             android:textColor="@color/black"/>
 
         <com.github.mikephil.charting.charts.CombinedChart

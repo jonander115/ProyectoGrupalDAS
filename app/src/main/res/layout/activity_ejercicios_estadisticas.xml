@@ -36,7 +36,7 @@
                 android:layout_weight="0.5"
                 android:layout_height="wrap_content"
                 android:onClick="openDatePicker2"
-                android:text="  Fecha inicio"
+                android:text="Fecha inicio"
                 android:textColor="@color/black" />
 
             <Button
@@ -55,7 +55,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:onClick="cargarEstadisticas"
-            android:text="@string/botonEstad" />
+            android:text="Mostrar estadísticas" />
 
         <EditText
             android:id="@+id/repMedias"
@@ -110,7 +110,7 @@
             android:enabled="false"
             android:backgroundTint="@android:color/transparent"
             android:hint="@string/app_name"
-            android:text="Evolucion de pesos"
+            android:text="Evolución de pesos"
             android:textColor="@color/black"/>
 
         <com.github.mikephil.charting.charts.LineChart
@@ -125,7 +125,7 @@
             android:enabled="false"
             android:backgroundTint="@android:color/transparent"
             android:hint="@string/app_name"
-            android:text="Evolucion de repeticiones"
+            android:text="Evolución de repeticiones"
             android:textColor="@color/black"/>
 
         <com.github.mikephil.charting.charts.LineChart
