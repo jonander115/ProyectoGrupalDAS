@@ -113,7 +113,7 @@ public class Rutina extends AppCompatActivity {
 
     //se hace una llamada a la base de datos para obtener los ejercicios de la rutina
     public void actualizarLista(){
-        StringRequest sr = new StringRequest(Request.Method.POST, "http://ec2-54-93-62-124.eu-central-1.compute.amazonaws.com/jwojciechowska001/WEB/entrega3/obtenerejerciciosrutina.php", new Response.Listener<String>() {
+        StringRequest sr = new StringRequest(Request.Method.POST, "http://ec2-54-93-62-124.eu-central-1.compute.amazonaws.com/jwojciechowska001/WEB/entrega3/obtenerelementos.php", new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
 
@@ -176,6 +176,7 @@ public class Rutina extends AppCompatActivity {
             protected Map<String, String> getParams() throws AuthFailureError {
                 //se pasan todos los parametros necesarios en la solicitud
                 HashMap<String, String> parametros = new HashMap<String, String>();
+                parametros.put("opcion", "obejerciciosrutina");
                 parametros.put("usuario", usuario);
                 parametros.put("rutina", idrutina);
 
@@ -212,7 +213,7 @@ public class Rutina extends AppCompatActivity {
     }
 
     private void eliminarEjercicio(String nombre, String orden){
-        StringRequest sr = new StringRequest(Request.Method.POST, "http://ec2-54-93-62-124.eu-central-1.compute.amazonaws.com/jwojciechowska001/WEB/entrega3/eliminarejercicio.php", new Response.Listener<String>() {
+        StringRequest sr = new StringRequest(Request.Method.POST, "http://ec2-54-93-62-124.eu-central-1.compute.amazonaws.com/jwojciechowska001/WEB/entrega3/eliminar.php", new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 //si la respuesta esta vacia imprime mensaje
@@ -234,6 +235,7 @@ public class Rutina extends AppCompatActivity {
             protected Map<String, String> getParams() throws AuthFailureError {
                 //se pasan todos los parametros necesarios en la solicitud
                 HashMap<String, String> parametros = new HashMap<String, String>();
+                parametros.put("opcion", "eliminarejerciciorutina");
                 parametros.put("idrutina", idrutina);
                 parametros.put("usuario", usuario);
                 parametros.put("nombreejercicio", nombre);

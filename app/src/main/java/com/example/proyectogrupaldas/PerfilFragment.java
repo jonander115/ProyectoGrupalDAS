@@ -7,6 +7,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -26,10 +27,12 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
+import androidx.preference.PreferenceManager;
 
 import android.provider.MediaStore;
 import android.util.Base64;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -72,6 +75,7 @@ public class PerfilFragment extends Fragment implements ActivityResultCallback {
     private String fotoen64 = "";
     private String fotoGiro = "";
     private String[] listaNombresEjercicios;
+    private ContextThemeWrapper contextThemeWrapper;
 
 
     public PerfilFragment() {
@@ -166,7 +170,20 @@ public class PerfilFragment extends Fragment implements ActivityResultCallback {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_perfil, container, false);
+        super.onCreateView(inflater,container, savedInstanceState);
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(requireContext());
+        boolean tema = prefs.getBoolean("tema",true);
+        if(tema) {
+            contextThemeWrapper = new ContextThemeWrapper(getActivity(), R.style.FragmentTheme);
+        }
+        else{
+            contextThemeWrapper = new ContextThemeWrapper(getActivity(), R.style.FragmentTheme2);
+        }
+
+        // Infla el diseño utilizando el ContextThemeWrapper
+        LayoutInflater themedInflater = inflater.cloneInContext(contextThemeWrapper);
+        View view = themedInflater.inflate(R.layout.fragment_perfil, container, false);
 
         //Recogemos el usuario
         Bundle extras = getArguments();

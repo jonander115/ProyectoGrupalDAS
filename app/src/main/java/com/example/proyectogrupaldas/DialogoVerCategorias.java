@@ -89,7 +89,7 @@ public class DialogoVerCategorias extends DialogFragment {
 
     //se hace una llamada a la base de datos para coger las categorias de los ejercicios por defecto, y de los ejercicios creados por el usuario
     public void obtenerCategorias(){
-        StringRequest sr = new StringRequest(Request.Method.POST, "http://ec2-54-93-62-124.eu-central-1.compute.amazonaws.com/jwojciechowska001/WEB/entrega3/obtenercategorias.php", new Response.Listener<String>() {
+        StringRequest sr = new StringRequest(Request.Method.POST, "http://ec2-54-93-62-124.eu-central-1.compute.amazonaws.com/jwojciechowska001/WEB/entrega3/obtenerelementos.php", new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
 
@@ -156,6 +156,7 @@ public class DialogoVerCategorias extends DialogFragment {
             protected Map<String, String> getParams() throws AuthFailureError {
                 //se pasan todos los parametros necesarios en la solicitud
                 HashMap<String, String> parametros = new HashMap<String, String>();
+                parametros.put("opcion", "obcategorias");
                 parametros.put("usuario", usuario);
 
                 return parametros;

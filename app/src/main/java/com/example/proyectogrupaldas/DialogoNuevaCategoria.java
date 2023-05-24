@@ -104,7 +104,7 @@ public class DialogoNuevaCategoria extends DialogFragment {
 
     //se aniade el ejercicio con su correspondiente categoria, independientemente de si la categoria se ha creado o seleccionado
     private void aniadircategoriayej(){
-        StringRequest sr = new StringRequest(Request.Method.POST, "http://ec2-54-93-62-124.eu-central-1.compute.amazonaws.com/jwojciechowska001/WEB/entrega3/aniadircategoriayejercicio.php", new Response.Listener<String>() {
+        StringRequest sr = new StringRequest(Request.Method.POST, "http://ec2-54-93-62-124.eu-central-1.compute.amazonaws.com/jwojciechowska001/WEB/entrega3/rutinasaniadirordenar.php", new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 Log.d("respuesta",response);
@@ -122,6 +122,7 @@ public class DialogoNuevaCategoria extends DialogFragment {
             protected Map<String, String> getParams() throws AuthFailureError {
                 //se pasan todos los parametros necesarios en la solicitud
                 HashMap<String, String> parametros = new HashMap<String, String>();
+                parametros.put("opcion", "ancategoriayej");
                 parametros.put("categoria", categoria.getText().toString());
                 parametros.put("ejercicio", nombre.getText().toString());
                 parametros.put("usuario", usuario);

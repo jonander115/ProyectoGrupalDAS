@@ -43,6 +43,7 @@ public class RutinasFragment extends Fragment {
     private RequestQueue rq;
     private Context context;
     private String usuario;
+    private View view;
 
     public RutinasFragment() {
         // Required empty public constructor
@@ -66,6 +67,7 @@ public class RutinasFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        super.onCreateView(inflater,container, savedInstanceState);
 
         context = requireContext();
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
@@ -80,7 +82,7 @@ public class RutinasFragment extends Fragment {
 
         // Infla el diseño utilizando el ContextThemeWrapper
         LayoutInflater themedInflater = inflater.cloneInContext(contextThemeWrapper);
-        View view = themedInflater.inflate(R.layout.fragment_rutinas, container, false);
+        view = themedInflater.inflate(R.layout.fragment_rutinas, container, false);
 
         //super.onCreateView(inflater,container,savedInstanceState);
         //View view = inflater.inflate(R.layout.fragment_rutinas, container, false);
@@ -169,7 +171,7 @@ public class RutinasFragment extends Fragment {
                     ArrayAdapter<String> adapter = new ArrayAdapter<>(context, android.R.layout.simple_list_item_1, rutinas);
                     //ListView lv = (ListView) findViewById(R.id.rut_ejercicios);
 
-                    ListView listView = requireView().findViewById(R.id.rut_ejercicios);
+                    ListView listView = view.findViewById(R.id.rut_ejercicios);
                     listView.setAdapter(adapter);
 
                     rq.cancelAll("rutinas");
