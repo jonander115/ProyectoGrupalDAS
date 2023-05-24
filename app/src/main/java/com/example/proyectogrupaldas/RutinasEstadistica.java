@@ -290,9 +290,9 @@ public class RutinasEstadistica extends AppCompatActivity {
             @Override //En caso de exito
             public void onResponse(String response) {
 
-                numRep.setText("Numero Repeticiones medias : Nulo");
+                numRep.setText("Número de repeticiones medias : Nulo");
                 tiempoMedio.setText("Tiempo medio de la rutina : Nulo");
-                diaComun.setText("Dia mas comun : Nulo");
+                diaComun.setText("Día más común : Nulo");
                 combinedChart.clear();
 
 
@@ -361,13 +361,14 @@ public class RutinasEstadistica extends AppCompatActivity {
                     Log.d("results", result.toString());
                     Log.d("listaTiempos", listaTiempos.toString());
 
-                    numRep.setText("Numero de veces que has hecho la rutina: " + String.valueOf(json.length()));
+
+                    numRep.setText("Número de veces que has hecho la rutina: " + String.valueOf(json.length()));
                     float suma = (float) listaTiempos.stream()
                             .mapToDouble(Float::doubleValue)
                             .sum();
 
                     Log.d("suma", String.valueOf(suma/listaTiempos.size()));
-                    tiempoMedio.setText("Tiempo medio:" + String.valueOf(suma/listaTiempos.size()) + "min");
+                    tiempoMedio.setText("Tiempo medio:" + String.valueOf(suma/listaTiempos.size()) + " horas");
 
                     String valorMasRepetido = listaDias.stream()
                             .collect(Collectors.groupingBy(e -> e, Collectors.counting()))
@@ -378,7 +379,7 @@ public class RutinasEstadistica extends AppCompatActivity {
                             .orElse(null);
 
                     Log.d("dias", valorMasRepetido);
-                    diaComun.setText("Dia mas comun: " + String.valueOf(valorMasRepetido));
+                    diaComun.setText("Día mas común: " + String.valueOf(valorMasRepetido));
 
                     Map<String, ArrayList<Double>> mapaValores = new LinkedHashMap<>();
 

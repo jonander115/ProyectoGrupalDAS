@@ -45,9 +45,9 @@
     <style name="DatePickerDialogMaterialStyle" parent="android:Theme.Material.Light.Dialog">
         <!--Header Background Color and selected Day Background Color-->
         <item name="colorAccent">@color/white</item>
-        <item name="android:colorAccent">@color/purple_500</item>
+        <item name="android:colorAccent">#c18bd9</item>
         <!--Days unselected Text Color and Month Text Color-->
-        <item name="android:textColorPrimary">@color/purple_700</item>
+        <item name="android:textColorPrimary">#ae21eb</item>
         <!--Picker Background Color-->
         <item name="android:windowBackground">@android:color/white</item>
         <!--Buttons Style (Text Color & backgroundTint)-->
