@@ -57,6 +57,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:hint="Introduce el peso"
+                android:inputType="number"
                 app:layout_constraintStart_toStartOf="parent"
                 tools:layout_editor_absoluteY="70dp" />
         </LinearLayout>
@@ -78,7 +79,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-
+                android:inputType="number"
                 android:hint="Introduce el numero de reps"
                 app:layout_constraintStart_toStartOf="parent"
                 tools:layout_editor_absoluteY="81dp" />
